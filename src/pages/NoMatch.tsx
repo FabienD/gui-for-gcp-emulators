@@ -1,8 +1,8 @@
-function NoMatch() {
+import PageTitle from "../components/ui/PageTitle";
+
+function NoMatch(): React.ReactElement {
     return (
-        <h1 className="text-2xl font-bold text-violet-400">
-        NoMatch
-        </h1>
+        <PageTitle>Not Found</PageTitle>
     );
 }
 

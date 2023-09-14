@@ -8,7 +8,7 @@ import NoMatch from "./pages/NoMatch";
 
 import "./styles.css";
 
-function App() {
+function App(): React.ReactElement {
 
   return (
     <Routes>

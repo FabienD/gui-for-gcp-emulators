@@ -1,9 +1,12 @@
+import Emulator from "../components/form/Emulator";
+import PageTitle from "../components/ui/PageTitle";
 
-function Pubsub() {
+function Pubsub(): React.ReactElement{
     return (
-        <h1 className="text-2xl font-bold text-violet-400">
-        Pubsub
-        </h1>
+        <>
+            <PageTitle>Pubsub</PageTitle>
+            <Emulator name="pubsub" />
+        </>
     );
 }
 

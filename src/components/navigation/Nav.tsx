@@ -9,7 +9,7 @@ const items = [
     { href: "/firestore", icon: "/icons/firestore.svg", name: "Firestore" },
 ];
 
-function Nav({ title }: NavProps) {
+function Nav({ title }: NavProps): React.ReactElement {
     const navItems = items.map(item => 
         <NavItem href={item.href} icon={item.icon} name={item.name} />
     );

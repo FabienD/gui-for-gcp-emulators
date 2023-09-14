@@ -6,7 +6,7 @@ interface NavItemProps {
     name: string;
 }
 
-function NavItem({href, icon, name}: NavItemProps) {
+function NavItem({href, icon, name}: NavItemProps): React.ReactElement {
     return (
         <li className="py-1 cursor-pointer">
             <NavLink to={href} className="hover:text-violet-100">

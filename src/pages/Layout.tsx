@@ -1,8 +1,8 @@
 import { Outlet } from "react-router-dom";
-import Header from "../components/Header";
+import Header from "./Header";
 import Nav from "../components/navigation/Nav";
 
-function Layout() {
+function Layout(): React.ReactElement {
 
     return (
         <div className="container flex">

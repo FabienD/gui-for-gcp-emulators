@@ -1,5 +1,5 @@
 
-function Home() {
+function Home(): React.ReactElement {
     return (
         <>
             <p>A little application to help GCP emulator interactions.</p>

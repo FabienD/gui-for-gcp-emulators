@@ -1,9 +1,8 @@
+import PageTitle from "../components/ui/PageTitle";
 
-function Firestore() {
+function Firestore(): React.ReactElement {
     return (
-        <h1 className="text-2xl font-bold text-violet-400">
-            Firestore
-        </h1>
+        <PageTitle>Firestore</PageTitle>
     );
 }
 
