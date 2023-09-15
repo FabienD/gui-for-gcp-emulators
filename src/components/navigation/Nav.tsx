@@ -1,17 +1,17 @@
-import NavItem from './NavItem';
+import NavItem, { NavItemProps } from './NavItem';
 
 interface NavProps {
     title: string;
 }
 
-const items = [
+const items: Array<NavItemProps> = [
     { href: "/pubsub", icon: "/icons/pubsub.svg", name: "Pubsub" },
     { href: "/firestore", icon: "/icons/firestore.svg", name: "Firestore" },
 ];
 
 function Nav({ title }: NavProps): React.ReactElement {
     const navItems = items.map(item => 
-        <NavItem href={item.href} icon={item.icon} name={item.name} />
+        <NavItem {...item} />
     );
 
     return (

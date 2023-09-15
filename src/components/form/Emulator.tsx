@@ -12,7 +12,8 @@ function Emulator({ name }: EmulatorProps): React.ReactElement {
             <div>
                 <label htmlFor="port">Port:</label>
                 <input type="text" id="port" name="port" placeholder="port" />
-            </div>            
+            </div>
+            <button type="submit">Connect</button>            
         </form>
     )
 }
