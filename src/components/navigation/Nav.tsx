@@ -1,3 +1,4 @@
+import { MenuList, Typography } from '@mui/material';
 import NavItem, { NavItemProps } from './NavItem';
 
 interface NavProps {
@@ -10,15 +11,17 @@ const items: Array<NavItemProps> = [
 ];
 
 function Nav({ title }: NavProps): React.ReactElement {
-    const navItems = items.map(item => 
-        <NavItem {...item} />
+    const navItems = items.map((item, index) =>
+            <NavItem key={index} {...item} />
     );
 
     return (
-        <nav>
-            <h2 className="py-4 pl-4 font-bold text-violet-400">{title}</h2>
-            <ul className="pl-5 text-blue-300">{navItems}</ul>
-        </nav>
+        <>
+            <Typography className="py-4 pl-4 font-bold" color="secondary">{title}</Typography>
+            <MenuList>
+                {navItems}
+            </MenuList>
+        </>
     );
 }
 

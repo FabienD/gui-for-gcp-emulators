@@ -1,8 +1,11 @@
-import PageTitle from "../components/ui/PageTitle";
+import Title from "../components/ui/Title";
 
 function Firestore(): React.ReactElement {
     return (
-        <PageTitle>Firestore</PageTitle>
+        <>
+            <Title title="Firestore" />
+            <div>Not implemented yet.</div>
+        </>
     );
 }
 

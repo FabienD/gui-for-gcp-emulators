@@ -1,13 +1,40 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
+import { StyledEngineProvider, ThemeProvider, createTheme } from "@mui/material";
+import { blue, pink } from '@mui/material/colors';
 
 import App from "./App";
 
-ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
-  </React.StrictMode>,
+import '@fontsource/roboto/300.css';
+import '@fontsource/roboto/400.css';
+import '@fontsource/roboto/500.css';
+import '@fontsource/roboto/700.css';
+import "./styles.css";
+import "./normalize.css";
+
+const rootElement = document.getElementById('root');
+const root = ReactDOM.createRoot(rootElement!);
+
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: blue[900],
+    },
+    secondary: {
+      main: blue[500],
+    }
+  },
+});
+
+root.render(
+    <React.StrictMode>
+      <BrowserRouter>
+        <StyledEngineProvider injectFirst>
+          <ThemeProvider theme={theme}>
+            <App />
+          </ThemeProvider>
+        </StyledEngineProvider>
+      </BrowserRouter>
+    </React.StrictMode>
 );

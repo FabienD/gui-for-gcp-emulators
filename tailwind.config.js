@@ -4,12 +4,13 @@ export default {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
+  important: '#root',
   theme: {
     extend: {},
   },
-  plugins: [
-    require('@tailwindcss/forms'),
-    require('@tailwindcss/typography'),
-  ],
+  plugins: [],
+  corePlugins: {
+    // Remove the Tailwind CSS preflight styles so it can use Material UI's preflight instead (CssBaseline).
+    preflight: false,
+  },
 }
-

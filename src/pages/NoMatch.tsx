@@ -1,8 +1,8 @@
-import PageTitle from "../components/ui/PageTitle";
+import Title from "../components/ui/Title";
 
 function NoMatch(): React.ReactElement {
     return (
-        <PageTitle>Not Found</PageTitle>
+        <Title title="Not found" />
     );
 }
 

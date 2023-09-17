@@ -1,3 +1,4 @@
+import { MenuItem } from "@mui/material";
 import { NavLink } from "react-router-dom";
 
 interface NavItemProps {
@@ -8,12 +9,12 @@ interface NavItemProps {
 
 function NavItem({ href, icon, name }: NavItemProps): React.ReactElement {
     return (
-        <li className="py-1 cursor-pointer">
-            <NavLink to={href} className="hover:text-violet-100">
+        <MenuItem className="py-1 cursor-pointer text-white hover:text-blue-200">
+            <NavLink to={href}>
                 <img src={icon} className="w-4 h-4 inline mb-1" alt={name} />
                 <span className="pl-2">{name}</span>
             </NavLink>
-        </li>
+        </MenuItem>
     );
 }
 

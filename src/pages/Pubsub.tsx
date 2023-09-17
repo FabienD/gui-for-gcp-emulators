@@ -1,10 +1,10 @@
 import Emulator from "../components/form/Emulator";
-import PageTitle from "../components/ui/PageTitle";
+import Title from "../components/ui/Title";
 
 function Pubsub(): React.ReactElement{
     return (
         <>
-            <PageTitle>Pubsub</PageTitle>
+            <Title title="Pubsub" />
             <Emulator name="pubsub" />
         </>
     );
