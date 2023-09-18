@@ -2,14 +2,22 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
+
+use std::net::TcpStream;
+
+
 #[tauri::command]
-fn greet(name: &str) -> String {
-    format!("Hello, {}! You've been greeted from Rust!", name)
+fn check_connection(host: String, port: usize) -> bool {
+    let addr = format!("{}:{}", host, port);
+    match TcpStream::connect(addr) {
+        Ok(_) => true,
+        Err(_) => false,
+    }
 }
 
 fn main() {
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![greet])
+        .invoke_handler(tauri::generate_handler![check_connection])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

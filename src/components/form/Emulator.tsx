@@ -1,8 +1,8 @@
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { Box, InputAdornment, TextField } from '@mui/material';
 import Button from '@mui/material/Button';
-import { getTopics } from "../../hooks/Pubsub";
 import { useEffect, useState } from "react";
+import { invoke } from "@tauri-apps/api";
 
 interface EmulatorProps {
     name: string;
@@ -30,8 +30,9 @@ function Emulator({ name }: EmulatorProps): React.ReactElement {
 
     useEffect(() => {
         if (settings != undefined) {
-            console.log('Call getTopics');
-            getTopics(settings).then(data => console.log(data));
+            invoke('check_connection', {...settings}).then((res) => {
+                console.log(res);
+            });
         }
     }, [settings])
 
