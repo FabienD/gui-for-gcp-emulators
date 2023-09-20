@@ -8,7 +8,7 @@ use std::net::TcpStream;
 
 #[tauri::command]
 fn check_connection(host: String, port: usize) -> bool {
-    let addr = format!("{}:{}", host, port);
+    let addr = format!("{}:{}", host, port.to_string());
     match TcpStream::connect(addr) {
         Ok(_) => true,
         Err(_) => false,

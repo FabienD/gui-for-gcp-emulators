@@ -6,6 +6,7 @@ import { invoke } from "@tauri-apps/api";
 
 interface EmulatorProps {
     name: string;
+    connectionHandler: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 type IFormInput = {
@@ -13,7 +14,7 @@ type IFormInput = {
     port: number
   }
 
-function Emulator({ name }: EmulatorProps): React.ReactElement {
+function Emulator({ name, connectionHandler }: EmulatorProps): React.ReactElement {
     const [settings, setSettings] = useState<IFormInput>();
 
     const { control, handleSubmit } = useForm({
@@ -23,15 +24,16 @@ function Emulator({ name }: EmulatorProps): React.ReactElement {
         },
     })
 
-    const onSubmit: SubmitHandler<IFormInput> = (data) => {
-        console.log(data)
-        setSettings(data)
+    const onSubmit: SubmitHandler<IFormInput> = (data): void => {
+        // Force port to be a number
+        setSettings({host: data.host, port: parseInt(data.port.toString())})
     }
 
     useEffect(() => {
         if (settings != undefined) {
-            invoke('check_connection', {...settings}).then((res) => {
-                console.log(res);
+            invoke<boolean>('check_connection', {...settings}).then((res): void => {
+                console.log(res)
+                connectionHandler(res)
             });
         }
     }, [settings])
@@ -67,6 +69,7 @@ function Emulator({ name }: EmulatorProps): React.ReactElement {
                     {...field}
                     required
                     id="port"
+                    type="number"
                     label="port"
                     size='small'
                 />}

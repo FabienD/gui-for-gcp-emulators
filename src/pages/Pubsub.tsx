@@ -18,7 +18,7 @@ function Pubsub(): React.ReactElement{
     return (
         <>
             <Title title="Pubsub" />
-            <Emulator name="pubsub" />
+            <Emulator name="pubsub" connectionHandler={setIsConnected} />
             {isConnected ? (
             <TabContext value={value} >
                 <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
