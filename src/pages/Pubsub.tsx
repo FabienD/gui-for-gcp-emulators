@@ -11,7 +11,7 @@ function Pubsub(): React.ReactElement{
 
     const [value, setValue] = React.useState('1');
 
-    const handleTabChange = (event: React.SyntheticEvent, newValue: string) => {
+    const handleTabChange = (_event: React.SyntheticEvent, newValue: string) => {
         setValue(newValue);
     };
 

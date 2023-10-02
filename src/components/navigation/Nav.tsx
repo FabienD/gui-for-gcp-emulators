@@ -1,4 +1,6 @@
+import React from "react";
 import { MenuList, Typography } from '@mui/material';
+
 import NavItem, { NavItemProps } from './NavItem';
 
 interface NavProps {

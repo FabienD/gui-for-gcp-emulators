@@ -1,3 +1,4 @@
+import React from "react";
 import { Routes, Route } from "react-router-dom";
 
 import PageLayout from "./pages/PageLayout";
@@ -7,7 +8,6 @@ import Firestore from "./pages/Firestore";
 import NoMatch from "./pages/NoMatch";
 
 function App(): React.ReactElement {
-
   return (
       <Routes>
         <Route path="/" element={<PageLayout />}>
