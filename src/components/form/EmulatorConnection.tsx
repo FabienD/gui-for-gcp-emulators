@@ -1,8 +1,9 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { invoke } from "@tauri-apps/api";
-import { Box, InputAdornment, TextField } from '@mui/material';
+import { Alert, Box, InputAdornment, TextField } from '@mui/material';
 import Button from '@mui/material/Button';
+
 import EmulatorContext, { EmulatorContextType, EmulatorType } from "../../contexts/emulators";
 
 type IFormInput = {
@@ -91,7 +92,13 @@ function Emulator({ type, host, port }: EmulatorType): React.ReactElement {
                     
                 
             </Box>
-            { isConnected && <p>The emulator is configured, connection settings is validated.</p>}
+            <Alert severity={ isConnected ? "info" : "warning" } className="ml-5">
+            { isConnected ? (
+                <>The emulator is configured, connection is validated.</>
+            ) : (
+                <>The emulator is not configured or the connection is not validated.</>
+            )}
+            </Alert>
         </>
         
     )

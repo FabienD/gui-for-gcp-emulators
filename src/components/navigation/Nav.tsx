@@ -1,15 +1,16 @@
 import React from "react";
 import { MenuList, Typography } from '@mui/material';
-
 import NavItem, { NavItemProps } from './NavItem';
+import pubsub from "../../assets/icons/pubsub.svg";
+import firestore from "../../assets/icons/firestore.svg";
 
 interface NavProps {
     title: string;
 }
 
 const items: Array<NavItemProps> = [
-    { href: "/pubsub", icon: "/icons/pubsub.svg", name: "Pubsub" },
-    { href: "/firestore", icon: "/icons/firestore.svg", name: "Firestore" },
+    { href: "/pubsub", icon: pubsub, name: "Pubsub" },
+    { href: "/firestore", icon: firestore, name: "Firestore" },
 ];
 
 function Nav({ title }: NavProps): React.ReactElement {

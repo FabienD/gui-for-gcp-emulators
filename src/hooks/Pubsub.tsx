@@ -1,4 +1,4 @@
-import { IFormInput } from "../components/form/Emulator";
+import { IFormInput } from "../components/form/EmulatorConnection";
 
 export function getTopics(settings: IFormInput) {
     return fetch(`http://${settings.host}:${settings.port}/v1/projects/fake/topics`)

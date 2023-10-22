@@ -1,7 +1,7 @@
 import React from "react";
 
 import { Box, Tab} from "@mui/material";
-import Emulator from "../components/form/Emulator";
+import Emulator from "../components/form/EmulatorConnection";
 import Title from "../components/ui/Title";
 import { TabPanel, TabContext, TabList } from "@mui/lab";
 import TopicList from "../components/pubsub/TopicList";
