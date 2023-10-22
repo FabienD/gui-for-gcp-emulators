@@ -4,6 +4,7 @@ import { BrowserRouter } from "react-router-dom";
 import { StyledEngineProvider, ThemeProvider, createTheme } from "@mui/material";
 import { blue } from '@mui/material/colors';
 
+import { EmulatorProvider } from "./contexts/emulators";
 import App from "./App";
 
 import '@fontsource/roboto/300.css';
@@ -27,12 +28,15 @@ const theme = createTheme({
   },
 });
 
+
 root.render(
     <React.StrictMode>
       <BrowserRouter>
         <StyledEngineProvider injectFirst>
           <ThemeProvider theme={theme}>
-            <App />
+            <EmulatorProvider>
+              <App />
+            </EmulatorProvider>
           </ThemeProvider>
         </StyledEngineProvider>
       </BrowserRouter>

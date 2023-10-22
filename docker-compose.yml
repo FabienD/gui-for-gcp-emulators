@@ -7,12 +7,12 @@ services:
     ports:
       - '8085:8085'
 
-  firestore:
-    container_name: emu-firestore
-    image: 'google/cloud-sdk:emulators'
-    command: 'gcloud --user-output-enabled --log-http beta emulators firestore start --project=fake --host-port=0.0.0.0:8086'
-    ports:
-      - '8086:8086'
+  # firestore:
+  #   container_name: emu-firestore
+  #   image: 'google/cloud-sdk:emulators'
+  #   command: 'gcloud --user-output-enabled --log-http beta emulators firestore start --project=fake --host-port=0.0.0.0:8086'
+  #   ports:
+  #     - '8086:8086'
 
 networks:
   default:

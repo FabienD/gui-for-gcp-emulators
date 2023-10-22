@@ -8,7 +8,7 @@
   },
   "package": {
     "productName": "gui-for-gcp-emulator",
-    "version": "0.0.0"
+    "version": "0.1.0"
   },
   "tauri": {
     "allowlist": {
@@ -34,7 +34,7 @@
     "windows": [
       {
         "fullscreen": false,
-        "resizable": false,
+        "resizable": true,
         "title": "GUI for GCP emulator",
         "width": 800,
         "height": 600
