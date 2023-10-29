@@ -20,7 +20,7 @@ type TopicListProps = {
 function TopicList({topics, setTopics}: TopicListProps): React.ReactElement {
     const emulator = getEmulatorByType("pubsub");
     
-    const fetchTopics = useCallback(async (settings: IFormSettings) => {
+    const getTopicsCallback = useCallback(async (settings: IFormSettings) => {
         const response = await getTopics(settings);
         const content = await response.json();
         
@@ -34,7 +34,7 @@ function TopicList({topics, setTopics}: TopicListProps): React.ReactElement {
 
     useEffect(() => {
         if (emulator != undefined) {
-            fetchTopics({
+            getTopicsCallback({
                 host: emulator.host, 
                 port: emulator.port
             }).catch(console.error);
