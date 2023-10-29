@@ -10,7 +10,12 @@ type IFormPubsubTopic = {
     name: string
 }
 
-function TopicCreate({ topics, setTopics}): React.ReactElement {
+type TopicCreateProps = {
+    topics: TopicType[],
+    setTopics: React.Dispatch<React.SetStateAction<TopicType[]>>
+}
+
+function TopicCreate({ topics, setTopics}: TopicCreateProps): React.ReactElement {
     const emulator = getEmulatorByType("pubsub");
     const { control, handleSubmit } = useForm({
         defaultValues: {

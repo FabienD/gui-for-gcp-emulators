@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect } from "react";
 import { Alert } from "@mui/material";
-import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
+import { DataGrid, GridColDef } from '@mui/x-data-grid';
 
 import { getEmulatorByType } from "../../utils/emulator";
 import { getTopics } from "../../utils/pubsub";
@@ -12,7 +12,12 @@ const columns: GridColDef[] = [
     { field: 'name', headerName: 'Topic ID', width: 300 },
 ];
 
-function TopicList({ topics, setTopics }): React.ReactElement {
+type TopicListProps = {
+    topics: TopicType[],
+    setTopics: React.Dispatch<React.SetStateAction<TopicType[]>>
+}
+
+function TopicList({topics, setTopics}: TopicListProps): React.ReactElement {
     const emulator = getEmulatorByType("pubsub");
     
     const fetchTopics = useCallback(async (settings: IFormSettings) => {
