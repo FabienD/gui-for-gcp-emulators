@@ -1,19 +1,21 @@
 import React from "react";
 
 import { Box, Tab} from "@mui/material";
-import Emulator from "../components/form/EmulatorConnection";
+import Emulator from "../components/emulator/Settings";
 import Title from "../components/ui/Title";
 import { TabPanel, TabContext, TabList } from "@mui/lab";
-import TopicList from "../components/pubsub/TopicList";
+import Topic from "../components/pubsub/Topic";
+import { isEmuluatorTypeConnected } from "../utils/emulator";
 
 
 function Pubsub(): React.ReactElement{
-    const [value, setValue] = React.useState('1');
+    const isConnected = isEmuluatorTypeConnected("pubsub");
+    const [value, setValue] = React.useState(isConnected ? "2" : "1");
 
     const handleTabChange = (_event: React.SyntheticEvent, newValue: string) => {
         setValue(newValue);
     };
-    
+
     return (
         <>
             <Title title="Pubsub" />
@@ -23,17 +25,13 @@ function Pubsub(): React.ReactElement{
                     <TabList onChange={handleTabChange} aria-label="Pubsub resources">
                         <Tab label="Settings" value="1" />
                         <Tab label="Topic" value="2" />
-                        <Tab label="Subscription" value="3" />
                     </TabList>
                 </Box>
                 <TabPanel value="1">
                     <Emulator type="pubsub" host="localhost" port={8085} />
                 </TabPanel >
                 <TabPanel value="2">
-                    <TopicList />
-                </TabPanel >
-                <TabPanel  value="3">
-                // Todo Subscription
+                    <Topic />
                 </TabPanel >
             </TabContext>
         </>

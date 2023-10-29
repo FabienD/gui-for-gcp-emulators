@@ -5,36 +5,31 @@ import { Alert, Box, InputAdornment, TextField } from '@mui/material';
 import Button from '@mui/material/Button';
 
 import EmulatorContext, { EmulatorContextType, EmulatorType } from "../../contexts/emulators";
+import { isEmuluatorTypeConnected } from "../../utils/emulator";
 
-type IFormInput = {
+type IFormSettings = {
     host: string
     port: number
 }
 
 function Emulator({ type, host, port }: EmulatorType): React.ReactElement {
-    const [settings, setSettings] = useState<IFormInput>();
+    const [settings, setSettings] = useState<IFormSettings>();
     const { control, handleSubmit } = useForm({
         defaultValues: {
             host,
             port,
         },
     })
-    const onSubmit: SubmitHandler<IFormInput> = (data): void => {
+    const onSubmit: SubmitHandler<IFormSettings> = (data): void => {
         setSettings({
             host: data.host, 
             port: parseInt(data.port.toString())
         })
     }
     
-    const { emulators, saveEmulator, removeEmulator } = useContext(EmulatorContext) as EmulatorContextType;
-    let isConnected = false;
+    const { saveEmulator, removeEmulator } = useContext(EmulatorContext) as EmulatorContextType;
 
-    emulators?.map((emulator: EmulatorType) => {
-        if (emulator.type == "pubsub" && emulator.is_connected) {
-            isConnected = true;
-        }
-    });
-
+    const isConnected = isEmuluatorTypeConnected("pubsub");
 
     useEffect(() => {
         if (settings != undefined) {
@@ -57,7 +52,7 @@ function Emulator({ type, host, port }: EmulatorType): React.ReactElement {
                 name={type}
                 noValidate
                 autoComplete="off"
-                className='p-4 flex gap-2'
+                className='flex gap-2'
                 onSubmit={handleSubmit(onSubmit)}
             >
                 <Controller
@@ -88,11 +83,10 @@ function Emulator({ type, host, port }: EmulatorType): React.ReactElement {
                     />}
                 />            
                 
-                <Button variant="contained" size='small' type="submit">Validate</Button>
-                    
+                <Button variant="contained" size='small' type="submit">Validate</Button>   
                 
             </Box>
-            <Alert severity={ isConnected ? "info" : "warning" } className="ml-5">
+            <Alert severity={ isConnected ? "info" : "warning" } className="m-2">
             { isConnected ? (
                 <>The emulator is configured, connection is validated.</>
             ) : (
@@ -100,9 +94,8 @@ function Emulator({ type, host, port }: EmulatorType): React.ReactElement {
             )}
             </Alert>
         </>
-        
     )
 }
 
 export default Emulator;
-export type { IFormInput };
+export type { IFormSettings };
