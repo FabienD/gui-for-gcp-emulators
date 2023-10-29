@@ -5,7 +5,6 @@ import { Alert, Box, InputAdornment, TextField } from '@mui/material';
 import Button from '@mui/material/Button';
 
 import EmulatorContext, { EmulatorContextType, EmulatorType } from "../../contexts/emulators";
-import { isEmuluatorTypeConnected } from "../../utils/emulator";
 
 type IFormSettings = {
     host: string
@@ -13,6 +12,7 @@ type IFormSettings = {
 }
 
 function Emulator({ type, host, port }: EmulatorType): React.ReactElement {
+    const { isEmulatorTypeConnected,  saveEmulator, removeEmulator } = useContext(EmulatorContext) as EmulatorContextType; 
     const [settings, setSettings] = useState<IFormSettings>();
     const { control, handleSubmit } = useForm({
         defaultValues: {
@@ -25,11 +25,9 @@ function Emulator({ type, host, port }: EmulatorType): React.ReactElement {
             host: data.host, 
             port: parseInt(data.port.toString())
         })
-    }
+    } 
     
-    const { saveEmulator, removeEmulator } = useContext(EmulatorContext) as EmulatorContextType;
-
-    const isConnected = isEmuluatorTypeConnected("pubsub");
+    const isConnected = isEmulatorTypeConnected("pubsub");
 
     useEffect(() => {
         if (settings != undefined) {

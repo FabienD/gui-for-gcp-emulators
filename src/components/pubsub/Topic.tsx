@@ -1,15 +1,16 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import TopicList from "./TopicList";
 import TopicCreate from "./TopicCreate";
 import Alert from "@mui/material/Alert";
-import { isEmuluatorTypeConnected } from "../../utils/emulator";
+import EmulatorContext, { EmulatorContextType } from "../../contexts/emulators";
 
 type TopicType = {
     name: string
 }
 
 function Topic(): React.ReactElement{
-    const isConnected = isEmuluatorTypeConnected("pubsub");
+    const { isEmulatorTypeConnected } = useContext(EmulatorContext) as EmulatorContextType;
+    const isConnected = isEmulatorTypeConnected("pubsub");
     const [topics, setTopics] = useState<TopicType[]>([]);
     
     return (

@@ -1,15 +1,17 @@
-import React from "react";
+import React, { useContext } from "react";
 
 import { Box, Tab} from "@mui/material";
+import { TabPanel, TabContext, TabList } from "@mui/lab";
+
 import Emulator from "../components/emulator/Settings";
 import Title from "../components/ui/Title";
-import { TabPanel, TabContext, TabList } from "@mui/lab";
 import Topic from "../components/pubsub/Topic";
-import { isEmuluatorTypeConnected } from "../utils/emulator";
+import EmulatorContext, { EmulatorContextType } from "../contexts/emulators";
 
 
 function Pubsub(): React.ReactElement{
-    const isConnected = isEmuluatorTypeConnected("pubsub");
+    const { isEmulatorTypeConnected } = useContext(EmulatorContext) as EmulatorContextType;
+    const isConnected = isEmulatorTypeConnected("pubsub");
     const [value, setValue] = React.useState(isConnected ? "2" : "1");
 
     const handleTabChange = (_event: React.SyntheticEvent, newValue: string) => {

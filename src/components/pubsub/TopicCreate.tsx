@@ -1,10 +1,13 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useContext } from "react";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { Box, Button, TextField } from "@mui/material";
-import { getEmulatorByType } from "../../utils/emulator";
-import { createTopic } from "../../utils/pubsub";
+
+
+import EmulatorContext, { EmulatorContextType } from "../../contexts/emulators";
 import { IFormSettings } from "../emulator/Settings";
 import { TopicType } from "./Topic";
+import { createTopic } from "../../api/gcp.pubsub";
+
 
 type IFormPubsubTopic = {
     name: string
@@ -16,6 +19,8 @@ type TopicCreateProps = {
 }
 
 function TopicCreate({ topics, setTopics}: TopicCreateProps): React.ReactElement {
+    const { getEmulatorByType } = useContext(EmulatorContext) as EmulatorContextType;
+
     const emulator = getEmulatorByType("pubsub");
     const { control, handleSubmit } = useForm({
         defaultValues: {

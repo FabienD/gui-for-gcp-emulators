@@ -1,11 +1,11 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useContext, useEffect } from "react";
 import { Alert } from "@mui/material";
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 
-import { getEmulatorByType } from "../../utils/emulator";
-import { getTopics } from "../../utils/pubsub";
 import { IFormSettings } from "../emulator/Settings";
 import { TopicType } from "./Topic";
+import EmulatorContext, { EmulatorContextType } from "../../contexts/emulators";
+import { getTopics } from "../../api/gcp.pubsub";
 
 
 const columns: GridColDef[] = [
@@ -18,7 +18,9 @@ type TopicListProps = {
 }
 
 function TopicList({topics, setTopics}: TopicListProps): React.ReactElement {
-    const emulator = getEmulatorByType("pubsub");
+    const { getEmulatorByType } = useContext(EmulatorContext) as EmulatorContextType;
+
+    let emulator = getEmulatorByType("pubsub");
     
     const getTopicsCallback = useCallback(async (settings: IFormSettings) => {
         const response = await getTopics(settings);
