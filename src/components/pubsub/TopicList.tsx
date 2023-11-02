@@ -1,52 +1,55 @@
-import React, { useCallback, useContext, useEffect } from "react";
-import { Alert } from "@mui/material";
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import React from "react";
 
-import { IFormSettings } from "../emulator/Settings";
+import { Alert } from "@mui/material";
+import { DataGrid, GridActionsCellItem, GridColDef, GridRowId } from '@mui/x-data-grid';
+import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import { TopicType } from "./Topic";
-import EmulatorContext, { EmulatorContextType } from "../../contexts/emulators";
-import { getTopics } from "../../api/gcp.pubsub";
+
+
+const handleDeleteClick = (id: GridRowId) => () => {
+    console.log(`Delete ${id}`);
+  };
 
 
 const columns: GridColDef[] = [
-    { field: 'name', headerName: 'Topic ID', width: 300 },
+    { 
+        field: 'name', 
+        headerName: 'Topic ID', 
+        width: 300 
+    },
+    {
+        field: 'actions',
+        type: 'actions',
+        headerName: 'Actions',
+        width: 100,
+        cellClassName: 'actions',
+        getActions: ({ id }) => {
+          
+          return [
+            <GridActionsCellItem
+              icon={<DeleteIcon />}
+              label="Delete"
+              onClick={handleDeleteClick(id)}
+              color="inherit"
+            />,
+          ];
+        },
+      },
 ];
 
 type TopicListProps = {
-    topics: TopicType[],
-    setTopics: React.Dispatch<React.SetStateAction<TopicType[]>>
+    topics: TopicType[]
 }
 
-function TopicList({topics, setTopics}: TopicListProps): React.ReactElement {
-    const { getEmulatorByType } = useContext(EmulatorContext) as EmulatorContextType;
-
-    let emulator = getEmulatorByType("pubsub");
+function TopicList({ topics }: TopicListProps): React.ReactElement {
     
-    const getTopicsCallback = useCallback(async (settings: IFormSettings) => {
-        const response = await getTopics(settings);
-        const content = await response.json();
-        
-        if (content != undefined 
-            && content.topics != undefined
-            && content.topics.length > 0)
-        {
-            setTopics(content.topics);   
-        }
-    }, [emulator])
+    console.log('Call TopicList');
+    console.log(topics)
 
-    useEffect(() => {
-        if (emulator != undefined) {
-            getTopicsCallback({
-                host: emulator.host, 
-                port: emulator.port
-            }).catch(console.error);
-        }
-    }, [topics])
-    
     const rows = topics.map((topic: TopicType) => {
         return {
             id: topic.name,
-            name: topic.name
+            name: topic.name.replace(/projects\/fake\/topics\//i, ''),
         }
     })
 
@@ -60,12 +63,10 @@ function TopicList({topics, setTopics}: TopicListProps): React.ReactElement {
                     rows={rows}
                     columns={columns}
                     initialState={{
-                    pagination: {
-                        paginationModel: { page: 0, pageSize: 5 },
-                    },
+                        pagination: {
+                            paginationModel: { page: 0, pageSize: 10 },
+                        },
                     }}
-                    pageSizeOptions={[5, 10]}
-                    checkboxSelection
                 />
             </div>
         )}

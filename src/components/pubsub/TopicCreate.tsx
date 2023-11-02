@@ -1,6 +1,6 @@
 import React, { useCallback, useContext } from "react";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
-import { Box, Button, TextField } from "@mui/material";
+import { Alert, Box, Button, TextField } from "@mui/material";
 
 
 import EmulatorContext, { EmulatorContextType } from "../../contexts/emulators";
@@ -20,6 +20,8 @@ type TopicCreateProps = {
 
 function TopicCreate({ topics, setTopics}: TopicCreateProps): React.ReactElement {
     const { getEmulatorByType } = useContext(EmulatorContext) as EmulatorContextType;
+    const [Error, setError] = React.useState<string|undefined>(undefined);
+    const [IsCreated, setIsCreated] = React.useState(false);
 
     const emulator = getEmulatorByType("pubsub");
     const { control, handleSubmit } = useForm({
@@ -28,23 +30,45 @@ function TopicCreate({ topics, setTopics}: TopicCreateProps): React.ReactElement
         },
     })
 
-    const createTopicCallback = useCallback(async (settings: IFormSettings, topic: IFormPubsubTopic) => {
-        const response = await createTopic(settings, topic);
-        const content = await response.json();
-        console.log(content);
-
-    }, [emulator])
-
+    const createTopicCallback = useCallback(async (
+            settings: IFormSettings, 
+            topic: IFormPubsubTopic
+        ) => {
+            const response = await createTopic(settings, topic);
+            const status = await response.status;
+            const content = await response.json();
+            
+            if (status === 200 
+                && content != undefined
+                && content.name != undefined
+            ) {
+                setIsCreated(true);
+                setTopics([...topics, content]);
+            } else {
+                if (content.error != undefined 
+                    && content.error.message != undefined
+                ) {
+                    setError(content.error.message);
+                } else {
+                    setError("Unknown error");
+                }
+            }
+    }, [topics])
 
     const onSubmit: SubmitHandler<IFormPubsubTopic> = (data): void => {
         const topic: TopicType = {
             name: data.name
         }
+        resetAlerts()
         if (emulator != undefined && topic != undefined) {
-            setTopics([...topics, topic]);
             createTopicCallback(emulator, topic).catch(console.error)
         }
     }  
+
+    const resetAlerts = () => {
+        setIsCreated(false);
+        setError(undefined);
+    }
 
     return (
         <>
@@ -70,6 +94,8 @@ function TopicCreate({ topics, setTopics}: TopicCreateProps): React.ReactElement
                                 
                 <Button variant="contained" size='small' type="submit">Create</Button>   
                 
+                {Error != undefined && <Alert severity="error">{Error}</Alert>}
+                {IsCreated && <Alert severity="success">Topic is created</Alert>}
             </Box>
         </>
     );
