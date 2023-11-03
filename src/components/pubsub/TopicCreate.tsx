@@ -59,9 +59,15 @@ function TopicCreate({ topics, setTopics}: TopicCreateProps): React.ReactElement
         const topic: TopicType = {
             name: data.name
         }
+        
         resetAlerts()
-        if (emulator != undefined && topic != undefined) {
-            createTopicCallback(emulator, topic).catch(console.error)
+
+        if (topic.name === undefined || topic.name === "") {
+            setError("Name is required");
+            return;
+        }
+        if (emulator != undefined) {
+            createTopicCallback(emulator, topic).catch(console.error)    
         }
     }  
 
@@ -87,7 +93,7 @@ function TopicCreate({ topics, setTopics}: TopicCreateProps): React.ReactElement
                         {...field}
                         required
                         id="name"
-                        label="Topic name"
+                        label="New topic name"
                         size='small'
                     />}
                 />

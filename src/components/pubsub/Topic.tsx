@@ -1,10 +1,10 @@
-import React, { useCallback, useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import TopicList from "./TopicList";
 import TopicCreate from "./TopicCreate";
 import Alert from "@mui/material/Alert";
 import EmulatorContext, { EmulatorContextType } from "../../contexts/emulators";
 import { IFormSettings } from "../emulator/Settings";
-import { getTopics } from "../../api/gcp.pubsub";
+import { getTopics, deleteTopic } from "../../api/gcp.pubsub";
 
 type TopicType = {
     name: string
@@ -17,7 +17,9 @@ function Topic(): React.ReactElement{
     let emulator = getEmulatorByType("pubsub");
     const isConnected = emulator?.is_connected;
     
-    const getTopicsCallback = useCallback(async (settings: IFormSettings) => {
+    const getTopicsCallback = useCallback(async (
+        settings: IFormSettings,
+    ) => {
         const response = await getTopics(settings);
         const content = await response.json();
         
@@ -29,6 +31,32 @@ function Topic(): React.ReactElement{
         }
     }, [])
 
+    const deleteTopicCallback = useCallback(async (
+        settings: IFormSettings, 
+        topic: TopicType,
+    ) => {
+        const response = await deleteTopic(settings, topic);
+        const status = await response.status;
+        
+        if (status == 200) {
+            const filteredTopics = topics.filter((t: TopicType) => t.name !== topic.name);
+            setTopics(filteredTopics);
+        }
+    }, [topics])
+
+    const deleteTopicAction = useCallback(async (
+        id: string,
+    ) => {
+        if (emulator != undefined) {
+            deleteTopicCallback({
+                host: emulator.host, 
+                port: emulator.port
+            }, {
+                name: id
+            }).catch(console.error);
+        }
+    }, [emulator, deleteTopicCallback])
+
     useEffect(() => {
         if (emulator != undefined) {
             getTopicsCallback({
@@ -36,14 +64,13 @@ function Topic(): React.ReactElement{
                 port: emulator.port
             }).catch(console.error);
         }
-    }, [emulator])
-
+    }, [emulator, getTopicsCallback])
 
     return (
         isConnected ? (
             <>
                 <TopicCreate topics={topics} setTopics={setTopics} />
-                <TopicList topics={topics} />
+                <TopicList topics={topics} deleteTopic={deleteTopicAction} />
             </>    
         ) : (
             <Alert severity={ isConnected ? "info" : "warning" } className="ml-5">

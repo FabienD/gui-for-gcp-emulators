@@ -10,3 +10,9 @@ export function createTopic(settings: IFormSettings, topic: IFormPubsubTopic): P
         method: "PUT"
     });
 }
+
+export function deleteTopic(settings: IFormSettings, topic: IFormPubsubTopic): Promise<Response> {
+    return fetch(`http://${settings.host}:${settings.port}/v1/${topic.name}`, {
+        method: "DELETE"
+    });
+}

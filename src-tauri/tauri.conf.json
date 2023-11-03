@@ -35,6 +35,7 @@
       {
         "fullscreen": false,
         "resizable": true,
+        "maximized": true,
         "title": "GUI for GCP emulator",
         "width": 800,
         "height": 600

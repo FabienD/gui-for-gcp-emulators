@@ -6,50 +6,51 @@ import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import { TopicType } from "./Topic";
 
 
-const handleDeleteClick = (id: GridRowId) => () => {
-    console.log(`Delete ${id}`);
-  };
-
-
-const columns: GridColDef[] = [
-    { 
-        field: 'name', 
-        headerName: 'Topic ID', 
-        width: 300 
-    },
-    {
-        field: 'actions',
-        type: 'actions',
-        headerName: 'Actions',
-        width: 100,
-        cellClassName: 'actions',
-        getActions: ({ id }) => {
-          
-          return [
-            <GridActionsCellItem
-              icon={<DeleteIcon />}
-              label="Delete"
-              onClick={handleDeleteClick(id)}
-              color="inherit"
-            />,
-          ];
-        },
-      },
-];
-
 type TopicListProps = {
-    topics: TopicType[]
+    topics: TopicType[],
+    deleteTopic: Function
 }
 
-function TopicList({ topics }: TopicListProps): React.ReactElement {
+function TopicList({ topics, deleteTopic }: TopicListProps): React.ReactElement {
     
-    console.log('Call TopicList');
-    console.log(topics)
+    const handleDeleteClick = (id: GridRowId) => () => {
+        deleteTopic(id.toString());
+    };
+
+    const shortTopicName = (name: string): string => {
+        return name.replace(/projects\/fake\/topics\//i, '');
+    }
+    
+    const columns: GridColDef[] = [
+        { 
+            field: 'name', 
+            headerName: 'Topic ID', 
+            width: 300 
+        },
+        {
+            field: 'actions',
+            type: 'actions',
+            headerName: 'Actions',
+            width: 100,
+            cellClassName: 'actions',
+            getActions: ({ id }) => {
+              
+              return [
+                <GridActionsCellItem
+                  icon={<DeleteIcon />}
+                  label="Delete"
+                  onClick={handleDeleteClick(id)}
+                  color="inherit"
+                />,
+              ];
+            },
+          },
+    ];
 
     const rows = topics.map((topic: TopicType) => {
         return {
             id: topic.name,
-            name: topic.name.replace(/projects\/fake\/topics\//i, ''),
+            name: shortTopicName(topic.name),
         }
     })
 
@@ -67,6 +68,7 @@ function TopicList({ topics }: TopicListProps): React.ReactElement {
                             paginationModel: { page: 0, pageSize: 10 },
                         },
                     }}
+                    pageSizeOptions={[10]}
                 />
             </div>
         )}
