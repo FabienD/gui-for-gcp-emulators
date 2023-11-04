@@ -1,7 +1,39 @@
-# Tauri + React + Typescript
+# GUI for Google Cloud Plateform Emulators
 
-This template should help get you started developing with Tauri, React and Typescript in Vite.
+## Description
 
-## Recommended IDE Setup
+This application provides a basic UI to deal with [Google Cloud Platform™ Emulators](https://cloud.google.com/sdk/gcloud/reference/beta/emulators). 
 
-- [VS Code](https://code.visualstudio.com/) + [Tauri](https://marketplace.visualstudio.com/items?itemName=tauri-apps.tauri-vscode) + [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer)
+This application is **not an official** Google application.
+            
+The application is under heavy development and doesn't cover all emulator product APIs. I started this project to test Tauri App, then thought  it would be intersting to provide something more functional. As an exploration project, I didn't cover features by tests. 
+
+As **Open source project**, feel free to participate, contribute, fork, etc. :
+
+[https://github.com/FabienD/gui-for-gcp-emulator](https://github.com/FabienD/gui-for-gcp-emulator)
+
+
+## Features
+
+- PubSub emulator partially support.
+
+![GUI for GCP - Home](./doc/assets/gcp_gui_home_preview.png)
+![GUI for GCP - Pubsub](./doc/assets/gcp_gui_pubsub_preview.png)
+
+## Next steps
+
+- Ehance UI and support for PubSub emulator.
+- Add UI and support for Firestore emulator.
+- Add UI and support  for Datastore emulator.
+- Add UI and support  for Bigtable emulator.
+- Add UI and support  for Spanner emulator.
+
+
+## Technologies used
+
+- [Tauri App](https://tauri.app/)
+- [Rust](https://www.rust-lang.org/)
+- [React](https://react.dev/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [Material UI](https://material-ui.com/)
+- [Tailwind CSS](https://tailwindcss.com/)
