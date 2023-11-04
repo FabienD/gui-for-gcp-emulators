@@ -7,7 +7,7 @@
     "withGlobalTauri": false
   },
   "package": {
-    "productName": "gui-for-gcp-emulator",
+    "productName": "gui-for-gcp-emulators",
     "version": "0.1.0"
   },
   "tauri": {
@@ -21,7 +21,7 @@
     "bundle": {
       "active": true,
       "targets": "all",
-      "identifier": "com.gui-for-gcp-emulator.dev",
+      "identifier": "com.gui-for-gcp-emulators.dev",
       "icon": [
         "icons/32x32.png",
         "icons/128x128.png",
@@ -35,8 +35,7 @@
       {
         "fullscreen": false,
         "resizable": true,
-        "maximized": true,
-        "title": "GUI for GCP emulator",
+        "title": "GUI for GCP emulators",
         "width": 800,
         "height": 600
       }
