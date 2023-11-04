@@ -7,6 +7,7 @@ import Emulator from "../components/emulator/Settings";
 import Title from "../components/ui/Title";
 import Topic from "../components/pubsub/Topic";
 import EmulatorContext, { EmulatorContextType } from "../contexts/emulators";
+import Subscription from "../components/pubsub/Subscription";
 
 
 function Pubsub(): React.ReactElement{
@@ -27,6 +28,7 @@ function Pubsub(): React.ReactElement{
                     <TabList onChange={handleTabChange} aria-label="Pubsub resources">
                         <Tab label="Settings" value="1" />
                         <Tab label="Topic" value="2" />
+                        <Tab label="Subscription" value="3" />
                     </TabList>
                 </Box>
                 <TabPanel value="1">
@@ -34,6 +36,9 @@ function Pubsub(): React.ReactElement{
                 </TabPanel >
                 <TabPanel value="2">
                     <Topic />
+                </TabPanel >
+                <TabPanel value="3">
+                    <Subscription />
                 </TabPanel >
             </TabContext>
         </>
