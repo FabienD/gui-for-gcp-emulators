@@ -2,16 +2,17 @@ import React from "react";
 
 import { Typography } from "@mui/material";
 
-interface TitleProps {
-    title: string;
+type TitleProps = {
+    title: string,
+    icon: string,
 }
 
-function Title({title}: TitleProps): React.ReactElement {
+function Title({title, icon}: TitleProps): React.ReactElement {
     return (
         <Typography variant="h1" className="text-2xl text-blue-900 font-bold" gutterBottom>
-            {title}
+            <img src={icon} className="w-5 h-5 inline mb-1" alt={title} /> {title}
         </Typography>
-    );
+    )
 }
 
 export default Title;

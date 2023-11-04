@@ -1,11 +1,12 @@
 import React from "react";
 
 import Title from "../components/ui/Title";
+import icon from "../assets/icons/firestore.svg";
 
 function Firestore(): React.ReactElement {
     return (
         <>
-            <Title title="Firestore" />
+            <Title title="Firestore" icon={icon} />
             <div>Not implemented yet.</div>
         </>
     );

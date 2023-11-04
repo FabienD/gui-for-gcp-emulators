@@ -5,7 +5,6 @@ import { DataGrid, GridActionsCellItem, GridColDef, GridRowId } from '@mui/x-dat
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import { TopicType } from "./Topic";
 
-
 type TopicListProps = {
     topics: TopicType[],
     deleteTopic: Function

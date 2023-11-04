@@ -1,6 +1,11 @@
 import React from "react";
+import { SubscriptionType } from "./Subscription";
 
-function SubscriptionList(): React.ReactElement {
+type SubscriptionsListProps = {
+    subscriptions: SubscriptionType[],
+}
+
+function SubscriptionList({subscriptions}: SubscriptionsListProps): React.ReactElement {
     return (
         <>
         // Subscription List

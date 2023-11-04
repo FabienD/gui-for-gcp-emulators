@@ -8,7 +8,7 @@ import Title from "../components/ui/Title";
 import Topic from "../components/pubsub/Topic";
 import EmulatorContext, { EmulatorContextType } from "../contexts/emulators";
 import Subscription from "../components/pubsub/Subscription";
-
+import icon from "../assets/icons/pubsub.svg";
 
 function Pubsub(): React.ReactElement{
     const { isEmulatorTypeConnected } = useContext(EmulatorContext) as EmulatorContextType;
@@ -21,7 +21,7 @@ function Pubsub(): React.ReactElement{
 
     return (
         <>
-            <Title title="Pubsub" />
+            <Title title="Pub/Sub" icon={icon} />
             
             <TabContext value={value} >
                 <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>

@@ -16,3 +16,7 @@ export function deleteTopic(settings: IFormSettings, topic: IFormPubsubTopic): P
         method: "DELETE"
     });
 }
+
+export function getSubscriptions(settings: IFormSettings): Promise<Response> {
+    return fetch(`http://${settings.host}:${settings.port}/v1/projects/fake/subscriptions`);
+}
