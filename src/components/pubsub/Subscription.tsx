@@ -13,7 +13,7 @@ type SubscriptionType = {
 
 function Subscription(): React.ReactElement {
     const { getEmulatorByType } = useContext(EmulatorContext) as EmulatorContextType;
-    const [subscriptions, setSubscription] = useState<SubscriptionType[]>([]);   
+    const [subscriptions, setSubscriptions] = useState<SubscriptionType[]>([]);   
 
     let emulator = getEmulatorByType("pubsub");
     const isConnected = emulator?.is_connected;
@@ -28,7 +28,7 @@ function Subscription(): React.ReactElement {
             && content.topics != undefined
             && content.topics.length > 0
         ) {
-            setSubscription([...subscriptions, ...content.subscriptions]);   
+            setSubscriptions([...subscriptions, ...content.subscriptions]);   
         }
     }, [])
 
@@ -44,7 +44,7 @@ function Subscription(): React.ReactElement {
     return (
         isConnected ? (
             <>
-                <SubscriptionCreate subscriptions={subscriptions} setSubscriptions={setSubscriptions} />
+                <SubscriptionCreate topics={[]} subscriptions={subscriptions} setSubscriptions={setSubscriptions} />
                 <SubscriptionList subscriptions={subscriptions} />
             </>    
         ) : (

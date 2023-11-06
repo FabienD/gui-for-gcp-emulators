@@ -55,19 +55,15 @@ function TopicCreate({ topics, setTopics}: TopicCreateProps): React.ReactElement
             }
     }, [topics])
 
-    const onSubmit: SubmitHandler<IFormPubsubTopic> = (data): void => {
-        const topic: TopicType = {
-            name: data.name
-        }
-        
+    const onSubmit: SubmitHandler<IFormPubsubTopic> = (Formdata): void => {        
         resetAlerts()
 
-        if (topic.name === undefined || topic.name === "") {
+        if (Formdata.name === undefined || Formdata.name === "") {
             setError("Name is required");
             return;
         }
         if (emulator != undefined) {
-            createTopicCallback(emulator, topic).catch(console.error)    
+            createTopicCallback(emulator, Formdata).catch(console.error)    
         }
     }  
 
@@ -93,7 +89,7 @@ function TopicCreate({ topics, setTopics}: TopicCreateProps): React.ReactElement
                         {...field}
                         required
                         id="name"
-                        label="New topic name"
+                        label="Topic name"
                         size='small'
                     />}
                 />
