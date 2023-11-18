@@ -6,12 +6,17 @@ import SubscriptionCreate from "./SubscriptionCreate";
 import SubscriptionList from "./SubscriptionList";
 import { IFormSettings } from "../emulator/Settings";
 import { getSubscriptions } from "../../api/gcp.pubsub";
+import { TopicType } from "./Topic";
 
 type SubscriptionType = {
     name: string
 }
 
-function Subscription(): React.ReactElement {
+type SubscriptionProps = {
+    topics: TopicType[],
+}
+
+function Subscription({ topics }: SubscriptionProps): React.ReactElement {
     const { getEmulatorByType } = useContext(EmulatorContext) as EmulatorContextType;
     const [subscriptions, setSubscriptions] = useState<SubscriptionType[]>([]);   
 
@@ -42,14 +47,16 @@ function Subscription(): React.ReactElement {
     }, [emulator, getSubscriptionsCallback])
 
     return (
-        isConnected ? (
+        isConnected && topics.length > 0 ? (
             <>
-                <SubscriptionCreate topics={[]} subscriptions={subscriptions} setSubscriptions={setSubscriptions} />
+                <SubscriptionCreate topics={topics} subscriptions={subscriptions} setSubscriptions={setSubscriptions} />
                 <SubscriptionList subscriptions={subscriptions} />
             </>    
         ) : (
             <Alert severity={ isConnected ? "info" : "warning" } className="ml-5">
-                The emulator is not configured or the connection is not validated.
+            {
+                isConnected ? "At least one topic is needed to create a subscription." : "The emulator is not configured or the connection is not validated."
+            }
             </Alert>
         )
     );

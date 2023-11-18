@@ -29,7 +29,7 @@ function SubscriptionCreate({topics, subscriptions, setSubscriptions}: Subscript
     const { control, handleSubmit } = useForm({
         defaultValues: {
             subscriptionName: "",
-            topicName: {},
+            topicName: topics,
         }
     })  
 
@@ -109,9 +109,14 @@ function SubscriptionCreate({topics, subscriptions, setSubscriptions}: Subscript
                             label="Topic name"
                             size="small"
                         >
-                            <MenuItem value={10}>Ten</MenuItem>
-                            <MenuItem value={20}>Twenty</MenuItem>
-                            <MenuItem value={30}>Thirty</MenuItem>
+                            <MenuItem value="">
+                                <em>Choose a topic</em>
+                            </MenuItem>
+                            {(
+                                topics.map((topic) => (
+                                    <MenuItem value={topic.name}>{topic.name}</MenuItem>
+                                ))
+                            )}
                         </Select>
                     }
                 />

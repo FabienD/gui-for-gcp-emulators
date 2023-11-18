@@ -1,23 +1,51 @@
-import React, { useContext } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 
 import { Box, Tab} from "@mui/material";
 import { TabPanel, TabContext, TabList } from "@mui/lab";
 
-import Emulator from "../components/emulator/Settings";
+import Emulator, { IFormSettings } from "../components/emulator/Settings";
 import Title from "../components/ui/Title";
-import Topic from "../components/pubsub/Topic";
+import Topic, { TopicType } from "../components/pubsub/Topic";
 import EmulatorContext, { EmulatorContextType } from "../contexts/emulators";
 import Subscription from "../components/pubsub/Subscription";
 import icon from "../assets/icons/pubsub.svg";
+import { getTopics } from "../api/gcp.pubsub";
 
 function Pubsub(): React.ReactElement{
-    const { isEmulatorTypeConnected } = useContext(EmulatorContext) as EmulatorContextType;
+    const { getEmulatorByType, isEmulatorTypeConnected } = useContext(EmulatorContext) as EmulatorContextType;
+
+    let emulator = getEmulatorByType("pubsub");
     const isConnected = isEmulatorTypeConnected("pubsub");
+
     const [value, setValue] = React.useState(isConnected ? "2" : "1");
+    const [topics, setTopics] = useState<TopicType[]>([]);
+    
+    const getTopicsCallback = useCallback(async (
+        settings: IFormSettings,
+    ) => {
+        const response = await getTopics(settings);
+        const content = await response.json();
+        
+        if (content != undefined 
+            && content.topics != undefined
+            && content.topics.length > 0
+        ) {
+            setTopics([...topics, ...content.topics]);   
+        }
+    }, [])
 
     const handleTabChange = (_event: React.SyntheticEvent, newValue: string) => {
         setValue(newValue);
     };
+
+    useEffect(() => {
+        if (emulator != undefined) {
+            getTopicsCallback({
+                host: emulator.host, 
+                port: emulator.port
+            }).catch(console.error);
+        }
+    }, [emulator, getTopicsCallback])
 
     return (
         <>
@@ -35,10 +63,10 @@ function Pubsub(): React.ReactElement{
                     <Emulator type="pubsub" host="localhost" port={8085} />
                 </TabPanel >
                 <TabPanel value="2">
-                    <Topic />
+                    <Topic topics={topics} setTopics={setTopics} />
                 </TabPanel >
                 <TabPanel value="3">
-                    <Subscription />
+                    <Subscription topics={topics} />
                 </TabPanel >
             </TabContext>
         </>

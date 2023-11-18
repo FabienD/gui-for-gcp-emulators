@@ -1,25 +1,56 @@
-import React from "react";
+import React, { useCallback, useContext } from "react";
 
 import { Alert } from "@mui/material";
 import { DataGrid, GridActionsCellItem, GridColDef, GridRowId } from '@mui/x-data-grid';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import { TopicType } from "./Topic";
+import { deleteTopic } from "../../api/gcp.pubsub";
+import { IFormSettings } from "../emulator/Settings";
+import EmulatorContext, { EmulatorContextType } from "../../contexts/emulators";
 
 type TopicListProps = {
     topics: TopicType[],
-    deleteTopic: Function
+    setTopics: React.Dispatch<React.SetStateAction<TopicType[]>>
 }
 
-function TopicList({ topics, deleteTopic }: TopicListProps): React.ReactElement {
+function TopicList({ topics, setTopics }: TopicListProps): React.ReactElement {
+    const { getEmulatorByType } = useContext(EmulatorContext) as EmulatorContextType;
+    let emulator = getEmulatorByType("pubsub");
     
     const handleDeleteClick = (id: GridRowId) => () => {
-        deleteTopic(id.toString());
+        deleteTopicAction(id.toString());
     };
 
     const shortTopicName = (name: string): string => {
         return name.replace(/projects\/fake\/topics\//i, '');
     }
     
+    const deleteTopicCallback = useCallback(async (
+        settings: IFormSettings, 
+        topic: TopicType,
+    ) => {
+        const response = await deleteTopic(settings, topic);
+        const status = await response.status;
+        
+        if (status == 200) {
+            const filteredTopics = topics.filter((t: TopicType) => t.name !== topic.name);
+            setTopics(filteredTopics);
+        }
+    }, [topics])
+
+    const deleteTopicAction = useCallback(async (
+        id: string,
+    ) => {
+        if (emulator != undefined) {
+            deleteTopicCallback({
+                host: emulator.host, 
+                port: emulator.port
+            }, {
+                name: id
+            }).catch(console.error);
+        }
+    }, [emulator, deleteTopicCallback])
+
     const columns: GridColDef[] = [
         { 
             field: 'name', 
