@@ -81,6 +81,8 @@ function SubscriptionList({subscriptions, setSubscriptions}: SubscriptionsListPr
         }
     })
 
+    console.log(subscriptions)
+
     return (
         <>
         {subscriptions.length == 0 ? (

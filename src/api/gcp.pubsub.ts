@@ -10,7 +10,10 @@ export function getTopics(settings: IFormSettings): Promise<Response> {
 
 export function createTopic(settings: IFormSettings, topic: IFormPubsubTopic): Promise<Response> {
     return fetch(`http://${settings.host}:${settings.port}/v1/projects/fake/topics/${topic.name}`, {
-        method: "PUT"
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+          },
     });
 }
 
@@ -27,14 +30,17 @@ export function getSubscriptions(settings: IFormSettings): Promise<Response> {
 export function createSubscription(settings: IFormSettings, subscription: IFormPubsubSubscription): Promise<Response> {
     return fetch(`http://${settings.host}:${settings.port}/v1/projects/fake/subscriptions/${subscription.subscriptionName}`, {
         method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+        },
         body:  JSON.stringify({
-            "topic": subscription.topicName,
+            "topic": subscription.topicName
         })
     });
 }
 
 export function deleteSubscription(settings: IFormSettings, subscription: SubscriptionType): Promise<Response> {
-    return fetch(`http://${settings.host}:${settings.port}/v1/${subscription.subscriptionName}`, {
-        method: "DELETE"
+    return fetch(`http://${settings.host}:${settings.port}/v1/${subscription.name}`, {
+        method: "DELETE",
     });
 }

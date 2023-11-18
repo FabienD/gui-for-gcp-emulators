@@ -30,8 +30,8 @@ function Subscription({ topics }: SubscriptionProps): React.ReactElement {
         const content = await response.json();
         
         if (content != undefined 
-            && content.topics != undefined
-            && content.topics.length > 0
+            && content.subscriptions != undefined
+            && content.subscriptions.length > 0
         ) {
             setSubscriptions([...subscriptions, ...content.subscriptions]);   
         }
@@ -50,7 +50,7 @@ function Subscription({ topics }: SubscriptionProps): React.ReactElement {
         isConnected && topics.length > 0 ? (
             <>
                 <SubscriptionCreate topics={topics} subscriptions={subscriptions} setSubscriptions={setSubscriptions} />
-                <SubscriptionList subscriptions={subscriptions} />
+                <SubscriptionList subscriptions={subscriptions} setSubscriptions={setSubscriptions} />
             </>    
         ) : (
             <Alert severity={ isConnected ? "info" : "warning" } className="ml-5">
