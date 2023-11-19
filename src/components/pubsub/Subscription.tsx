@@ -4,12 +4,13 @@ import { Alert } from "@mui/material";
 import EmulatorContext, { EmulatorContextType } from "../../contexts/emulators";
 import SubscriptionCreate from "./SubscriptionCreate";
 import SubscriptionList from "./SubscriptionList";
-import { IFormSettings } from "../emulator/Settings";
+import { SettingsType } from "../emulator/Settings";
 import { getSubscriptions } from "../../api/gcp.pubsub";
 import { TopicType } from "./Topic";
 
 type SubscriptionType = {
-    name: string
+    name: string,
+    topic: string,
 }
 
 type SubscriptionProps = {
@@ -24,7 +25,7 @@ function Subscription({ topics }: SubscriptionProps): React.ReactElement {
     const isConnected = emulator?.is_connected;
 
     const getSubscriptionsCallback = useCallback(async (
-        settings: IFormSettings,
+        settings: SettingsType,
     ) => {
         const response = await getSubscriptions(settings);
         const content = await response.json();

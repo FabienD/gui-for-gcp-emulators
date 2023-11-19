@@ -1,17 +1,14 @@
 import React, { useCallback, useContext } from "react";
-import { SubscriptionType } from "./Subscription";
+
 import { Alert, Box, Button, TextField, Select, MenuItem } from "@mui/material";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
+
 import EmulatorContext, { EmulatorContextType } from "../../contexts/emulators";
-import { IFormSettings } from "../emulator/Settings";
 import { createSubscription } from "../../api/gcp.pubsub";
+import { SettingsType } from "../emulator/Settings";
+import { SubscriptionType } from "./Subscription";
 import { TopicType } from "./Topic";
 
-
-type IFormPubsubSubscription = {
-    subscriptionName: string
-    topicName: object
-}
 
 type SubscriptionCreateProps = {
     topics: TopicType[]
@@ -28,14 +25,14 @@ function SubscriptionCreate({topics, subscriptions, setSubscriptions}: Subscript
 
     const { control, handleSubmit } = useForm({
         defaultValues: {
-            subscriptionName: "",
-            topicName: topics,
+            name: "",
+            topic: "",
         }
     })  
 
     const createSubscriptionCallback = useCallback(async (
-        settings: IFormSettings, 
-        subscription: IFormPubsubSubscription
+        settings: SettingsType, 
+        subscription: SubscriptionType
     ) => {
         const response = await createSubscription(settings, subscription);
         const status = await response.status;
@@ -58,13 +55,18 @@ function SubscriptionCreate({topics, subscriptions, setSubscriptions}: Subscript
         }
 }, [subscriptions])
 
-    const onSubmit: SubmitHandler<IFormPubsubSubscription> = (Formdata): void => {
+    const onSubmit: SubmitHandler<SubscriptionType> = (Formdata): void => {
         resetAlerts()
 
-        if (Formdata.subscriptionName === undefined || Formdata.subscriptionName === "") {
+        if (Formdata.name === undefined || Formdata.name === "") {
             setError("Subscription name is required");
             return;
         }
+        if (Formdata.topic === undefined || Formdata.topic === "") {
+            setError("Topic name is required");
+            return;
+        }
+
         if (emulator != undefined) {
             createSubscriptionCallback(emulator, Formdata).catch(console.error)    
         }
@@ -86,25 +88,25 @@ function SubscriptionCreate({topics, subscriptions, setSubscriptions}: Subscript
                 onSubmit={handleSubmit(onSubmit)}
             >
                 <Controller
-                    name="subscriptionName"
+                    name="name"
                     control={control}
                     render={({ field }) => <TextField
                         {...field}
                         required
-                        id="subscriptionName"
+                        id="name"
                         label="Subscription name"
                         size='small'
                     />}
                 />
 
                 <Controller
-                    name="topicName"
+                    name="topic"
                     control={control}
                     render={({ field }) => 
                         <Select
                             {...field}
                             required
-                            id="topicName"
+                            id="topic"
                             labelId="subscription-topic-select-label"
                             label="Topic name"
                             size="small"
@@ -131,4 +133,3 @@ function SubscriptionCreate({topics, subscriptions, setSubscriptions}: Subscript
 }
 
 export default SubscriptionCreate;
-export type { IFormPubsubSubscription };

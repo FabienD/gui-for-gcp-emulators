@@ -1,14 +1,13 @@
-import { IFormSettings } from "../components/emulator/Settings";
+import { SettingsType } from "../components/emulator/Settings";
 import { SubscriptionType } from "../components/pubsub/Subscription";
-import { IFormPubsubSubscription } from "../components/pubsub/SubscriptionCreate";
 import { TopicType } from "../components/pubsub/Topic";
-import { IFormPubsubTopic } from "../components/pubsub/TopicCreate";
 
-export function getTopics(settings: IFormSettings): Promise<Response> {
+
+export function getTopics(settings: SettingsType): Promise<Response> {
     return fetch(`http://${settings.host}:${settings.port}/v1/projects/fake/topics`);
 }
 
-export function createTopic(settings: IFormSettings, topic: IFormPubsubTopic): Promise<Response> {
+export function createTopic(settings: SettingsType, topic: TopicType): Promise<Response> {
     return fetch(`http://${settings.host}:${settings.port}/v1/projects/fake/topics/${topic.name}`, {
         method: "PUT",
         headers: {
@@ -17,29 +16,29 @@ export function createTopic(settings: IFormSettings, topic: IFormPubsubTopic): P
     });
 }
 
-export function deleteTopic(settings: IFormSettings, topic: TopicType): Promise<Response> {
+export function deleteTopic(settings: SettingsType, topic: TopicType): Promise<Response> {
     return fetch(`http://${settings.host}:${settings.port}/v1/${topic.name}`, {
         method: "DELETE"
     });
 }
 
-export function getSubscriptions(settings: IFormSettings): Promise<Response> {
+export function getSubscriptions(settings: SettingsType): Promise<Response> {
     return fetch(`http://${settings.host}:${settings.port}/v1/projects/fake/subscriptions`);
 }
 
-export function createSubscription(settings: IFormSettings, subscription: IFormPubsubSubscription): Promise<Response> {
-    return fetch(`http://${settings.host}:${settings.port}/v1/projects/fake/subscriptions/${subscription.subscriptionName}`, {
+export function createSubscription(settings: SettingsType, subscription: SubscriptionType): Promise<Response> {
+    return fetch(`http://${settings.host}:${settings.port}/v1/projects/fake/subscriptions/${subscription.name}`, {
         method: "PUT",
         headers: {
             "Content-Type": "application/json",
         },
         body:  JSON.stringify({
-            "topic": subscription.topicName
+            "topic": subscription.topic
         })
     });
 }
 
-export function deleteSubscription(settings: IFormSettings, subscription: SubscriptionType): Promise<Response> {
+export function deleteSubscription(settings: SettingsType, subscription: SubscriptionType): Promise<Response> {
     return fetch(`http://${settings.host}:${settings.port}/v1/${subscription.name}`, {
         method: "DELETE",
     });

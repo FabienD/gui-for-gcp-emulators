@@ -5,7 +5,7 @@ import { DataGrid, GridActionsCellItem, GridColDef, GridRowId } from "@mui/x-dat
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 
 import { SubscriptionType } from "./Subscription";
-import { IFormSettings } from "../emulator/Settings";
+import { SettingsType } from "../emulator/Settings";
 import { deleteSubscription } from "../../api/gcp.pubsub";
 import EmulatorContext, { EmulatorContextType } from "../../contexts/emulators";
 
@@ -23,7 +23,7 @@ function SubscriptionList({subscriptions, setSubscriptions}: SubscriptionsListPr
     };
 
     const deleteSubscriptionCallback = useCallback(async (
-        settings: IFormSettings, 
+        settings: SettingsType, 
         subscription: SubscriptionType,
     ) => {
         const response = await deleteSubscription(settings, subscription);

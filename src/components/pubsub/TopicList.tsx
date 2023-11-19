@@ -5,7 +5,7 @@ import { DataGrid, GridActionsCellItem, GridColDef, GridRowId } from '@mui/x-dat
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import { TopicType } from "./Topic";
 import { deleteTopic } from "../../api/gcp.pubsub";
-import { IFormSettings } from "../emulator/Settings";
+import { SettingsType } from "../emulator/Settings";
 import EmulatorContext, { EmulatorContextType } from "../../contexts/emulators";
 
 type TopicListProps = {
@@ -26,7 +26,7 @@ function TopicList({ topics, setTopics }: TopicListProps): React.ReactElement {
     }
     
     const deleteTopicCallback = useCallback(async (
-        settings: IFormSettings, 
+        settings: SettingsType, 
         topic: TopicType,
     ) => {
         const response = await deleteTopic(settings, topic);

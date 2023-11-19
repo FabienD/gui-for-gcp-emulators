@@ -6,21 +6,21 @@ import Button from '@mui/material/Button';
 
 import EmulatorContext, { EmulatorContextType, EmulatorType } from "../../contexts/emulators";
 
-type IFormSettings = {
+type SettingsType = {
     host: string
     port: number
 }
 
 function Emulator({ type, host, port }: EmulatorType): React.ReactElement {
     const { isEmulatorTypeConnected,  saveEmulator, removeEmulator } = useContext(EmulatorContext) as EmulatorContextType; 
-    const [settings, setSettings] = useState<IFormSettings>();
+    const [settings, setSettings] = useState<SettingsType>();
     const { control, handleSubmit } = useForm({
         defaultValues: {
             host,
             port,
         },
     })
-    const onSubmit: SubmitHandler<IFormSettings> = (data): void => {
+    const onSubmit: SubmitHandler<SettingsType> = (data): void => {
         setSettings({
             host: data.host, 
             port: parseInt(data.port.toString())
@@ -96,4 +96,4 @@ function Emulator({ type, host, port }: EmulatorType): React.ReactElement {
 }
 
 export default Emulator;
-export type { IFormSettings };
+export type { SettingsType };

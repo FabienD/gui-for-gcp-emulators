@@ -4,14 +4,10 @@ import { Alert, Box, Button, TextField } from "@mui/material";
 
 
 import EmulatorContext, { EmulatorContextType } from "../../contexts/emulators";
-import { IFormSettings } from "../emulator/Settings";
+import { SettingsType } from "../emulator/Settings";
 import { TopicType } from "./Topic";
 import { createTopic } from "../../api/gcp.pubsub";
 
-
-type IFormPubsubTopic = {
-    name: string
-}
 
 type TopicCreateProps = {
     topics: TopicType[],
@@ -31,8 +27,8 @@ function TopicCreate({ topics, setTopics}: TopicCreateProps): React.ReactElement
     })
 
     const createTopicCallback = useCallback(async (
-            settings: IFormSettings, 
-            topic: IFormPubsubTopic
+            settings: SettingsType, 
+            topic: TopicType
         ) => {
             const response = await createTopic(settings, topic);
             const status = await response.status;
@@ -55,7 +51,7 @@ function TopicCreate({ topics, setTopics}: TopicCreateProps): React.ReactElement
             }
     }, [topics])
 
-    const onSubmit: SubmitHandler<IFormPubsubTopic> = (Formdata): void => {        
+    const onSubmit: SubmitHandler<TopicType> = (Formdata): void => {        
         resetAlerts()
 
         if (Formdata.name === undefined || Formdata.name === "") {
@@ -104,4 +100,3 @@ function TopicCreate({ topics, setTopics}: TopicCreateProps): React.ReactElement
 }
 
 export default TopicCreate;
-export type { IFormPubsubTopic };
