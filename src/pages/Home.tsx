@@ -15,7 +15,7 @@ function Home(): React.ReactElement {
                 This application provides a basic UI to deal with <a href="https://cloud.google.com/sdk/gcloud/reference/beta/emulators" target="_blank" className="underline decoration-solid underline-offset-4 decoration-pink-500">Google Cloud Platform™ Emulators</a>. 
                 This application is <span className="underline decoration-solid underline-offset-4 decoration-pink-500">not an official</span> Google application.
             </Typography>
-            <Typography variant="body1" className="mt-1">
+            <Typography variant="body1" className="mt-4">
             The application is <strong>under heavy development</strong> and doesn't cover all emulator products API.
                 This project start as simple test and isn't cover by tests. 
             </Typography>
@@ -25,24 +25,24 @@ function Home(): React.ReactElement {
             </Typography>
 
             <Box className="flex">
-                <CardContent className="bg-indigo-400 rounded-xl p-4 mx-4">
+                <CardContent className="bg-green-400 rounded-xl p-4 mx-4 w-1/2">
                     <Typography variant="h3" className="text-sm text-white uppercase">
-                        partially supported
+                        Partially supported
                     </Typography>
-                    <ul className="my-4 text-indigo-900">
-                        <li><NavLink to="/pubsub">Pub/Sub </NavLink><CheckBoxIcon className="text-indigo-900" /></li>
+                    <ul className="my-4 text-green-900">
+                        <li><NavLink to="/pubsub">Pub/Sub </NavLink><CheckBoxIcon className="text-green-900" /></li>
                     </ul>
                 </CardContent>
 
-                <CardContent className="bg-purple-300 rounded-xl p-4 mx-4">
+                <CardContent className="bg-pink-300 rounded-xl p-4 mx-4  w-1/2">
                     <Typography variant="h3" className="text-sm text-white uppercase">
                         Not implemented
                     </Typography>
-                    <ul className="my-4 text-purple-900">
-                        <li>Bigtable <CloseIcon className="text-purple-900" /></li>
-                        <li>Datastore <CloseIcon className="text-purple-900" /></li>
-                        <li>Firestore <CloseIcon className="text-purple-900" /></li>
-                        <li>Spanner <CloseIcon className="text-purple-900" /></li>
+                    <ul className="my-4 text-pink-900">
+                        <li>Bigtable <CloseIcon className="text-pink-900" /></li>
+                        <li>Datastore <CloseIcon className="text-pink-900" /></li>
+                        <li>Firestore <CloseIcon className="text-pink-900" /></li>
+                        <li>Spanner <CloseIcon className="text-pink-900" /></li>
                     </ul>
                 </CardContent>
             </Box>

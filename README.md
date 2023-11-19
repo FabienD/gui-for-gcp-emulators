@@ -18,7 +18,8 @@ As **Open source project**, feel free to participate, contribute, fork, etc. :
 - PubSub emulator partially support.
 
 ![GUI for GCP - Home](./doc/assets/gcp_gui_home_preview.png)
-![GUI for GCP - Pubsub](./doc/assets/gcp_gui_pubsub_preview.png)
+![GUI for GCP - Pubsub topic](./doc/assets/gcp_gui_pubsub_topic_preview.png)
+![GUI for GCP - Pubsub subscription](./doc/assets/gcp_gui_pubsub_subscription_preview.png)
 
 ## Next steps
 

@@ -32,9 +32,9 @@ const theme = createTheme({
         color: primary,
       },
       h3 : {
-        fontSize: "1.4em",
+        fontSize: "1.2em",
         fontWeight: 400,
-        margin: "0.6em 0 0.6em 0",
+        margin: "0.8em 0 0.8em 0",
         color: primary,
       },
       body1: {
