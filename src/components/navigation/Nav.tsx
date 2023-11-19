@@ -28,7 +28,7 @@ function Nav({ title }: NavProps): React.ReactElement {
 
     return (
         <>
-            <Typography className="py-4 pl-4 font-bold" color="primary">{title}</Typography>
+            <Typography className="py-4 pl-4 font-bold text-white">{title}</Typography>
             <MenuList>
                 {navItems}
             </MenuList>

@@ -1,8 +1,8 @@
 import { createTheme } from "@mui/material";
 import { indigo } from "@mui/material/colors";
 
-const primary = indigo[400]
-const secondary = indigo[800]
+const primary = indigo[500]
+const secondary = indigo[900]
 
 const theme = createTheme({
     palette: {
@@ -21,20 +21,20 @@ const theme = createTheme({
       
       h1 : {
         fontSize: "2em",
-        fontWeight: 600,
-        margin: "0.6em 0 0.6em 0",
+        fontWeight: 500,
+        margin: "0 0 0.6em 0",
         color: primary,
       },
       h2 : {
         fontSize: "1.6em",
-        fontWeight: 400,
-        margin: "0.8em 0 0.8em 0",
+        fontWeight: 500,
+        margin: "1em 0 1em 0",
         color: primary,
       },
       h3 : {
         fontSize: "1.2em",
         fontWeight: 400,
-        margin: "0.8em 0 0.8em 0",
+        margin: "1em 0 1em 0",
         color: primary,
       },
       body1: {

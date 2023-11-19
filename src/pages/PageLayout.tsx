@@ -8,7 +8,7 @@ function PageLayout(): React.ReactElement {
 
     return (
         <div className="flex">
-            <div className="flex flex-col w-60 h-screen bg-gradient-to-b from-gray-900 to-gray-800">
+            <div className="flex flex-col w-48 h-screen bg-gradient-to-b from-indigo-950 to-indigo-800">
                 <PageLogo />
                 <Nav title="Products" />
             </div>
