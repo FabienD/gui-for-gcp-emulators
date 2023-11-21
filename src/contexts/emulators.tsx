@@ -1,10 +1,11 @@
 import { createContext, useState } from "react";
 
 export type EmulatorType = {
-    type: string;
-    is_connected?: boolean;
-    host: string;
-    port: number;
+    type: string
+    is_connected?: boolean
+    host: string
+    port: number
+    project_id: string
 }
 
 export type EmulatorContextType = {

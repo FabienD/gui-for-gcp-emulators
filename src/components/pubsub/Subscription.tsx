@@ -42,7 +42,8 @@ function Subscription({ topics }: SubscriptionProps): React.ReactElement {
         if (emulator != undefined) {
             getSubscriptionsCallback({
                 host: emulator.host, 
-                port: emulator.port
+                port: emulator.port,
+                project_id: emulator.project_id,
             }).catch(console.error);
         }
     }, [emulator, getSubscriptionsCallback])
@@ -54,7 +55,7 @@ function Subscription({ topics }: SubscriptionProps): React.ReactElement {
                 <SubscriptionList subscriptions={subscriptions} setSubscriptions={setSubscriptions} />
             </>    
         ) : (
-            <Alert severity={ isConnected ? "info" : "warning" } className="ml-5">
+            <Alert severity={ isConnected ? "info" : "warning" }>
             {
                 isConnected ? "At least one topic is needed to create a subscription." : "The emulator is not configured or the connection is not validated."
             }

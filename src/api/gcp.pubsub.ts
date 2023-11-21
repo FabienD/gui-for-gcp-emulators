@@ -4,11 +4,11 @@ import { TopicType } from "../components/pubsub/Topic";
 
 
 export function getTopics(settings: SettingsType): Promise<Response> {
-    return fetch(`http://${settings.host}:${settings.port}/v1/projects/fake/topics`);
+    return fetch(`http://${settings.host}:${settings.port}/v1/projects/${settings.project_id}/topics`);
 }
 
 export function createTopic(settings: SettingsType, topic: TopicType): Promise<Response> {
-    return fetch(`http://${settings.host}:${settings.port}/v1/projects/fake/topics/${topic.name}`, {
+    return fetch(`http://${settings.host}:${settings.port}/v1/projects/${settings.project_id}/topics/${topic.name}`, {
         method: "PUT",
         headers: {
             "Content-Type": "application/json",
@@ -23,11 +23,11 @@ export function deleteTopic(settings: SettingsType, topic: TopicType): Promise<R
 }
 
 export function getSubscriptions(settings: SettingsType): Promise<Response> {
-    return fetch(`http://${settings.host}:${settings.port}/v1/projects/fake/subscriptions`);
+    return fetch(`http://${settings.host}:${settings.port}/v1/projects/${settings.project_id}/subscriptions`);
 }
 
 export function createSubscription(settings: SettingsType, subscription: SubscriptionType): Promise<Response> {
-    return fetch(`http://${settings.host}:${settings.port}/v1/projects/fake/subscriptions/${subscription.name}`, {
+    return fetch(`http://${settings.host}:${settings.port}/v1/projects/${settings.project_id}/subscriptions/${subscription.name}`, {
         method: "PUT",
         headers: {
             "Content-Type": "application/json",
@@ -38,7 +38,7 @@ export function createSubscription(settings: SettingsType, subscription: Subscri
     });
 }
 
-export function deleteSubscription(settings: SettingsType, subscription: SubscriptionType): Promise<Response> {
+export function deleteSubscription(settings: SettingsType, subscription: Partial<SubscriptionType>): Promise<Response> {
     return fetch(`http://${settings.host}:${settings.port}/v1/${subscription.name}`, {
         method: "DELETE",
     });

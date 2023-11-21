@@ -24,7 +24,7 @@ function SubscriptionList({subscriptions, setSubscriptions}: SubscriptionsListPr
 
     const deleteSubscriptionCallback = useCallback(async (
         settings: SettingsType, 
-        subscription: SubscriptionType,
+        subscription: Partial<SubscriptionType>,
     ) => {
         const response = await deleteSubscription(settings, subscription);
         const status = await response.status;
@@ -41,7 +41,8 @@ function SubscriptionList({subscriptions, setSubscriptions}: SubscriptionsListPr
         if (emulator != undefined) {
             deleteSubscriptionCallback({
                 host: emulator.host, 
-                port: emulator.port
+                port: emulator.port,
+                project_id: emulator.project_id,
             }, {
                 name: id
             }).catch(console.error);
@@ -86,7 +87,7 @@ function SubscriptionList({subscriptions, setSubscriptions}: SubscriptionsListPr
     return (
         <>
         {subscriptions.length == 0 ? (
-            <Alert className="info my-2">No subscription</Alert>
+            <Alert severity="info" className="my-5">No subscription</Alert>
         ) : (
             <div className="mt-10">
                 <DataGrid

@@ -9,21 +9,24 @@ import EmulatorContext, { EmulatorContextType, EmulatorType } from "../../contex
 type SettingsType = {
     host: string
     port: number
+    project_id: string
 }
 
-function Emulator({ type, host, port }: EmulatorType): React.ReactElement {
+function Emulator({ type, host, port, project_id }: EmulatorType): React.ReactElement {
     const { isEmulatorTypeConnected,  saveEmulator, removeEmulator } = useContext(EmulatorContext) as EmulatorContextType; 
     const [settings, setSettings] = useState<SettingsType>();
     const { control, handleSubmit } = useForm({
         defaultValues: {
             host,
             port,
+            project_id,
         },
     })
     const onSubmit: SubmitHandler<SettingsType> = (data): void => {
         setSettings({
             host: data.host, 
-            port: parseInt(data.port.toString())
+            port: parseInt(data.port.toString()),
+            project_id: data.project_id,
         })
     } 
     
@@ -61,10 +64,11 @@ function Emulator({ type, host, port }: EmulatorType): React.ReactElement {
                         required
                         id="host"
                         label="Host"
-                        size='small'
                         InputProps={{
                             startAdornment: <InputAdornment position="start">http://</InputAdornment>,
                         }}
+                        size='small'
+                        variant="filled"
                     />}
                 />
                 
@@ -78,13 +82,27 @@ function Emulator({ type, host, port }: EmulatorType): React.ReactElement {
                         type="number"
                         label="port"
                         size='small'
+                        variant="filled"
                     />}
-                />            
+                />
+
+                <Controller
+                    name="project_id"
+                    control={control}
+                    render={({ field }) => <TextField
+                        {...field}
+                        required
+                        id="project_id"
+                        label="Project id"
+                        size='small'
+                        variant="filled"
+                    />}
+                />
                 
                 <Button variant="contained" size='small' type="submit">Validate</Button>   
                 
             </Box>
-            <Alert severity={ isConnected ? "info" : "warning" } className="m-2">
+            <Alert severity={ isConnected ? "success" : "warning" } className="mt-5">
             { isConnected ? (
                 <>The emulator is configured, connection is validated.</>
             ) : (

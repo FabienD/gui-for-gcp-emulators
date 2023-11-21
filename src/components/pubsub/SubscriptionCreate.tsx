@@ -1,6 +1,6 @@
 import React, { useCallback, useContext } from "react";
 
-import { Alert, Box, Button, TextField, Select, MenuItem } from "@mui/material";
+import { Alert, Box, Button, TextField, Select, MenuItem, InputLabel, FormControl } from "@mui/material";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 
 import EmulatorContext, { EmulatorContextType } from "../../contexts/emulators";
@@ -96,30 +96,32 @@ function SubscriptionCreate({topics, subscriptions, setSubscriptions}: Subscript
                         id="name"
                         label="Subscription name"
                         size='small'
+                        variant="filled"
                     />}
                 />
 
                 <Controller
                     name="topic"
                     control={control}
-                    render={({ field }) => 
-                        <Select
-                            {...field}
-                            required
-                            id="topic"
-                            labelId="subscription-topic-select-label"
-                            label="Topic name"
-                            size="small"
-                        >
-                            <MenuItem value="">
-                                <em>Choose a topic</em>
-                            </MenuItem>
-                            {(
-                                topics.map((topic) => (
-                                    <MenuItem value={topic.name}>{topic.name}</MenuItem>
-                                ))
-                            )}
-                        </Select>
+                    render={({ field }) =>
+                        <FormControl sx={{ minWidth:200 }}>
+                            <InputLabel id="subscription-topic-select-label" size="small" variant="filled">Topic name</InputLabel> 
+                            <Select
+                                {...field}
+                                required
+                                id="topic"
+                                labelId="subscription-topic-select-label"
+                                label="Topic name"
+                                size='small'
+                                variant="filled"
+                            >
+                                {(
+                                    topics.map((topic) => (
+                                        <MenuItem value={topic.name}>{topic.name}</MenuItem>
+                                    ))
+                                )}
+                            </Select>
+                        </FormControl>
                     }
                 />
                                 

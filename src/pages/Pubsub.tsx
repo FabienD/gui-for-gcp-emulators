@@ -3,7 +3,7 @@ import React, { useCallback, useContext, useEffect, useState } from "react";
 import { Box, Tab} from "@mui/material";
 import { TabPanel, TabContext, TabList } from "@mui/lab";
 
-import Emulator, { IFormSettings } from "../components/emulator/Settings";
+import Emulator, { SettingsType } from "../components/emulator/Settings";
 import Title from "../components/ui/Title";
 import Topic, { TopicType } from "../components/pubsub/Topic";
 import EmulatorContext, { EmulatorContextType } from "../contexts/emulators";
@@ -21,7 +21,7 @@ function Pubsub(): React.ReactElement{
     const [topics, setTopics] = useState<TopicType[]>([]);
     
     const getTopicsCallback = useCallback(async (
-        settings: IFormSettings,
+        settings: SettingsType,
     ) => {
         const response = await getTopics(settings);
         const content = await response.json();
@@ -42,7 +42,8 @@ function Pubsub(): React.ReactElement{
         if (emulator != undefined) {
             getTopicsCallback({
                 host: emulator.host, 
-                port: emulator.port
+                port: emulator.port,
+                project_id: emulator.project_id,
             }).catch(console.error);
         }
     }, [emulator, getTopicsCallback])
@@ -60,7 +61,7 @@ function Pubsub(): React.ReactElement{
                     </TabList>
                 </Box>
                 <TabPanel value="1">
-                    <Emulator type="pubsub" host="localhost" port={8085} />
+                    <Emulator type="pubsub" host="localhost" port={8085} project_id="fake" />
                 </TabPanel >
                 <TabPanel value="2">
                     <Topic topics={topics} setTopics={setTopics} />

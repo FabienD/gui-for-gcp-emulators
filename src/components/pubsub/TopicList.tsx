@@ -44,7 +44,8 @@ function TopicList({ topics, setTopics }: TopicListProps): React.ReactElement {
         if (emulator != undefined) {
             deleteTopicCallback({
                 host: emulator.host, 
-                port: emulator.port
+                port: emulator.port,
+                project_id: emulator.project_id,
             }, {
                 name: id
             }).catch(console.error);
@@ -87,7 +88,7 @@ function TopicList({ topics, setTopics }: TopicListProps): React.ReactElement {
     return (
         <>
         {topics.length == 0 ? (
-            <Alert className="info my-2">No topics</Alert>
+            <Alert severity="info" className="my-5">No topics</Alert>
         ) : (
             <div className="mt-10">
                 <DataGrid

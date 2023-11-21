@@ -87,6 +87,7 @@ function TopicCreate({ topics, setTopics}: TopicCreateProps): React.ReactElement
                         id="name"
                         label="Topic name"
                         size='small'
+                        variant="filled"
                     />}
                 />
                                 
