@@ -4,7 +4,7 @@ import { Alert } from "@mui/material";
 import { DataGrid, GridActionsCellItem, GridColDef, GridRowId } from "@mui/x-data-grid";
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 
-import { SubscriptionType } from "./Subscription";
+import { SubscriptionNameType, SubscriptionType } from "./Subscription";
 import { SettingsType } from "../emulator/Settings";
 import { deleteSubscription } from "../../api/gcp.pubsub";
 import EmulatorContext, { EmulatorContextType } from "../../contexts/emulators";
@@ -24,13 +24,13 @@ function SubscriptionList({subscriptions, setSubscriptions}: SubscriptionsListPr
 
     const deleteSubscriptionCallback = useCallback(async (
         settings: SettingsType, 
-        subscription: Partial<SubscriptionType>,
+        subscriptionName: SubscriptionNameType,
     ) => {
-        const response = await deleteSubscription(settings, subscription);
+        const response = await deleteSubscription(settings, subscriptionName);
         const status = await response.status;
         
         if (status == 200) {
-            const filteredTopics = subscriptions.filter((t: SubscriptionType) => t.name !== subscription.name);
+            const filteredTopics = subscriptions.filter((t: SubscriptionType) => t.name !== subscriptionName.name);
             setSubscriptions(filteredTopics);
         }
     }, [subscriptions])

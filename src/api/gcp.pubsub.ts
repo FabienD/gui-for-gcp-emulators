@@ -1,6 +1,6 @@
 import { SettingsType } from "../components/emulator/Settings";
-import { SubscriptionType } from "../components/pubsub/Subscription";
-import { TopicType } from "../components/pubsub/Topic";
+import { SubscriptionNameType, SubscriptionType } from "../components/pubsub/Subscription";
+import { TopicNameType, TopicType } from "../components/pubsub/Topic";
 
 
 export function getTopics(settings: SettingsType): Promise<Response> {
@@ -12,12 +12,12 @@ export function createTopic(settings: SettingsType, topic: TopicType): Promise<R
         method: "PUT",
         headers: {
             "Content-Type": "application/json",
-          },
+        }
     });
 }
 
-export function deleteTopic(settings: SettingsType, topic: TopicType): Promise<Response> {
-    return fetch(`http://${settings.host}:${settings.port}/v1/${topic.name}`, {
+export function deleteTopic(settings: SettingsType, topicName: TopicNameType): Promise<Response> {
+    return fetch(`http://${settings.host}:${settings.port}/v1/${topicName.name}`, {
         method: "DELETE"
     });
 }
@@ -38,8 +38,8 @@ export function createSubscription(settings: SettingsType, subscription: Subscri
     });
 }
 
-export function deleteSubscription(settings: SettingsType, subscription: Partial<SubscriptionType>): Promise<Response> {
-    return fetch(`http://${settings.host}:${settings.port}/v1/${subscription.name}`, {
+export function deleteSubscription(settings: SettingsType, subscriptionName: SubscriptionNameType): Promise<Response> {
+    return fetch(`http://${settings.host}:${settings.port}/v1/${subscriptionName.name}`, {
         method: "DELETE",
     });
 }

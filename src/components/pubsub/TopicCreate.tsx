@@ -20,7 +20,7 @@ function TopicCreate({ topics, setTopics}: TopicCreateProps): React.ReactElement
     const [IsCreated, setIsCreated] = React.useState(false);
 
     const emulator = getEmulatorByType("pubsub");
-    const { control, handleSubmit } = useForm({
+    const { control, reset, handleSubmit } = useForm({
         defaultValues: {
             name: '',
         },
@@ -40,6 +40,7 @@ function TopicCreate({ topics, setTopics}: TopicCreateProps): React.ReactElement
             ) {
                 setIsCreated(true);
                 setTopics([...topics, content]);
+                reset();
             } else {
                 if (content.error != undefined 
                     && content.error.message != undefined
@@ -85,12 +86,12 @@ function TopicCreate({ topics, setTopics}: TopicCreateProps): React.ReactElement
                         {...field}
                         required
                         id="name"
-                        label="Topic name"
+                        label="Name"
                         size='small'
                         variant="filled"
                     />}
                 />
-                                
+
                 <Button variant="contained" size='small' type="submit">Create</Button>   
                 
                 {Error != undefined && <Alert severity="error">{Error}</Alert>}

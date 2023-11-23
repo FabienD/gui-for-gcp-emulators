@@ -4,8 +4,12 @@ import TopicCreate from "./TopicCreate";
 import Alert from "@mui/material/Alert";
 import EmulatorContext, { EmulatorContextType } from "../../contexts/emulators";
 
-type TopicType = {
+type TopicNameType = {
     name: string
+}
+
+type TopicType = TopicNameType & {
+    // TODO Complete attributes
 }
 
 type TopicProps = {
@@ -34,4 +38,4 @@ function Topic({ topics, setTopics }: TopicProps ): React.ReactElement{
 }
 
 export default Topic;
-export type { TopicType };
+export type { TopicNameType, TopicType };

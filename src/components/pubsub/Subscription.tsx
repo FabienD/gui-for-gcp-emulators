@@ -8,8 +8,12 @@ import { SettingsType } from "../emulator/Settings";
 import { getSubscriptions } from "../../api/gcp.pubsub";
 import { TopicType } from "./Topic";
 
-type SubscriptionType = {
+
+type SubscriptionNameType = {
     name: string,
+}
+
+type SubscriptionType = SubscriptionNameType & {
     topic: string,
 }
 
@@ -65,4 +69,4 @@ function Subscription({ topics }: SubscriptionProps): React.ReactElement {
 }
 
 export default Subscription;
-export type { SubscriptionType };
+export type { SubscriptionNameType, SubscriptionType };

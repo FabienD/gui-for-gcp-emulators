@@ -3,7 +3,7 @@ import React, { useCallback, useContext } from "react";
 import { Alert } from "@mui/material";
 import { DataGrid, GridActionsCellItem, GridColDef, GridRowId } from '@mui/x-data-grid';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
-import { TopicType } from "./Topic";
+import { TopicNameType, TopicType } from "./Topic";
 import { deleteTopic } from "../../api/gcp.pubsub";
 import { SettingsType } from "../emulator/Settings";
 import EmulatorContext, { EmulatorContextType } from "../../contexts/emulators";
@@ -27,13 +27,13 @@ function TopicList({ topics, setTopics }: TopicListProps): React.ReactElement {
     
     const deleteTopicCallback = useCallback(async (
         settings: SettingsType, 
-        topic: TopicType,
+        topicName: TopicNameType,
     ) => {
-        const response = await deleteTopic(settings, topic);
+        const response = await deleteTopic(settings, topicName);
         const status = await response.status;
         
         if (status == 200) {
-            const filteredTopics = topics.filter((t: TopicType) => t.name !== topic.name);
+            const filteredTopics = topics.filter((t: TopicType) => t.name !== topicName.name);
             setTopics(filteredTopics);
         }
     }, [topics])
@@ -55,8 +55,8 @@ function TopicList({ topics, setTopics }: TopicListProps): React.ReactElement {
     const columns: GridColDef[] = [
         { 
             field: 'name', 
-            headerName: 'Topic ID', 
-            width: 300 
+            headerName: 'Topic ID',
+            width: 150 
         },
         {
             field: 'actions',

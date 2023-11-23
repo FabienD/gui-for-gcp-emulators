@@ -23,7 +23,7 @@ function SubscriptionCreate({topics, subscriptions, setSubscriptions}: Subscript
     const [Error, setError] = React.useState<string|undefined>(undefined);
     const [IsCreated, setIsCreated] = React.useState(false);
 
-    const { control, handleSubmit } = useForm({
+    const { control, reset, handleSubmit } = useForm({
         defaultValues: {
             name: "",
             topic: "",
@@ -44,6 +44,7 @@ function SubscriptionCreate({topics, subscriptions, setSubscriptions}: Subscript
         ) {
             setIsCreated(true);
             setSubscriptions([...subscriptions, content]);
+            reset();
         } else {
             if (content.error != undefined 
                 && content.error.message != undefined
@@ -94,7 +95,7 @@ function SubscriptionCreate({topics, subscriptions, setSubscriptions}: Subscript
                         {...field}
                         required
                         id="name"
-                        label="Subscription name"
+                        label="Name"
                         size='small'
                         variant="filled"
                     />}
@@ -111,7 +112,7 @@ function SubscriptionCreate({topics, subscriptions, setSubscriptions}: Subscript
                                 required
                                 id="topic"
                                 labelId="subscription-topic-select-label"
-                                label="Topic name"
+                                label="Topic"
                                 size='small'
                                 variant="filled"
                             >
