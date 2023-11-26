@@ -1,14 +1,11 @@
 import React from "react";
 
-import Title from "../components/ui/Title";
 import icon from "../assets/icons/cloud_spanner.svg";
+import NotYetImplemented from "../components/ui/NotYetImplemented";
 
 function Spanner(): React.ReactElement {
     return (
-        <>
-            <Title title="Spanner" icon={icon} />
-            <div>Not implemented yet.</div>
-        </>
+        <NotYetImplemented title="Spanner" icon={icon} />
     );
 }
 

@@ -5,11 +5,13 @@ import Alert from "@mui/material/Alert";
 import EmulatorContext, { EmulatorContextType } from "../../contexts/emulators";
 
 type TopicNameType = {
-    name: string
+    readonly name: string
 }
 
 type TopicType = TopicNameType & {
-    // TODO Complete attributes
+    readonly labels?: {
+        [key: string]: string
+    },
 }
 
 type TopicProps = {
@@ -30,7 +32,7 @@ function Topic({ topics, setTopics }: TopicProps ): React.ReactElement{
                 <TopicList topics={topics}  setTopics={setTopics} />
             </>
         ) : (
-            <Alert severity={ isConnected ? "info" : "warning" } className="ml-5">
+            <Alert severity={ isConnected ? "info" : "warning" }>
                 The emulator is not configured or the connection is not validated.
             </Alert>
         )

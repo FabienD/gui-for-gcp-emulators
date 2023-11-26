@@ -1,6 +1,6 @@
 import React, { useCallback, useContext } from "react";
 
-import { Alert, Box, Button, TextField, Select, MenuItem, InputLabel, FormControl } from "@mui/material";
+import { Alert, Box, Button, TextField, Select, MenuItem, InputLabel, FormControl, FormLabel, FormGroup, FormControlLabel } from "@mui/material";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 
 import EmulatorContext, { EmulatorContextType } from "../../contexts/emulators";
@@ -85,7 +85,7 @@ function SubscriptionCreate({topics, subscriptions, setSubscriptions}: Subscript
                 name="subscition_create"
                 noValidate
                 autoComplete="off"
-                className='flex gap-2'
+                className='grid grid-cols-2 gap-2'
                 onSubmit={handleSubmit(onSubmit)}
             >
                 <Controller
@@ -125,11 +125,34 @@ function SubscriptionCreate({topics, subscriptions, setSubscriptions}: Subscript
                         </FormControl>
                     }
                 />
-                                
-                <Button variant="contained" size='small' type="submit">Create</Button>   
                 
-                {Error != undefined && <Alert severity="error">{Error}</Alert>}
-                {IsCreated && <Alert severity="success">Subscription is created</Alert>}
+                <Controller
+                    name="pushConfig.pushEndpoint"
+                    control={control}
+                    render={({field}) => 
+                        <FormControl component="fieldset" className="col-span-2">
+                            <FormLabel component="legend">Push config</FormLabel>
+                            <FormGroup>
+                                <TextField
+                                    {...field}
+                                    id="pushConfig.pushEndpoint"
+                                    label="Endpoint"
+                                    size="small"
+                                    variant="filled"
+                                />
+                            </FormGroup>
+                        </FormControl>
+                    }
+                />
+                
+                <Box className="col-span-2">
+                    <Button variant="contained" type="submit" className="mt-2 mb-5">Create</Button>   
+                    {Error != undefined && <Alert severity="error">{Error}</Alert>}
+                    {IsCreated && <Alert severity="success">Subscription is created</Alert>}
+                </Box>
+            </Box>
+            <Box>
+                
             </Box>
         </>
     )

@@ -10,11 +10,20 @@ import { TopicType } from "./Topic";
 
 
 type SubscriptionNameType = {
-    name: string,
+    readonly name: string,
 }
 
 type SubscriptionType = SubscriptionNameType & {
-    topic: string,
+    readonly topic: string,
+    readonly labels?: {
+        [key: string]: string
+    },
+    readonly pushConfig?: {
+        pushEndpoint: string,
+        attributes?: {
+            [key: string]: string
+        }
+    }
 }
 
 type SubscriptionProps = {

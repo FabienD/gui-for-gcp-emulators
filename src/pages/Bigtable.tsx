@@ -1,14 +1,11 @@
 import React from "react";
 
-import Title from "../components/ui/Title";
 import icon from "../assets/icons/bigtable.svg";
+import NotYetImplemented from "../components/ui/NotYetImplemented";
 
 function Bigtable(): React.ReactElement {
     return (
-        <>
-            <Title title="Bigtable" icon={icon} />
-            <div>Not implemented yet.</div>
-        </>
+        <NotYetImplemented title="Bigtable" icon={icon} />
     );
 }
 

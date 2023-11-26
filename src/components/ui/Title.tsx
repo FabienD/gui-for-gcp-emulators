@@ -3,8 +3,8 @@ import React from "react";
 import { Typography } from "@mui/material";
 
 type TitleProps = {
-    title: string,
-    icon: string,
+    readonly title: string,
+    readonly icon: string,
 }
 
 function Title({title, icon}: TitleProps): React.ReactElement {

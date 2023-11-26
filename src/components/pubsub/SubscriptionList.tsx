@@ -55,6 +55,11 @@ function SubscriptionList({subscriptions, setSubscriptions}: SubscriptionsListPr
             headerName: 'Subscription ID', 
             width: 300 
         },
+        { 
+            field: 'type', 
+            headerName: 'Type', 
+            width: 100 
+        },
         {
             field: 'actions',
             type: 'actions',
@@ -79,6 +84,7 @@ function SubscriptionList({subscriptions, setSubscriptions}: SubscriptionsListPr
         return {
             id: subscription.name,
             name: subscription.name,
+            type: subscription.pushConfig?.pushEndpoint ? 'push' : 'pull'
         }
     })
 
