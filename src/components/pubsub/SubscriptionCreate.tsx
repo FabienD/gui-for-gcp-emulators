@@ -1,6 +1,6 @@
 import React, { useCallback, useContext } from "react";
 
-import { Alert, Box, Button, TextField, Select, MenuItem, InputLabel, FormControl, FormLabel, FormGroup, FormControlLabel } from "@mui/material";
+import { Alert, Box, Button, TextField, Select, MenuItem, InputLabel, FormControl, FormLabel, FormGroup, FormControlLabel, Switch } from "@mui/material";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 
 import EmulatorContext, { EmulatorContextType } from "../../contexts/emulators";
@@ -16,6 +16,39 @@ type SubscriptionCreateProps = {
     setSubscriptions: React.Dispatch<React.SetStateAction<SubscriptionType[]>>
 }
 
+type SubscriptionFormType = {
+    name: string,
+    topic: string,
+    pushConfig: boolean,
+    pushEndpoint?: string,
+}
+
+function buildSubscription(data: SubscriptionFormType): SubscriptionType {
+
+    console.log(data);
+
+    if (data.pushConfig 
+        && data.pushEndpoint != undefined
+        && data.pushEndpoint != ''
+    ) {
+        const subscription: SubscriptionType = {
+            name: data.name,
+            topic: data.topic,
+            pushConfig: {
+                pushEndpoint: data.pushEndpoint,
+            }
+        }
+        return subscription;
+    }
+
+    const subscription: SubscriptionType = {
+        name: data.name,
+        topic: data.topic,
+    }
+
+    return subscription;
+}
+
 function SubscriptionCreate({topics, subscriptions, setSubscriptions}: SubscriptionCreateProps): React.ReactElement {
     const { getEmulatorByType } = useContext(EmulatorContext) as EmulatorContextType;
     const emulator = getEmulatorByType("pubsub");
@@ -23,12 +56,15 @@ function SubscriptionCreate({topics, subscriptions, setSubscriptions}: Subscript
     const [Error, setError] = React.useState<string|undefined>(undefined);
     const [IsCreated, setIsCreated] = React.useState(false);
 
-    const { control, reset, handleSubmit } = useForm({
+    const { control, watch, reset, handleSubmit } = useForm({
         defaultValues: {
             name: "",
             topic: "",
+            pushConfig: false,
+            pushEndpoint: "",
         }
     })  
+    const watchPushConfig = watch("pushConfig");
 
     const createSubscriptionCallback = useCallback(async (
         settings: SettingsType, 
@@ -56,7 +92,7 @@ function SubscriptionCreate({topics, subscriptions, setSubscriptions}: Subscript
         }
 }, [subscriptions])
 
-    const onSubmit: SubmitHandler<SubscriptionType> = (Formdata): void => {
+    const onSubmit: SubmitHandler<SubscriptionFormType> = (Formdata): void => {
         resetAlerts()
 
         if (Formdata.name === undefined || Formdata.name === "") {
@@ -69,7 +105,8 @@ function SubscriptionCreate({topics, subscriptions, setSubscriptions}: Subscript
         }
 
         if (emulator != undefined) {
-            createSubscriptionCallback(emulator, Formdata).catch(console.error)    
+            createSubscriptionCallback(emulator, buildSubscription(Formdata)).catch(console.error)
+            reset()    
         }
     }  
 
@@ -125,26 +162,41 @@ function SubscriptionCreate({topics, subscriptions, setSubscriptions}: Subscript
                         </FormControl>
                     }
                 />
-                
+
                 <Controller
-                    name="pushConfig.pushEndpoint"
-                    control={control}
-                    render={({field}) => 
-                        <FormControl component="fieldset" className="col-span-2">
-                            <FormLabel component="legend">Push config</FormLabel>
-                            <FormGroup>
-                                <TextField
-                                    {...field}
-                                    id="pushConfig.pushEndpoint"
-                                    label="Endpoint"
-                                    size="small"
-                                    variant="filled"
-                                />
-                            </FormGroup>
-                        </FormControl>
-                    }
+                     name="pushConfig"
+                     control={control}
+                     render={({ field }) => 
+                        <FormGroup>
+                            <FormControlLabel control={<Switch 
+                                {...field}
+                                id="pushConfig"
+                            />} label="Push Subscription" />
+                        </FormGroup>
+                     }
                 />
                 
+                {watchPushConfig && (
+                    <Controller
+                        name="pushEndpoint"
+                        control={control}
+                        render={({field}) => 
+                            <FormControl component="fieldset" className="col-span-2">
+                                <FormLabel component="legend">Push config</FormLabel>
+                                <FormGroup>
+                                    <TextField
+                                        {...field}
+                                        id="pushEndpoint"
+                                        label="Endpoint"
+                                        size="small"
+                                        variant="filled"
+                                    />
+                                </FormGroup>
+                            </FormControl>
+                        }
+                    />
+                )}
+
                 <Box className="col-span-2">
                     <Button variant="contained" type="submit" className="mt-2 mb-5">Create</Button>   
                     {Error != undefined && <Alert severity="error">{Error}</Alert>}

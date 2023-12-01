@@ -33,7 +33,10 @@ export function createSubscription(settings: SettingsType, subscription: Subscri
             "Content-Type": "application/json",
         },
         body:  JSON.stringify({
-            "topic": subscription.topic
+            "topic": subscription.topic,
+            "pushConfig": {
+                "pushEndpoint": subscription.pushConfig?.pushEndpoint,
+            }
         })
     });
 }

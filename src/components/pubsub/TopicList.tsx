@@ -7,6 +7,7 @@ import { TopicNameType, TopicType } from "./Topic";
 import { deleteTopic } from "../../api/gcp.pubsub";
 import { SettingsType } from "../emulator/Settings";
 import EmulatorContext, { EmulatorContextType } from "../../contexts/emulators";
+import { shortId } from "../../utils/pubsub";
 
 type TopicListProps = {
     topics: TopicType[],
@@ -19,11 +20,7 @@ function TopicList({ topics, setTopics }: TopicListProps): React.ReactElement {
     
     const handleDeleteClick = (id: GridRowId) => () => {
         deleteTopicAction(id.toString());
-    };
-
-    const shortTopicName = (name: string): string => {
-        return name.replace(/projects\/fake\/topics\//i, '');
-    }
+    };    
     
     const deleteTopicCallback = useCallback(async (
         settings: SettingsType, 
@@ -81,7 +78,7 @@ function TopicList({ topics, setTopics }: TopicListProps): React.ReactElement {
     const rows = topics.map((topic: TopicType) => {
         return {
             id: topic.name,
-            name: shortTopicName(topic.name),
+            name: shortId(topic.name),
         }
     })
 

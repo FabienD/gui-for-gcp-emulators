@@ -8,6 +8,7 @@ import { SubscriptionNameType, SubscriptionType } from "./Subscription";
 import { SettingsType } from "../emulator/Settings";
 import { deleteSubscription } from "../../api/gcp.pubsub";
 import EmulatorContext, { EmulatorContextType } from "../../contexts/emulators";
+import { shortId } from "../../utils/pubsub";
 
 type SubscriptionsListProps = {
     subscriptions: SubscriptionType[],
@@ -53,12 +54,17 @@ function SubscriptionList({subscriptions, setSubscriptions}: SubscriptionsListPr
         { 
             field: 'name', 
             headerName: 'Subscription ID', 
-            width: 300 
+            width: 150 
         },
         { 
             field: 'type', 
             headerName: 'Type', 
             width: 100 
+        },
+        { 
+            field: 'pushEndpoint', 
+            headerName: 'Push endpoint', 
+            width: 300 
         },
         {
             field: 'actions',
@@ -83,12 +89,11 @@ function SubscriptionList({subscriptions, setSubscriptions}: SubscriptionsListPr
     const rows = subscriptions.map((subscription: SubscriptionType) => {
         return {
             id: subscription.name,
-            name: subscription.name,
-            type: subscription.pushConfig?.pushEndpoint ? 'push' : 'pull'
+            name: shortId(subscription.name),
+            type: subscription.pushConfig?.pushEndpoint ? 'push' : 'pull',
+            pushEndpoint: subscription.pushConfig?.pushEndpoint
         }
     })
-
-    console.log(subscriptions)
 
     return (
         <>
