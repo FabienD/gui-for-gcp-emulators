@@ -4,7 +4,7 @@ import Title from "../components/ui/Title";
 
 function NoMatch(): React.ReactElement {
     return (
-        <Title title="Not found" />
+        <Title title="Not found" icon="" />
     );
 }
 
