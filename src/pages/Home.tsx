@@ -12,12 +12,12 @@ function Home(): React.ReactElement {
             </Typography>
             
             <Typography variant="body1">
-                This application provides a basic UI to deal with <a href="https://cloud.google.com/sdk/gcloud/reference/beta/emulators" target="_blank" className="underline decoration-solid underline-offset-4 decoration-pink-500">Google Cloud Platform™ Emulators</a>. 
-                This application is <span className="underline decoration-solid underline-offset-4 decoration-pink-500">not an official</span> Google application.
+                This application is <span className="underline decoration-solid underline-offset-4 decoration-pink-500">not an official</span> Google™ application. 
+                It provides a graphical interface to deal with <a href="https://cloud.google.com/sdk/gcloud/reference/beta/emulators" target="_blank" className="underline decoration-solid underline-offset-4 decoration-pink-500">Google Cloud Platform™ Emulators</a>. 
             </Typography>
             <Typography variant="body1" className="mt-4">
-            The application is <strong>under heavy development</strong> and doesn't cover all emulator products API.
-                This project start as simple test and isn't cover by tests. 
+            I started the project as a simple test, to play with Tauri-App, ReactJs & Typescript and finally implemented something working with Pub/Sub.
+            The project is under development and doesn't cover all the emulator APIs, it's not "tested". Despite this, I found the project useful and decided to keep it.
             </Typography>
 
             <Typography variant="h2">
@@ -29,7 +29,7 @@ function Home(): React.ReactElement {
                     <Typography variant="h3" className="text-sm font-semibold text-indigo-900 uppercase">
                         Partially supported
                     </Typography>
-                    <ul className="my-4 text-indigo-800">
+                    <ul className="my-4 text-indigo-800 text-sm">
                         <li><NavLink to="/pubsub">Pub/Sub </NavLink><CheckBoxIcon className="text-indigo-800" /></li>
                     </ul>
                 </CardContent>
@@ -38,7 +38,7 @@ function Home(): React.ReactElement {
                     <Typography variant="h3" className="text-sm font-semibold text-pink-900 uppercase">
                         Not implemented
                     </Typography>
-                    <ul className="my-4 text-pink-800">
+                    <ul className="my-4 text-pink-800 text-sm">
                         <li>Bigtable <CloseIcon className="text-pink-800" /></li>
                         <li>Datastore <CloseIcon className="text-pink-800" /></li>
                         <li>Firestore <CloseIcon className="text-pink-800" /></li>
@@ -47,7 +47,7 @@ function Home(): React.ReactElement {
                 </CardContent>
             </Box>
             <Typography variant="body1" className="my-4">
-                <strong>As an Open Source project</strong>, <a href="https://github.com/FabienD/gui-for-gcp-emulator" target="_blank" className="underline decoration-solid underline-offset-4 decoration-sky-500">feel free to contribute</a>.
+                <strong>The project is Open Source</strong>, <a href="https://github.com/FabienD/gui-for-gcp-emulator" target="_blank" className="underline decoration-solid underline-offset-4 decoration-sky-500">feel free to contribute and/or use it</a>.
             </Typography>
         </>
     );

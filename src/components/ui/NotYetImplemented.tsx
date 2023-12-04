@@ -10,7 +10,7 @@ function NotYetImplemented({title, icon}: NotYetImplementedProps): React.ReactEl
     return (
         <Box>
             <Title title={title} icon={icon} />
-            <Alert severity="error" >Not implemented yet.</Alert>
+            <Alert severity="error" >Not implemented.</Alert>
         </Box>
     )
 }
