@@ -24,9 +24,6 @@ type SubscriptionFormType = {
 }
 
 function buildSubscription(data: SubscriptionFormType): SubscriptionType {
-
-    console.log(data);
-
     if (data.pushConfig 
         && data.pushEndpoint != undefined
         && data.pushEndpoint != ''
@@ -90,7 +87,7 @@ function SubscriptionCreate({topics, subscriptions, setSubscriptions}: Subscript
                 setError("Unknown error");
             }
         }
-}, [subscriptions])
+    }, [subscriptions])
 
     const onSubmit: SubmitHandler<SubscriptionFormType> = (Formdata): void => {
         resetAlerts()

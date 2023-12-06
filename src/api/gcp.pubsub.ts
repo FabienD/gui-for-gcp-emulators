@@ -22,6 +22,12 @@ export function deleteTopic(settings: SettingsType, topicName: TopicNameType): P
     });
 }
 
+export function getTopicSubscriptions(settings: SettingsType, topicName: TopicNameType): Promise<Response> {
+    return fetch(`http://${settings.host}:${settings.port}/v1/${topicName.name}/subscriptions`, {
+        method: "GET"
+    });
+}
+
 export function getSubscriptions(settings: SettingsType): Promise<Response> {
     return fetch(`http://${settings.host}:${settings.port}/v1/projects/${settings.project_id}/subscriptions`);
 }

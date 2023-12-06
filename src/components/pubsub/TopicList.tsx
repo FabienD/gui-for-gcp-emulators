@@ -27,14 +27,14 @@ function TopicList({ topics, setTopics }: TopicListProps): React.ReactElement {
         topicName: TopicNameType,
     ) => {
         const response = await deleteTopic(settings, topicName);
-        const status = await response.status;
+        const status = response.status;
         
         if (status == 200) {
             const filteredTopics = topics.filter((t: TopicType) => t.name !== topicName.name);
             setTopics(filteredTopics);
         }
     }, [topics])
-
+    
     const deleteTopicAction = useCallback(async (
         id: string,
     ) => {
@@ -53,6 +53,11 @@ function TopicList({ topics, setTopics }: TopicListProps): React.ReactElement {
         { 
             field: 'name', 
             headerName: 'Topic ID',
+            width: 150 
+        },
+        { 
+            field: 'subscriptions', 
+            headerName: 'Subscriptions',
             width: 150 
         },
         {
@@ -79,6 +84,7 @@ function TopicList({ topics, setTopics }: TopicListProps): React.ReactElement {
         return {
             id: topic.name,
             name: shortId(topic.name),
+            subscriptions: ""
         }
     })
 
