@@ -17,7 +17,7 @@ function Pubsub(): React.ReactElement{
     let emulator = getEmulatorByType("pubsub");
     const isConnected = isEmulatorTypeConnected("pubsub");
 
-    const [value, setValue] = React.useState(isConnected ? "2" : "1");
+    const [tabIndex, setTabIndex] = React.useState(isConnected ? "2" : "1");
     const [topics, setTopics] = useState<TopicType[]>([]);
     
     const getTopicsCallback = useCallback(async (
@@ -25,17 +25,19 @@ function Pubsub(): React.ReactElement{
     ) => {
         const response = await getTopics(settings);
         const content = await response.json();
-        
+
         if (content != undefined 
             && content.topics != undefined
             && content.topics.length > 0
         ) {
-            setTopics([...topics, ...content.topics]);   
+            setTopics([...content.topics]);   
+        } else {
+            setTopics([]);   
         }
     }, [])
 
     const handleTabChange = (_event: React.SyntheticEvent, newValue: string) => {
-        setValue(newValue);
+        setTabIndex(newValue);
     };
 
     useEffect(() => {
@@ -52,7 +54,7 @@ function Pubsub(): React.ReactElement{
         <>
             <Title title="Pub/Sub" icon={icon} />
             
-            <TabContext value={value} >
+            <TabContext value={tabIndex} >
                 <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                     <TabList onChange={handleTabChange} aria-label="Pubsub resources">
                         <Tab label="Settings" value="1" />
