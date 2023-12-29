@@ -1,13 +1,15 @@
-import React, { useCallback, useContext } from "react";
+import React, { useCallback, useContext, useState } from "react";
 
-import { Alert } from "@mui/material";
+import { Alert, Dialog } from "@mui/material";
 import { DataGrid, GridActionsCellItem, GridColDef, GridRowId } from '@mui/x-data-grid';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
+import MessageIcon from '@mui/icons-material/Message';
 import { TopicNameType, TopicType } from "./Topic";
 import { deleteTopic } from "../../api/gcp.pubsub";
 import { SettingsType } from "../emulator/Settings";
 import EmulatorContext, { EmulatorContextType } from "../../contexts/emulators";
 import { shortId } from "../../utils/pubsub";
+import PublishMessage from "./PublishMessage";
 
 type TopicListProps = {
     topics: TopicType[],
@@ -15,12 +17,19 @@ type TopicListProps = {
 }
 
 function TopicList({ topics, setTopics }: TopicListProps): React.ReactElement {
+    const [open, setOpen]  = useState(false)
     const { getEmulatorByType } = useContext(EmulatorContext) as EmulatorContextType;
     let emulator = getEmulatorByType("pubsub");
     
     const handleDeleteClick = (id: GridRowId) => () => {
         deleteTopicAction(id.toString());
     };    
+
+    const handleMessageClick = (id: GridRowId) => () => {
+        setOpen(true)
+    };    
+
+    const handleClose = () => setOpen(false)
     
     const deleteTopicCallback = useCallback(async (
         settings: SettingsType, 
@@ -75,6 +84,12 @@ function TopicList({ topics, setTopics }: TopicListProps): React.ReactElement {
                   onClick={handleDeleteClick(id)}
                   color="inherit"
                 />,
+                <GridActionsCellItem
+                  icon={<MessageIcon />}
+                  label="Publish a message"
+                  onClick={handleMessageClick(id)}
+                  color="inherit"
+                />,
               ];
             },
           },
@@ -104,6 +119,7 @@ function TopicList({ topics, setTopics }: TopicListProps): React.ReactElement {
                     }}
                     pageSizeOptions={[10]}
                 />
+                <PublishMessage open={open} setOpen={setOpen} />
             </div>
         )}
         </>
