@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useState } from "react";
 
-import { Alert, Dialog } from "@mui/material";
+import { Alert } from "@mui/material";
 import { DataGrid, GridActionsCellItem, GridColDef, GridRowId } from '@mui/x-data-grid';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import MessageIcon from '@mui/icons-material/Message';
@@ -18,6 +18,7 @@ type TopicListProps = {
 
 function TopicList({ topics, setTopics }: TopicListProps): React.ReactElement {
     const [open, setOpen]  = useState(false)
+    const [topic, setTopic]  = useState<TopicType>()
     const { getEmulatorByType } = useContext(EmulatorContext) as EmulatorContextType;
     let emulator = getEmulatorByType("pubsub");
     
@@ -27,9 +28,8 @@ function TopicList({ topics, setTopics }: TopicListProps): React.ReactElement {
 
     const handleMessageClick = (id: GridRowId) => () => {
         setOpen(true)
+        setTopic({ name: id.toString() })
     };    
-
-    const handleClose = () => setOpen(false)
     
     const deleteTopicCallback = useCallback(async (
         settings: SettingsType, 
@@ -119,7 +119,7 @@ function TopicList({ topics, setTopics }: TopicListProps): React.ReactElement {
                     }}
                     pageSizeOptions={[10]}
                 />
-                <PublishMessage open={open} setOpen={setOpen} />
+                <PublishMessage open={open} setOpen={setOpen} topic={topic} />
             </div>
         )}
         </>

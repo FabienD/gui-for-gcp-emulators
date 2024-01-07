@@ -50,11 +50,13 @@ function TopicCreate({ topics, setTopics}: TopicCreateProps): React.ReactElement
                     setError("Unknown error");
                 }
             }
+
+            setTimeout(resetAlerts, 3000)
     }, [topics])
 
     const onSubmit: SubmitHandler<TopicType> = (Formdata): void => {        
         resetAlerts()
-
+        
         if (Formdata.name === undefined || Formdata.name === "") {
             setError("Name is required");
             return;
