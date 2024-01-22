@@ -72,6 +72,11 @@ function SubscriptionList({subscriptions, setSubscriptions}: SubscriptionsListPr
             width: 100 
         },
         { 
+            field: 'topic', 
+            headerName: 'Topic', 
+            width: 100 
+        },
+        { 
             field: 'pushEndpoint', 
             headerName: 'Push endpoint', 
             width: 300 
@@ -110,6 +115,7 @@ function SubscriptionList({subscriptions, setSubscriptions}: SubscriptionsListPr
         return {
             id: subscription.name,
             name: shortId(subscription.name),
+            topic: shortId(subscription.topic),
             type: subscription.pushConfig?.pushEndpoint ? 'push' : 'pull',
             pushEndpoint: subscription.pushConfig?.pushEndpoint
         }
