@@ -21,10 +21,10 @@ function PullMessage({ open, subscriptionName, setOpen }: PullMessageProps): Rea
     const [rawMessage, setRawMessage] = React.useState<string|undefined>(undefined)
     const emulator = getEmulatorByType("pubsub");
     
-    const handlePull = () => pullSubscriotion(false)
-    const handlePullAndAck = () => pullSubscriotion(true)
+    const handlePull = () => handlePullSubscription(false)
+    const handlePullAndAck = () => handlePullSubscription(true)
 
-    const pullSubscriotion = async (ack: boolean) => {
+    const handlePullSubscription = async (ack: boolean) => {
         resetAlerts()
         
         if (subscriptionName !== undefined && emulator !== undefined) {

@@ -118,7 +118,7 @@ function PublishMessage({ open, topic, setOpen }: PublishMessageProps): React.Re
                     {IsPublished && <Alert severity="success">Message is published</Alert>}
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleClose}>Cancel</Button>
+                    <Button onClick={handleClose}>Close</Button>
                     <Button variant="contained" size='small' type="submit" onClick={handleSubmit(onSubmit)}>Publish</Button>
                 </DialogActions>
             </form>
