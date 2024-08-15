@@ -2,35 +2,25 @@
   "build": {
     "beforeDevCommand": "npm run dev",
     "beforeBuildCommand": "npm run build",
-    "devPath": "http://localhost:1420",
-    "distDir": "../dist",
-    "withGlobalTauri": false
+    "frontendDist": "../dist",
+    "devUrl": "http://localhost:1420"
   },
-  "package": {
-    "productName": "gui-for-gcp-emulators",
-    "version": "0.1.0"
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/icon.ico"
+    ],
+    "createUpdaterArtifacts": "v1Compatible"
   },
-  "tauri": {
-    "allowlist": {
-      "all": false,
-      "shell": {
-        "all": false,
-        "open": true
-      }
-    },
-    "bundle": {
-      "active": true,
-      "targets": "all",
-      "identifier": "com.gui-for-gcp-emulators.dev",
-      "icon": [
-        "icons/32x32.png",
-        "icons/128x128.png",
-        "icons/icon.ico"
-      ]
-    },
-    "security": {
-      "csp": null
-    },
+  "productName": "gui-for-gcp-emulators",
+  "version": "0.1.0",
+  "identifier": "com.gui-for-gcp-emulators.dev",
+  "plugins": {},
+  "app": {
+    "withGlobalTauri": false,
     "windows": [
       {
         "fullscreen": false,
@@ -39,6 +29,9 @@
         "width": 1024,
         "height": 768
       }
-    ]
+    ],
+    "security": {
+      "csp": null
+    }
   }
 }
