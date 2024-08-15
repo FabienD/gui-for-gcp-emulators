@@ -6,7 +6,7 @@ This application provides a basic UI for interacting [Google Cloud Platform™ E
 
 This application is **not an official** Google application.
 
-The application is under heavy development and doesn't cover all emulator product APIs. I started this project to test Tauri App, then thought  it would be intersting to provide something more functional. As an exploration project, I didn't cover features by tests.
+The application is under heavy development and doesn't cover all emulator product APIs. I started this project to test Tauri App V2, then thought  it would be intersting to provide something more functional. As an exploration project, I didn't cover features by tests.
 
 As **Open source project**, feel free to participate, contribute, fork, etc. :
 
@@ -40,20 +40,20 @@ As **Open source project**, feel free to participate, contribute, fork, etc. :
 
 ## Build / Run the application
 
-[Prerequisites, depends on the OS](https://tauri.app/fr/v1/guides/getting-started/prerequisites)
+[Prerequisites, depends on the OS](https://v2.tauri.app/fr/start/prerequisites/)
 
 ### Run in dev mode 
 
-    npm run tauri dev
+    npx tauri dev
 
 ### Build
 
-    npm run tauri build
+    npx tauri build
 
 
 ## Technologies used
 
-- [Tauri App](https://tauri.app/)
+- [Tauri App V2](https://v2.tauri.app/)
 - [Rust](https://www.rust-lang.org/)
 - [React](https://react.dev/)
 - [TypeScript](https://www.typescriptlang.org/)
