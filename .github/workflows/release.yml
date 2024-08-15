@@ -32,9 +32,8 @@ jobs:
 
       - name: create release
         id: create-release
-        uses: actions/github-script@v6
+        uses: actions/github-script@v7
         with:
-          node-version: 20
           script: |
             const { data } = await github.rest.repos.createRelease({
               owner: context.repo.owner,
@@ -66,7 +65,7 @@ jobs:
           node-version: 20
 
       - name: install Rust stable
-        uses: dtolnay/rust-toolchain@stable
+        uses: dtolnay/rust-toolchain@1.76.0
 
       - name: install dependencies (ubuntu only)
         if: matrix.platform == 'ubuntu-latest'
@@ -100,11 +99,10 @@ jobs:
     steps:
       - name: publish release
         id: publish-release
-        uses: actions/github-script@v6
+        uses: actions/github-script@v7
         env:
           release_id: ${{ needs.create-release.outputs.release_id }}
         with:
-          node-version: 20
           script: |
             github.rest.repos.updateRelease({
               owner: context.repo.owner,
