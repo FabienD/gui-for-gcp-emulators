@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
-import { invoke } from "@tauri-apps/api";
+import { invoke } from "@tauri-apps/api/core";
 import { Alert, Box, InputAdornment, TextField } from '@mui/material';
 import Button from '@mui/material/Button';
 
