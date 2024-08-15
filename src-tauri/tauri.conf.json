@@ -13,7 +13,7 @@
       "icons/128x128.png",
       "icons/icon.ico"
     ],
-    "createUpdaterArtifacts": "v1Compatible"
+    "createUpdaterArtifacts": false
   },
   "productName": "gui-for-gcp-emulators",
   "version": "0.1.0",

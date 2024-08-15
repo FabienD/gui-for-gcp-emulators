@@ -34,6 +34,7 @@ jobs:
         id: create-release
         uses: actions/github-script@v6
         with:
+          node-version: 20
           script: |
             const { data } = await github.rest.repos.createRelease({
               owner: context.repo.owner,
@@ -84,7 +85,7 @@ jobs:
       - name: install frontend dependencies
         run: yarn install # change this to npm or pnpm depending on which one you use
 
-      - uses: tauri-apps/tauri-action@v0
+      - uses: tauri-apps/tauri-action@v0.5.12
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -103,6 +104,7 @@ jobs:
         env:
           release_id: ${{ needs.create-release.outputs.release_id }}
         with:
+          node-version: 20
           script: |
             github.rest.repos.updateRelease({
               owner: context.repo.owner,
