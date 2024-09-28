@@ -17,9 +17,10 @@ type TopicType = TopicNameType & {
 type TopicProps = {
     topics: TopicType[],
     setTopics: React.Dispatch<React.SetStateAction<TopicType[]>>
+    getTopicsCallback: any,
 }
 
-function Topic({ topics, setTopics }: TopicProps ): React.ReactElement{
+function Topic({ topics, setTopics, getTopicsCallback }: TopicProps ): React.ReactElement{
     const { getEmulatorByType } = useContext(EmulatorContext) as EmulatorContextType;
     
     let emulator = getEmulatorByType("pubsub");
@@ -29,7 +30,7 @@ function Topic({ topics, setTopics }: TopicProps ): React.ReactElement{
         isConnected ? (
             <>
                 <TopicCreate topics={topics} setTopics={setTopics} />
-                <TopicList topics={topics}  setTopics={setTopics} />
+                <TopicList topics={topics}  setTopics={setTopics} getTopicsCallback={getTopicsCallback} />
             </>
         ) : (
             <Alert severity={ isConnected ? "info" : "warning" }>
