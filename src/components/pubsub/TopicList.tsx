@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useState } from "react";
 
-import { Alert, Tooltip } from "@mui/material";
+import { Alert, Button, Tooltip } from "@mui/material";
 import { DataGrid, GridActionsCellItem, GridColDef, GridRowId } from '@mui/x-data-grid';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import MessageIcon from '@mui/icons-material/Message';
@@ -10,13 +10,15 @@ import { SettingsType } from "../emulator/Settings";
 import EmulatorContext, { EmulatorContextType } from "../../contexts/emulators";
 import { shortId } from "../../utils/pubsub";
 import PublishMessage from "./PublishMessage";
+import { Refresh } from "@mui/icons-material";
 
 type TopicListProps = {
     topics: TopicType[],
     setTopics: React.Dispatch<React.SetStateAction<TopicType[]>>
+    getTopicsCallback: any,
 }
 
-function TopicList({ topics, setTopics }: TopicListProps): React.ReactElement {
+function TopicList({ topics, setTopics, getTopicsCallback }: TopicListProps): React.ReactElement {
     const [open, setOpen]  = useState(false)
     const [topic, setTopic]  = useState<TopicType>()
     const { getEmulatorByType } = useContext(EmulatorContext) as EmulatorContextType;
@@ -31,6 +33,16 @@ function TopicList({ topics, setTopics }: TopicListProps): React.ReactElement {
         setTopic({ name: shortId(id.toString()) })
     };    
     
+    const handleTopicsRefresh = () => {
+        if (emulator != undefined) {
+            getTopicsCallback({
+                host: emulator.host, 
+                port: emulator.port,
+                project_id: emulator.project_id,
+            })
+        }
+    }
+
     const deleteTopicCallback = useCallback(async (
         settings: SettingsType, 
         topicName: TopicNameType,
@@ -63,7 +75,7 @@ function TopicList({ topics, setTopics }: TopicListProps): React.ReactElement {
             field: 'name', 
             headerName: 'Topic ID',
             width: 150 
-        },
+        },  
         { 
             field: 'subscriptions', 
             headerName: 'Subscriptions',
@@ -124,6 +136,7 @@ function TopicList({ topics, setTopics }: TopicListProps): React.ReactElement {
                     pageSizeOptions={[10]}
                 />
                 <PublishMessage open={open} setOpen={setOpen} topic={topic} />
+                <Button onClick={handleTopicsRefresh} startIcon={<Refresh />}>topics list</Button>
             </div>
         )}
         </>

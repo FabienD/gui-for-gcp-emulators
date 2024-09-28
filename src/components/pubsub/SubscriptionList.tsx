@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useState } from "react";
 
-import { Alert, Tooltip } from "@mui/material";
+import { Alert, Button, Tooltip } from "@mui/material";
 import { DataGrid, GridActionsCellItem, GridColDef, GridRowId } from "@mui/x-data-grid";
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import MarkChatReadIcon from '@mui/icons-material/MarkChatRead';
@@ -11,13 +11,15 @@ import { deleteSubscription } from "../../api/gcp.pubsub";
 import EmulatorContext, { EmulatorContextType } from "../../contexts/emulators";
 import { shortId } from "../../utils/pubsub";
 import PullMessage from "./PullMessage";
+import { Refresh } from "@mui/icons-material";
 
 type SubscriptionsListProps = {
     subscriptions: SubscriptionType[],
     setSubscriptions: React.Dispatch<React.SetStateAction<SubscriptionType[]>>
+    getSubscriptionsCallback: any,
 }
 
-function SubscriptionList({subscriptions, setSubscriptions}: SubscriptionsListProps): React.ReactElement {
+function SubscriptionList({subscriptions, setSubscriptions, getSubscriptionsCallback}: SubscriptionsListProps): React.ReactElement {
     const { getEmulatorByType } = useContext(EmulatorContext) as EmulatorContextType
     let emulator = getEmulatorByType("pubsub")
     const [open, setOpen]  = useState(false)
@@ -32,6 +34,16 @@ function SubscriptionList({subscriptions, setSubscriptions}: SubscriptionsListPr
         setSubscriptionName({ name: shortId(id.toString())})
         console.log("Pull message", id.toString())
     };
+
+    const handleSubscriptionsRefresh = () => {
+        if (emulator != undefined) {
+            getSubscriptionsCallback({
+                host: emulator.host, 
+                port: emulator.port,
+                project_id: emulator.project_id,
+            })
+        }
+    }
 
     const deleteSubscriptionCallback = useCallback(async (
         settings: SettingsType, 
@@ -138,6 +150,7 @@ function SubscriptionList({subscriptions, setSubscriptions}: SubscriptionsListPr
                     pageSizeOptions={[10]}
                 />
                 <PullMessage open={open} setOpen={setOpen} subscriptionName={subscriptionName} />
+                <Button onClick={handleSubscriptionsRefresh} startIcon={<Refresh />}>Subscriptions list</Button>
             </div>
         )}
         </>

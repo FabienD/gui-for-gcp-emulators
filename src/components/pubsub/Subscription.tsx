@@ -65,7 +65,7 @@ function Subscription({ topics }: SubscriptionProps): React.ReactElement {
         isConnected && topics.length > 0 ? (
             <>
                 <SubscriptionCreate topics={topics} subscriptions={subscriptions} setSubscriptions={setSubscriptions} />
-                <SubscriptionList subscriptions={subscriptions} setSubscriptions={setSubscriptions} />
+                <SubscriptionList subscriptions={subscriptions} setSubscriptions={setSubscriptions} getSubscriptionsCallback={getSubscriptionsCallback} />
             </>    
         ) : (
             <Alert severity={ isConnected ? "info" : "warning" }>

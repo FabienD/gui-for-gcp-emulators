@@ -66,7 +66,7 @@ function Pubsub(): React.ReactElement{
                     <Emulator type="pubsub" host={emulator? emulator.host : "localhost"} port={emulator? emulator.port : 8085} project_id={emulator? emulator.project_id : "fake"} />
                 </TabPanel >
                 <TabPanel value="2">
-                    <Topic topics={topics} setTopics={setTopics} />
+                    <Topic topics={topics} setTopics={setTopics} getTopicsCallback={getTopicsCallback} />
                 </TabPanel >
                 <TabPanel value="3">
                     <Subscription topics={topics} />

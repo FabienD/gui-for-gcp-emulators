@@ -1,6 +1,6 @@
 [package]
 name = "gcp-emulator-gui"
-version = "0.2.2"
+version = "0.3.0"
 description = "A Tauri App"
 authors = ["Fabien Dosse"]
 license = "GPL-3.0-or-later"
