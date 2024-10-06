@@ -19,16 +19,20 @@ function PageLayout(): React.ReactElement {
     });
 
     return (
-        <div className="flex">
-            <nav className="flex flex-col w-48 h-screen bg-gradient-to-b from-blue-950 to-blue-800">
-                <PageLogo />
-                <Nav title="Products" />
-            </nav>
-            <main className="flex flex-col flex-1 h-screen p-4">
-                <Outlet />
+        <>
+            <div className="fixed inset-y-0 z-50 flex w-48 flex-col">
+                <nav className="h-full bg-gradient-to-b from-blue-950 to-blue-800">
+                    <PageLogo />
+                    <Nav title="Products" />
+                </nav>
+                <footer className="absolute bottom-2 left-2 text-xs	text-blue-300">version {version}</footer>
+            </div>
+            <main className="pl-48 py-5">
+                <div className="mx-auto px-4">
+                    <Outlet />
+                </div>
             </main>
-            <footer className="absolute bottom-2 left-2 text-xs	text-blue-300">version {version}</footer>
-        </div>
+        </>
     );
 }
 

@@ -136,9 +136,9 @@ function SubscriptionList({subscriptions, setSubscriptions, getSubscriptionsCall
     return (
         <>
         {subscriptions.length == 0 ? (
-            <Alert severity="info" className="my-5">No subscription</Alert>
+            <Alert severity="info" className="my-5">No subscriptions</Alert>
         ) : (
-            <div className="mt-10">
+            <div className="mt-10 w-full">
                 <DataGrid
                     rows={rows}
                     columns={columns}
