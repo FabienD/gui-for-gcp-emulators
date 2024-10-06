@@ -6,7 +6,7 @@ This application provides a basic UI for interacting with [Google Cloud Platform
 
 This application is **not an official** Google application.
 
-The application is under development and doesn't cover all emulator product APIs. I started this project to test Tauri App (V2 Release Candidate), then thought it would be intersting to provide something more functional. As an exploration project, I didn't cover features by tests.
+The application is under development and doesn't cover all emulator product APIs. I started this project to test Tauri App V2, then thought it would be intersting to provide something more functional. As an exploration project, I didn't cover features by tests.
 
 As **Open source project**, feel free to participate, contribute, fork, etc. :
 

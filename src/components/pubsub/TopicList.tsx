@@ -72,14 +72,14 @@ function TopicList({ topics, setTopics, getTopicsCallback }: TopicListProps): Re
 
     const columns: GridColDef[] = [
         { 
-            field: 'name', 
-            headerName: 'Topic ID',
+            field: 'short_name', 
+            headerName: 'Short ID',
             width: 150 
         },  
         { 
-            field: 'subscriptions', 
-            headerName: 'Subscriptions',
-            width: 150 
+            field: 'name', 
+            headerName: 'ID',
+            width: 250 
         },
         {
             field: 'actions',
@@ -114,8 +114,8 @@ function TopicList({ topics, setTopics, getTopicsCallback }: TopicListProps): Re
     const rows = topics.map((topic: TopicType) => {
         return {
             id: topic.name,
-            name: shortId(topic.name),
-            subscriptions: ""
+            short_name: shortId(topic.name),
+            name: topic.name,
         }
     })
 
@@ -124,7 +124,7 @@ function TopicList({ topics, setTopics, getTopicsCallback }: TopicListProps): Re
         {topics.length == 0 ? (
             <Alert severity="info" className="my-5">No topics</Alert>
         ) : (
-            <div className="mt-10">
+            <div className="mt-10 w-full">
                 <DataGrid
                     rows={rows}
                     columns={columns}
