@@ -20,8 +20,8 @@ type SubscriptionsListProps = {
 }
 
 function SubscriptionList({subscriptions, setSubscriptions, getSubscriptionsCallback}: SubscriptionsListProps): React.ReactElement {
-    const { getEmulatorByType } = useContext(EmulatorContext) as EmulatorContextType
-    let emulator = getEmulatorByType("pubsub")
+    const { getEmulator } = useContext(EmulatorContext) as EmulatorContextType
+    let emulator = getEmulator()
     const [open, setOpen]  = useState(false)
     const [subscriptionName, setSubscriptionName]  = useState<SubscriptionNameType>()
     

@@ -31,10 +31,10 @@ type SubscriptionProps = {
 }
 
 function Subscription({ topics }: SubscriptionProps): React.ReactElement {
-    const { getEmulatorByType } = useContext(EmulatorContext) as EmulatorContextType;
+    const { getEmulator } = useContext(EmulatorContext) as EmulatorContextType;
     const [subscriptions, setSubscriptions] = useState<SubscriptionType[]>([]);   
 
-    let emulator = getEmulatorByType("pubsub");
+    let emulator = getEmulator();
     const isConnected = emulator?.is_connected;
 
     const getSubscriptionsCallback = useCallback(async (

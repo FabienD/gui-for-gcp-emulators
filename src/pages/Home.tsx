@@ -1,10 +1,16 @@
-import React from "react";
+import React, { useContext } from "react";
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import CloseIcon from '@mui/icons-material/Close';
 import { NavLink } from "react-router-dom";
 import { Box, CardContent, Typography } from "@mui/material";
+import EmulatorSettings from "../components/emulator/Settings";
+import EmulatorContext, { EmulatorContextType } from "../contexts/emulators";
 
 function Home(): React.ReactElement {
+    const { getEmulator, isConnected } = useContext(EmulatorContext) as EmulatorContextType;
+
+    let emulator = getEmulator();
+    
     return (
         <>
             <Typography variant="h1">
@@ -16,9 +22,16 @@ function Home(): React.ReactElement {
                 <br />It's <span className="underline decoration-solid underline-offset-4 decoration-pink-500">not an official</span> Google™ application.
             </Typography>
             <Typography variant="body1" className="mt-4">
-            I started the project as a simple test, to play with Tauri-App, ReactJs & Typescript and finally implemented something working with Pub/Sub.
-            The project is under development and doesn't cover all the emulator APIs, it's not "tested". Despite this, I found the project useful and decided to keep it.
+            I started the project as a simple test, to play with Tauri-App V2, ReactJs & Typescript and finally implement something that works with Pub/Sub.
+            The project is under development and doesn't cover all the emulator APIs and isn't covered by tests. 
+            Despite this, I found the project useful and decided to keep it and develop it further.
             </Typography>
+
+
+            <Typography variant="h2">
+                Let's go
+            </Typography>
+            <EmulatorSettings host={emulator? emulator.host : "localhost"} port={emulator? emulator.port : 8085} project_id={emulator? emulator.project_id : "project_id"} />
 
             <Typography variant="h2">
                 The state of the project

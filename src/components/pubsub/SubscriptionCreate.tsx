@@ -47,8 +47,8 @@ function buildSubscription(data: SubscriptionFormType): SubscriptionType {
 }
 
 function SubscriptionCreate({topics, subscriptions, setSubscriptions}: SubscriptionCreateProps): React.ReactElement {
-    const { getEmulatorByType } = useContext(EmulatorContext) as EmulatorContextType;
-    const emulator = getEmulatorByType("pubsub");
+    const { getEmulator } = useContext(EmulatorContext) as EmulatorContextType;
+    const emulator = getEmulator();
     
     const [Error, setError] = React.useState<string|undefined>(undefined);
     const [IsCreated, setIsCreated] = React.useState(false);

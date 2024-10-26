@@ -21,8 +21,8 @@ type TopicListProps = {
 function TopicList({ topics, setTopics, getTopicsCallback }: TopicListProps): React.ReactElement {
     const [open, setOpen]  = useState(false)
     const [topic, setTopic]  = useState<TopicType>()
-    const { getEmulatorByType } = useContext(EmulatorContext) as EmulatorContextType;
-    let emulator = getEmulatorByType("pubsub");
+    const { getEmulator } = useContext(EmulatorContext) as EmulatorContextType;
+    let emulator = getEmulator();
     
     const handleDeleteClick = (id: GridRowId) => () => {
         deleteTopicAction(id.toString());

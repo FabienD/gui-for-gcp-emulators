@@ -26,10 +26,10 @@ interface PubSubMessageForm {
 }
 
 function PublishMessage({ open, topic, setOpen }: PublishMessageProps): React.ReactElement {
-    const { getEmulatorByType } = useContext(EmulatorContext) as EmulatorContextType;
+    const { getEmulator } = useContext(EmulatorContext) as EmulatorContextType;
     const [Error, setError] = React.useState<string|undefined>(undefined);
     const [IsPublished, setIsPublished] = React.useState(false);
-    const emulator = getEmulatorByType("pubsub");
+    const emulator = getEmulator();
     
     const { handleSubmit, control, reset } = useForm<PubSubMessageForm>({
         defaultValues: {

@@ -1,10 +1,11 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { invoke } from "@tauri-apps/api/core";
-import { Alert, Box, InputAdornment, TextField } from '@mui/material';
+import { Box, InputAdornment, TextField } from '@mui/material';
 import Button from '@mui/material/Button';
+import BoltIcon from '@mui/icons-material/Bolt';
 
-import EmulatorContext, { EmulatorContextType, EmulatorType } from "../../contexts/emulators";
+import EmulatorContext, { EmulatorContextType } from "../../contexts/emulators";
 
 type SettingsType = {
     host: string
@@ -12,8 +13,8 @@ type SettingsType = {
     project_id: string
 }
 
-function Emulator({ type, host, port, project_id }: EmulatorType): React.ReactElement {
-    const { isEmulatorTypeConnected,  saveEmulator, removeEmulator } = useContext(EmulatorContext) as EmulatorContextType; 
+function EmulatorSettings({ host, port, project_id }: SettingsType): React.ReactElement {
+    const { saveEmulator } = useContext(EmulatorContext) as EmulatorContextType; 
     const [settings, setSettings] = useState<SettingsType>();
     const { control, handleSubmit } = useForm({
         defaultValues: {
@@ -28,18 +29,15 @@ function Emulator({ type, host, port, project_id }: EmulatorType): React.ReactEl
             port: parseInt(data.port.toString()),
             project_id: data.project_id,
         })
-    } 
+    }
     
-    const isConnected = isEmulatorTypeConnected("pubsub");
-
     useEffect(() => {
         if (settings != undefined) {
             invoke<boolean>('check_connection', {...settings}).then((res): void => {
                 if (res) {
-                    saveEmulator({...settings, is_connected: true, type: type});
-                    console.log(`Connected to emulator ${type}`);
+                    saveEmulator({...settings, is_connected: true});
+                    console.log(`Connected to emulator`);
                 } else {
-                    removeEmulator(type);
                     console.log('Connected failed');
                 }
             });
@@ -50,7 +48,7 @@ function Emulator({ type, host, port, project_id }: EmulatorType): React.ReactEl
         <>
             <Box
                 component="form"
-                name={type}
+                name="settings"
                 noValidate
                 autoComplete="off"
                 className='flex gap-2'
@@ -64,8 +62,10 @@ function Emulator({ type, host, port, project_id }: EmulatorType): React.ReactEl
                         required
                         id="host"
                         label="Host"
-                        InputProps={{
-                            startAdornment: <InputAdornment position="start">http://</InputAdornment>,
+                        slotProps={{
+                            input: {
+                                startAdornment: <InputAdornment position="start">http://</InputAdornment>,
+                            }
                         }}
                         size='small'
                         variant="filled"
@@ -99,19 +99,12 @@ function Emulator({ type, host, port, project_id }: EmulatorType): React.ReactEl
                     />}
                 />
                 
-                <Button variant="contained" size='small' type="submit">Validate</Button>   
+                <Button variant="contained" size='small' type="submit"  startIcon={<BoltIcon />}>Connect</Button>   
                 
             </Box>
-            <Alert severity={ isConnected ? "success" : "warning" } className="mt-5">
-            { isConnected ? (
-                <>The emulator is configured, connection is validated.</>
-            ) : (
-                <>The emulator is not configured or the connection is not validated.</>
-            )}
-            </Alert>
         </>
     )
 }
 
-export default Emulator;
+export default EmulatorSettings;
 export type { SettingsType };

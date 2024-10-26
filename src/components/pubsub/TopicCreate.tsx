@@ -15,11 +15,11 @@ type TopicCreateProps = {
 }
 
 function TopicCreate({ topics, setTopics}: TopicCreateProps): React.ReactElement {
-    const { getEmulatorByType } = useContext(EmulatorContext) as EmulatorContextType;
+    const { getEmulator } = useContext(EmulatorContext) as EmulatorContextType;
     const [Error, setError] = React.useState<string|undefined>(undefined);
     const [IsCreated, setIsCreated] = React.useState(false);
 
-    const emulator = getEmulatorByType("pubsub");
+    const emulator = getEmulator();
     const { control, reset, handleSubmit } = useForm({
         defaultValues: {
             name: '',

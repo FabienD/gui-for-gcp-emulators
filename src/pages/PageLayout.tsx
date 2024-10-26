@@ -3,6 +3,7 @@ import { Outlet } from "react-router-dom";
 import Nav from "../components/navigation/Nav";
 import PageLogo from "./PageLogo";
 import { getVersion } from "@tauri-apps/api/app";
+import Status from "../components/emulator/Status";
 
 function PageLayout(): React.ReactElement {
     const [version, setVersion] = useState('');
@@ -30,6 +31,7 @@ function PageLayout(): React.ReactElement {
             <main className="pl-48 py-5">
                 <div className="mx-auto px-4">
                     <Outlet />
+                    <Status />
                 </div>
             </main>
         </>

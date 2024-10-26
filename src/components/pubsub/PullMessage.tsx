@@ -15,11 +15,11 @@ type PullMessageProps = {
 
 function PullMessage({ open, subscriptionName, setOpen }: PullMessageProps): React.ReactElement { 
     
-    const { getEmulatorByType } = useContext(EmulatorContext) as EmulatorContextType;
+    const { getEmulator } = useContext(EmulatorContext) as EmulatorContextType;
     const [error, setError] = React.useState<string|undefined>(undefined)
     const [message, setMessage] = React.useState<string|undefined>(undefined)
     const [rawMessage, setRawMessage] = React.useState<string|undefined>(undefined)
-    const emulator = getEmulatorByType("pubsub");
+    const emulator = getEmulator();
     
     const handlePull = () => handlePullSubscription(false)
     const handlePullAndAck = () => handlePullSubscription(true)

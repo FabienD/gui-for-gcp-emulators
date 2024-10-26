@@ -21,19 +21,16 @@ type TopicProps = {
 }
 
 function Topic({ topics, setTopics, getTopicsCallback }: TopicProps ): React.ReactElement{
-    const { getEmulatorByType } = useContext(EmulatorContext) as EmulatorContextType;
-    
-    let emulator = getEmulatorByType("pubsub");
-    const isConnected = emulator?.is_connected;    
-
+    const { isConnected } = useContext(EmulatorContext) as EmulatorContextType;
+        
     return (
-        isConnected ? (
+        isConnected() ? (
             <>
                 <TopicCreate topics={topics} setTopics={setTopics} />
                 <TopicList topics={topics}  setTopics={setTopics} getTopicsCallback={getTopicsCallback} />
             </>
         ) : (
-            <Alert severity={ isConnected ? "info" : "warning" }>
+            <Alert severity={ isConnected() ? "info" : "warning" }>
                 The emulator is not configured or the connection is not validated.
             </Alert>
         )

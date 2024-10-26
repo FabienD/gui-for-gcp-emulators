@@ -2,22 +2,22 @@ import React, { useCallback, useContext, useEffect, useState } from "react";
 
 import { Box, Tab} from "@mui/material";
 import { TabPanel, TabContext, TabList } from "@mui/lab";
-
-import Emulator, { SettingsType } from "../components/emulator/Settings";
 import Title from "../components/ui/Title";
-import Topic, { TopicType } from "../components/pubsub/Topic";
+
 import EmulatorContext, { EmulatorContextType } from "../contexts/emulators";
+import { SettingsType } from "../components/emulator/Settings";
+import Topic, { TopicType } from "../components/pubsub/Topic";
+import { getTopics } from "../api/gcp.pubsub";
 import Subscription from "../components/pubsub/Subscription";
 import icon from "../assets/icons/pubsub.svg";
-import { getTopics } from "../api/gcp.pubsub";
+
 
 function Pubsub(): React.ReactElement{
-    const { getEmulatorByType, isEmulatorTypeConnected } = useContext(EmulatorContext) as EmulatorContextType;
+    const { getEmulator } = useContext(EmulatorContext) as EmulatorContextType;
 
-    let emulator = getEmulatorByType("pubsub");
-    const isConnected = isEmulatorTypeConnected("pubsub");
+    let emulator = getEmulator();
 
-    const [tabIndex, setTabIndex] = React.useState(isConnected ? "2" : "1");
+    const [tabIndex, setTabIndex] = React.useState("1");
     const [topics, setTopics] = useState<TopicType[]>([]);
     
     const getTopicsCallback = useCallback(async (
@@ -57,18 +57,14 @@ function Pubsub(): React.ReactElement{
             <TabContext value={tabIndex} >
                 <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                     <TabList onChange={handleTabChange} aria-label="Pubsub resources">
-                        <Tab label="Settings" value="1" />
-                        <Tab label="Topic" value="2" />
-                        <Tab label="Subscription" value="3" />
+                        <Tab label="Topic" value="1" />
+                        <Tab label="Subscription" value="2" />
                     </TabList>
                 </Box>
                 <TabPanel value="1">
-                    <Emulator type="pubsub" host={emulator? emulator.host : "localhost"} port={emulator? emulator.port : 8085} project_id={emulator? emulator.project_id : "fake"} />
-                </TabPanel >
-                <TabPanel value="2">
                     <Topic topics={topics} setTopics={setTopics} getTopicsCallback={getTopicsCallback} />
                 </TabPanel >
-                <TabPanel value="3">
+                <TabPanel value="2">
                     <Subscription topics={topics} />
                 </TabPanel >
             </TabContext>
