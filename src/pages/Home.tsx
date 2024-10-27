@@ -7,7 +7,7 @@ import EmulatorSettings from "../components/emulator/Settings";
 import EmulatorContext, { EmulatorContextType } from "../contexts/emulators";
 
 function Home(): React.ReactElement {
-    const { getEmulator, isConnected } = useContext(EmulatorContext) as EmulatorContextType;
+    const { getEmulator } = useContext(EmulatorContext) as EmulatorContextType;
 
     let emulator = getEmulator();
     
@@ -26,10 +26,9 @@ function Home(): React.ReactElement {
             The project is under development and doesn't cover all the emulator APIs and isn't covered by tests. 
             Despite this, I found the project useful and decided to keep it and develop it further.
             </Typography>
-
-
+            
             <Typography variant="h2">
-                Let's go
+                Let's play
             </Typography>
             <EmulatorSettings host={emulator? emulator.host : "localhost"} port={emulator? emulator.port : 8085} project_id={emulator? emulator.project_id : "project_id"} />
 
