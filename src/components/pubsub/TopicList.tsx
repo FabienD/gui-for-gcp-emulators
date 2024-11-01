@@ -4,6 +4,7 @@ import { Alert, Button, Tooltip } from "@mui/material";
 import { DataGrid, GridActionsCellItem, GridColDef, GridRowId } from '@mui/x-data-grid';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import MessageIcon from '@mui/icons-material/Message';
+import InfoIcon from '@mui/icons-material/Info';
 import { TopicNameType, TopicType } from "./Topic";
 import { deleteTopic } from "../../api/gcp.pubsub";
 import { SettingsType } from "../emulator/Settings";
@@ -11,6 +12,7 @@ import EmulatorContext, { EmulatorContextType } from "../../contexts/emulators";
 import { shortId } from "../../utils/pubsub";
 import PublishMessage from "./PublishMessage";
 import { Refresh } from "@mui/icons-material";
+import TopicDefinition from "./TopicDefinition";
 
 type TopicListProps = {
     topics: TopicType[],
@@ -19,7 +21,8 @@ type TopicListProps = {
 }
 
 function TopicList({ topics, setTopics, getTopicsCallback }: TopicListProps): React.ReactElement {
-    const [open, setOpen]  = useState(false)
+    const [openPublishMessage, setOpenPublishMessage]  = useState(false)
+    const [openTopicDefinition, setOpenTopicDefinition]  = useState(false)
     const [topic, setTopic]  = useState<TopicType>()
     const { getEmulator } = useContext(EmulatorContext) as EmulatorContextType;
     let emulator = getEmulator();
@@ -29,9 +32,14 @@ function TopicList({ topics, setTopics, getTopicsCallback }: TopicListProps): Re
     };    
 
     const handleMessageClick = (id: GridRowId) => () => {
-        setOpen(true)
+        setOpenPublishMessage(true)
         setTopic({ name: shortId(id.toString()) })
     };    
+
+    const handleDefinitionClick = (id: GridRowId) => () => {
+        setOpenTopicDefinition(true)
+        setTopic({ name: shortId(id.toString()) })
+    };
     
     const handleTopicsRefresh = () => {
         if (emulator != undefined) {
@@ -74,27 +82,27 @@ function TopicList({ topics, setTopics, getTopicsCallback }: TopicListProps): Re
         { 
             field: 'short_name', 
             headerName: 'Short ID',
-            width: 150 
+            minWidth: 150 
         },  
         { 
             field: 'name', 
             headerName: 'ID',
-            width: 250 
+            flex: 1
         },
         {
             field: 'actions',
             type: 'actions',
             headerName: 'Actions',
-            width: 100,
+            minWidth: 150,
             cellClassName: 'actions',
             getActions: ({ id }) => {
               
               return [
-                <Tooltip title="Delete">
+                <Tooltip title="Information">
                     <GridActionsCellItem
-                    icon={<DeleteIcon />}
-                    label="Delete"
-                    onClick={handleDeleteClick(id)}
+                    icon={<InfoIcon />}
+                    label="Information"
+                    onClick={handleDefinitionClick(id)}
                     color="inherit"
                     />
                 </Tooltip>,
@@ -106,6 +114,14 @@ function TopicList({ topics, setTopics, getTopicsCallback }: TopicListProps): Re
                     color="inherit"
                     />
                 </Tooltip>,
+                <Tooltip title="Delete">
+                <GridActionsCellItem
+                icon={<DeleteIcon />}
+                label="Delete"
+                onClick={handleDeleteClick(id)}
+                color="inherit"
+                />
+            </Tooltip>,
               ];
             },
           },
@@ -124,20 +140,24 @@ function TopicList({ topics, setTopics, getTopicsCallback }: TopicListProps): Re
         {topics.length == 0 ? (
             <Alert severity="info" className="my-5">No topics</Alert>
         ) : (
-            <div className="mt-10 w-full">
-                <DataGrid
-                    rows={rows}
-                    columns={columns}
-                    initialState={{
-                        pagination: {
-                            paginationModel: { page: 0, pageSize: 10 },
-                        },
-                    }}
-                    pageSizeOptions={[10]}
-                />
-                <PublishMessage open={open} setOpen={setOpen} topic={topic} />
-                <Button onClick={handleTopicsRefresh} startIcon={<Refresh />}>topics list</Button>
-            </div>
+            <>
+                <div className="mt-10 w-full">
+                    <DataGrid
+                        rows={rows}
+                        columns={columns}
+                        initialState={{
+                            pagination: {
+                                paginationModel: { page: 0, pageSize: 10 },
+                            },
+                        }}
+                        pageSizeOptions={[10]}
+                    />    
+                    <Button onClick={handleTopicsRefresh} startIcon={<Refresh />}>topics list</Button>
+                </div>
+
+                <PublishMessage open={openPublishMessage} setOpen={setOpenPublishMessage} topic={topic} />
+                <TopicDefinition open={openTopicDefinition} setOpen={setOpenTopicDefinition} topic={topic} />
+            </>
         )}
         </>
     )

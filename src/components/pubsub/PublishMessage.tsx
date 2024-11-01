@@ -22,7 +22,7 @@ interface PubSubMessageType {
 }
 
 interface PubSubMessageForm {
-    MessageData: string
+    messageData: string
 }
 
 function PublishMessage({ open, topic, setOpen }: PublishMessageProps): React.ReactElement {
@@ -33,7 +33,7 @@ function PublishMessage({ open, topic, setOpen }: PublishMessageProps): React.Re
     
     const { handleSubmit, control, reset } = useForm<PubSubMessageForm>({
         defaultValues: {
-            MessageData: ""
+            messageData: ""
         },
     })
     
@@ -42,7 +42,7 @@ function PublishMessage({ open, topic, setOpen }: PublishMessageProps): React.Re
         
         const message = {
             'attributes': undefined,
-            'data': btoa(data.MessageData)
+            'data': btoa(data.messageData)
         }
         if (topic !== undefined && emulator !== undefined) {
             const response = await publishMessage(emulator, topic, message);
@@ -100,7 +100,7 @@ function PublishMessage({ open, topic, setOpen }: PublishMessageProps): React.Re
                             The raw content will be base64 encoded by the application.
                         </Typography>
                         <Controller
-                            name="MessageData"
+                            name="messageData"
                             control={control}
                             rules={{ required: true }}
                             render={({ field }) => <TextField
