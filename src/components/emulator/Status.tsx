@@ -1,8 +1,11 @@
 import React, { useContext } from "react";
-import EmulatorContext, { EmulatorContextType } from "../../contexts/emulators";
-import BoltIcon from '@mui/icons-material/Bolt';
-import { green, grey } from "@mui/material/colors";
 import { NavLink } from "react-router-dom";
+
+import BoltIcon from '@mui/icons-material/Bolt';
+import { Tooltip } from "@mui/material";
+import { green, grey } from "@mui/material/colors";
+
+import EmulatorContext, { EmulatorContextType } from "../../contexts/emulators";
 
 function Status(): React.ReactElement {
     const { getEmulator, isConnected } = useContext(EmulatorContext) as EmulatorContextType; 
@@ -15,7 +18,9 @@ function Status(): React.ReactElement {
     return (
         <div className="absolute top-5 right-5">
             <NavLink to="/">
-                <BoltIcon sx={{color}} titleAccess={alt} />
+                <Tooltip title={alt} placement="left">
+                    <BoltIcon sx={{color}} />
+                </Tooltip>
             </NavLink>    
         </div>
     )

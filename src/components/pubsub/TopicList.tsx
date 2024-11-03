@@ -26,7 +26,7 @@ function TopicList({ topics, setTopics, getTopicsCallback }: TopicListProps): Re
     const [openTopicDefinition, setOpenTopicDefinition] = useState(false)
     const [topicName, setTopicName] = useState<TopicNameType>()
     const { getEmulator } = useContext(EmulatorContext) as EmulatorContextType;
-    let emulator = getEmulator();
+    const emulator = getEmulator();
 
     const handleDeleteClick = (id: GridRowId) => () => {
         deleteTopicAction({ name: id.toString()});

@@ -1,7 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
+
 import { invoke } from "@tauri-apps/api/core";
-import { Box, InputAdornment, TextField } from '@mui/material';
+import { Alert, Box, InputAdornment, TextField } from '@mui/material';
 import Button from '@mui/material/Button';
 import BoltIcon from '@mui/icons-material/Bolt';
 
@@ -16,6 +17,8 @@ type SettingsType = {
 function EmulatorSettings({ host, port, project_id }: SettingsType): React.ReactElement {
     const { saveEmulator } = useContext(EmulatorContext) as EmulatorContextType; 
     const [settings, setSettings] = useState<SettingsType>();
+    const [checkConnection, setIsCheckConnection] = useState<boolean|undefined>(undefined);
+
     const { control, handleSubmit } = useForm({
         defaultValues: {
             host,
@@ -36,13 +39,19 @@ function EmulatorSettings({ host, port, project_id }: SettingsType): React.React
             invoke<boolean>('check_connection', {...settings}).then((res): void => {
                 if (res) {
                     saveEmulator({...settings, is_connected: true});
-                    console.log(`Connected to emulator`);
+                    setIsCheckConnection(true);
                 } else {
-                    console.log('Connected failed');
+                    setIsCheckConnection(false);
                 }
             });
+
+            setTimeout(resetAlerts, 3000)
         }
     }, [settings])
+
+    const resetAlerts = () => {
+        setIsCheckConnection(undefined);
+    }
 
     return (
         <>
@@ -101,6 +110,8 @@ function EmulatorSettings({ host, port, project_id }: SettingsType): React.React
                 
                 <Button variant="contained" size='small' type="submit"  startIcon={<BoltIcon />}>Connect</Button>   
                 
+                {checkConnection === false && <Alert severity="error">Unable to connect.</Alert>}
+                {checkConnection === true && <Alert severity="success">Emulator is connected.</Alert>}
             </Box>
         </>
     )
