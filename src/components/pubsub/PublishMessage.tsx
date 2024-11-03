@@ -2,13 +2,13 @@ import React, { useContext } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { Alert, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, Typography } from "@mui/material";
 
-import { TopicType } from "./Topic";
+import { TopicNameType, TopicType } from "./Topic";
 import { publishMessage } from "../../api/gcp.pubsub";
 import EmulatorContext, { EmulatorContextType } from "../../contexts/emulators";
 
 type PublishMessageProps = {
     open: boolean,
-    topic: TopicType | undefined
+    topicName: TopicNameType
     setOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
 
@@ -25,7 +25,7 @@ interface PubSubMessageForm {
     messageData: string
 }
 
-function PublishMessage({ open, topic, setOpen }: PublishMessageProps): React.ReactElement {
+function PublishMessage({ open, topicName, setOpen }: PublishMessageProps): React.ReactElement {
     const { getEmulator } = useContext(EmulatorContext) as EmulatorContextType;
     const [Error, setError] = React.useState<string|undefined>(undefined);
     const [IsPublished, setIsPublished] = React.useState(false);
@@ -44,8 +44,8 @@ function PublishMessage({ open, topic, setOpen }: PublishMessageProps): React.Re
             'attributes': undefined,
             'data': btoa(data.messageData)
         }
-        if (topic !== undefined && emulator !== undefined) {
-            const response = await publishMessage(emulator, topic, message);
+        if (topicName !== undefined && emulator !== undefined) {
+            const response = await publishMessage(emulator, topicName, message);
             const status = response.status;
             const content = await response.json();
             

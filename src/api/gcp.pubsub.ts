@@ -1,24 +1,28 @@
 import { SettingsType } from "../components/emulator/Settings";
 import { PubSubMessageType } from "../components/pubsub/PublishMessage";
 import { SubscriptionNameType, SubscriptionType } from "../components/pubsub/Subscription";
-import { TopicNameType, TopicType } from "../components/pubsub/Topic";
-
+import { TopicNameType } from "../components/pubsub/Topic";
+import { TopicFormType } from "../components/pubsub/TopicCreate";
+import { stringToLabels } from "../utils/pubsub"
 
 export function getTopics(settings: SettingsType): Promise<Response> {
     return fetch(`http://${settings.host}:${settings.port}/v1/projects/${settings.project_id}/topics`);
 }
 
-export function createTopic(settings: SettingsType, topic: TopicType): Promise<Response> {
+export function createTopic(settings: SettingsType, topic: TopicFormType): Promise<Response> {
     return fetch(`http://${settings.host}:${settings.port}/v1/projects/${settings.project_id}/topics/${topic.name}`, {
         method: "PUT",
         headers: {
             "Content-Type": "application/json",
-        }
+        },
+        body:  JSON.stringify({
+            "labels": stringToLabels(topic.labels),
+        })
     });
 }
 
 export function deleteTopic(settings: SettingsType, topicName: TopicNameType): Promise<Response> {
-    return fetch(`http://${settings.host}:${settings.port}/v1/${topicName.name}`, {
+    return fetch(`http://${settings.host}:${settings.port}/v1/projects/${settings.project_id}/topics/${topicName.name}`, {
         method: "DELETE"
     });
 }

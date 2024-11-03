@@ -9,7 +9,6 @@ import { SubscriptionNameType, SubscriptionType } from "./Subscription";
 import { SettingsType } from "../emulator/Settings";
 import { deleteSubscription } from "../../api/gcp.pubsub";
 import EmulatorContext, { EmulatorContextType } from "../../contexts/emulators";
-import { shortId } from "../../utils/pubsub";
 import PullMessage from "./PullMessage";
 import { Refresh } from "@mui/icons-material";
 
@@ -31,8 +30,7 @@ function SubscriptionList({subscriptions, setSubscriptions, getSubscriptionsCall
 
     const handlePullMessageClick = (id: GridRowId) => () => {
         setOpen(true)
-        setSubscriptionName({ name: shortId(id.toString())})
-        console.log("Pull message", id.toString())
+        setSubscriptionName({ name: id.toString()})
     };
 
     const handleSubscriptionsRefresh = () => {

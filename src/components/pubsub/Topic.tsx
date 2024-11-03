@@ -9,9 +9,24 @@ type TopicNameType = {
 }
 
 type TopicType = TopicNameType & {
+    // readonly messageRetentionDuration: string,
     readonly labels?: {
         [key: string]: string
     },
+    readonly messageStoragePolicy?: messageStoragePolicy,
+    readonly schemaSettings?: schemaSettings,
+}
+
+type messageStoragePolicy = {
+    readonly allowedPersistenceRegions: Array<string>,
+    readonly enforceInTransit: boolean,
+}
+
+type schemaSettings = {
+    readonly schema: string,
+    encoding: string,
+    firstRevisionId: string,
+    lastRevisionId: string
 }
 
 type TopicProps = {
