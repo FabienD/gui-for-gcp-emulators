@@ -1,127 +1,128 @@
-import React, { useCallback, useContext } from "react";
-import { useForm, Controller, SubmitHandler } from "react-hook-form";
-import { Alert, Box, Button, TextField } from "@mui/material";
+import React, { useCallback, useContext } from 'react';
+import { useForm, Controller, SubmitHandler } from 'react-hook-form';
+import { Alert, Box, Button, TextField } from '@mui/material';
 
-
-import EmulatorContext, { EmulatorContextType } from "../../contexts/emulators";
-import { SettingsType } from "../emulator/Settings";
-import { TopicType } from "./Topic";
-import { createTopic } from "../../api/gcp.pubsub";
-
+import EmulatorContext, { EmulatorContextType } from '../../contexts/emulators';
+import { SettingsType } from '../emulator/Settings';
+import { TopicType } from './Topic';
+import { createTopic } from '../../api/gcp.pubsub';
 
 type TopicCreateProps = {
-    topics: TopicType[],
-    setTopics: React.Dispatch<React.SetStateAction<TopicType[]>>
-}
+  topics: TopicType[];
+  setTopics: React.Dispatch<React.SetStateAction<TopicType[]>>;
+};
 
 type TopicFormType = {
-    name: string,
-    labels?: string
-}
+  name: string;
+  labels?: string;
+};
 
-function TopicCreate({ topics, setTopics}: TopicCreateProps): React.ReactElement {
-    const { getEmulator } = useContext(EmulatorContext) as EmulatorContextType;
-    const [Error, setError] = React.useState<string|undefined>(undefined);
-    const [IsCreated, setIsCreated] = React.useState(false);
+function TopicCreate({
+  topics,
+  setTopics,
+}: TopicCreateProps): React.ReactElement {
+  const { getEmulator } = useContext(EmulatorContext) as EmulatorContextType;
+  const [Error, setError] = React.useState<string | undefined>(undefined);
+  const [IsCreated, setIsCreated] = React.useState(false);
 
-    const emulator = getEmulator();
-    const { control, reset, handleSubmit } = useForm({
-        defaultValues: {
-            name: '',
-            labels: '',
-        },
-    })
+  const emulator = getEmulator();
+  const { control, reset, handleSubmit } = useForm({
+    defaultValues: {
+      name: '',
+      labels: '',
+    },
+  });
 
-    const createTopicCallback = useCallback(async (
-            settings: SettingsType, 
-            topic: TopicFormType
-        ) => {
-            
-            const response = await createTopic(settings, topic);
-            const status = await response.status;
-            const content = await response.json();
-            
-            if (status === 200 
-                && content != undefined
-                && content.name != undefined
-            ) {
-                setIsCreated(true);
-                setTopics([...topics, content]);
-                reset();
-            } else {
-                if (content.error != undefined 
-                    && content.error.message != undefined
-                ) {
-                    setError(content.error.message);
-                } else {
-                    setError("Unknown error");
-                }
-            }
+  const createTopicCallback = useCallback(
+    async (settings: SettingsType, topic: TopicFormType) => {
+      const response = await createTopic(settings, topic);
+      const status = await response.status;
+      const content = await response.json();
 
-            setTimeout(resetAlerts, 3000)
-    }, [topics])
-
-    const onSubmit: SubmitHandler<TopicFormType> = (Formdata): void => {        
-        resetAlerts()
-        
-        if (Formdata.name === undefined || Formdata.name === "") {
-            setError("Name is required");
-            return;
+      if (status === 200 && content != undefined && content.name != undefined) {
+        setIsCreated(true);
+        setTopics([...topics, content]);
+        reset();
+      } else {
+        if (content.error != undefined && content.error.message != undefined) {
+          setError(content.error.message);
+        } else {
+          setError('Unknown error');
         }
-        if (emulator != undefined) {
-            createTopicCallback(emulator, Formdata).catch(console.error)    
-        }
-    }  
+      }
 
-    const resetAlerts = () => {
-        setIsCreated(false);
-        setError(undefined);
+      setTimeout(resetAlerts, 3000);
+    },
+    [topics],
+  );
+
+  const onSubmit: SubmitHandler<TopicFormType> = (Formdata): void => {
+    resetAlerts();
+
+    if (Formdata.name === undefined || Formdata.name === '') {
+      setError('Name is required');
+      return;
     }
+    if (emulator != undefined) {
+      createTopicCallback(emulator, Formdata).catch(console.error);
+    }
+  };
 
-    return (
-        <>
-            <Box
-                component="form"
-                name="topic_create"
-                noValidate
-                autoComplete="off"
-                className='flex gap-2'
-                onSubmit={handleSubmit(onSubmit)}
-            >
-                <Controller
-                    name="name"
-                    control={control}
-                    render={({ field }) => <TextField
-                        {...field}
-                        required
-                        id="name"
-                        label="Name"
-                        size='small'
-                        variant="filled"
-                    />}
-                />
+  const resetAlerts = () => {
+    setIsCreated(false);
+    setError(undefined);
+  };
 
-                <Controller
-                    name="labels"
-                    control={control}
-                    render={({ field }) => <TextField
-                        {...field}
-                        required
-                        id="labels"
-                        label="Labels"
-                        size='small'
-                        variant="filled"
-                    />}
-                />
+  return (
+    <>
+      <Box
+        component="form"
+        name="topic_create"
+        noValidate
+        autoComplete="off"
+        className="flex gap-2"
+        onSubmit={handleSubmit(onSubmit)}
+      >
+        <Controller
+          name="name"
+          control={control}
+          render={({ field }) => (
+            <TextField
+              {...field}
+              required
+              id="name"
+              label="Name"
+              size="small"
+              variant="filled"
+            />
+          )}
+        />
 
-                <Button variant="contained" size='small' type="submit">Create</Button>   
-                
-                {Error != undefined && <Alert severity="error">{Error}</Alert>}
-                {IsCreated && <Alert severity="success">Topic is created</Alert>}
-            </Box>
-        </>
-    );
+        <Controller
+          name="labels"
+          control={control}
+          render={({ field }) => (
+            <TextField
+              {...field}
+              required
+              id="labels"
+              label="Labels"
+              size="small"
+              variant="filled"
+            />
+          )}
+        />
+
+        <Button variant="contained" size="small" type="submit">
+          Create
+        </Button>
+
+        {Error != undefined && <Alert severity="error">{Error}</Alert>}
+        {IsCreated && <Alert severity="success">Topic is created</Alert>}
+      </Box>
+    </>
+  );
 }
 
 export default TopicCreate;
-export type  { TopicFormType };
+export type { TopicFormType };
