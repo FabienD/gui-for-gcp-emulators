@@ -42,13 +42,13 @@ function TopicList({
   };
 
   const handleMessageClick = (id: GridRowId) => () => {
-    setOpenPublishMessage(true);
     setTopicName({ name: id.toString() });
+    setOpenPublishMessage(true);
   };
 
   const handleDefinitionClick = (id: GridRowId) => () => {
-    setOpenTopicDefinition(true);
     setTopicName({ name: id.toString() });
+    setOpenTopicDefinition(true);
   };
 
   const handleTopicsRefresh = () => {

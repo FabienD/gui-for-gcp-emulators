@@ -9,10 +9,10 @@ type TopicNameType = {
 };
 
 type TopicType = TopicNameType & {
-  // readonly messageRetentionDuration: string,
   readonly labels?: {
     [key: string]: string;
   };
+  readonly messageRetentionDuration?: string;
   readonly messageStoragePolicy?: messageStoragePolicy;
   readonly schemaSettings?: schemaSettings;
 };

@@ -14,6 +14,15 @@ export function getTopics(settings: SettingsType): Promise<Response> {
   );
 }
 
+export function getTopic(
+  settings: SettingsType,
+  topicName: TopicNameType,
+): Promise<Response> {
+  return fetch(
+    `http://${settings.host}:${settings.port}/v1/projects/${settings.project_id}/topics/${topicName.name}`,
+  );
+}
+
 export function createTopic(
   settings: SettingsType,
   topic: TopicFormType,
@@ -27,6 +36,7 @@ export function createTopic(
       },
       body: JSON.stringify({
         labels: stringToLabels(topic.labels),
+        messageRetentionDuration: topic.messageRetentionDuration,
       }),
     },
   );

@@ -18,7 +18,7 @@ import EmulatorContext, { EmulatorContextType } from '../../contexts/emulators';
 
 type PublishMessageProps = {
   open: boolean;
-  topicName: TopicNameType;
+  topicName: TopicNameType | undefined;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
@@ -99,48 +99,50 @@ function PublishMessage({
 
   return (
     <Dialog fullWidth={true} maxWidth="sm" open={open} onClose={handleClose}>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <DialogTitle>Publish message</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            <Typography variant="subtitle1" marginBottom={2}>
-              Define the <strong>raw value</strong> of the pubsub{' '}
-              <strong>data message attribute only</strong>. The raw content will
-              be base64 encoded by the application.
-            </Typography>
-            <Controller
-              name="messageData"
-              control={control}
-              rules={{ required: true }}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  id="pubsub-message-data"
-                  label="Raw data attribute value"
-                  multiline
-                  rows={15}
-                  fullWidth={true}
-                />
-              )}
-            />
-          </DialogContentText>
-          {Error != undefined && <Alert severity="error">{Error}</Alert>}
-          {IsPublished && (
-            <Alert severity="success">Message is published</Alert>
-          )}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Close</Button>
-          <Button
-            variant="contained"
-            size="small"
-            type="submit"
-            onClick={handleSubmit(onSubmit)}
-          >
-            Publish
-          </Button>
-        </DialogActions>
-      </form>
+      {topicName !== undefined && (
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <DialogTitle>Publish message</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              <Typography variant="subtitle1" marginBottom={2}>
+                Define the <strong>raw value</strong> of the pubsub{' '}
+                <strong>data message attribute only</strong>. The raw content
+                will be base64 encoded by the application.
+              </Typography>
+              <Controller
+                name="messageData"
+                control={control}
+                rules={{ required: true }}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    id="pubsub-message-data"
+                    label="Raw data attribute value"
+                    multiline
+                    rows={15}
+                    fullWidth={true}
+                  />
+                )}
+              />
+            </DialogContentText>
+            {Error != undefined && <Alert severity="error">{Error}</Alert>}
+            {IsPublished && (
+              <Alert severity="success">Message is published</Alert>
+            )}
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose}>Close</Button>
+            <Button
+              variant="contained"
+              size="small"
+              type="submit"
+              onClick={handleSubmit(onSubmit)}
+            >
+              Publish
+            </Button>
+          </DialogActions>
+        </form>
+      )}
     </Dialog>
   );
 }
