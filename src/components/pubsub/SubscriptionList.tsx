@@ -16,6 +16,7 @@ import { deleteSubscription } from '../../api/gcp.pubsub';
 import EmulatorContext, { EmulatorContextType } from '../../contexts/emulators';
 import PullMessage from './PullMessage';
 import { Refresh } from '@mui/icons-material';
+import { shortName } from '../../utils/pubsub';
 
 type SubscriptionsListProps = {
   subscriptions: SubscriptionType[];
@@ -139,8 +140,8 @@ function SubscriptionList({
   const rows = subscriptions.map((subscription: SubscriptionType) => {
     return {
       id: subscription.name,
-      name: shortId(subscription.name),
-      topic: shortId(subscription.topic),
+      name: shortName(subscription.name),
+      topic: shortName(subscription.topic),
       type: subscription.pushConfig?.pushEndpoint ? 'push' : 'pull',
       pushEndpoint: subscription.pushConfig?.pushEndpoint,
     };

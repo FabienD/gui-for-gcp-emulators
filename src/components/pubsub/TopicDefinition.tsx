@@ -69,7 +69,7 @@ function TopicDefinition({
               <ListItem key="short_name" dense>
                 <ListItemText
                   primary="Short name"
-                  secondary={shortName(topic)}
+                  secondary={shortName(topic.name)}
                 />
               </ListItem>
               <ListItem key="name" dense>

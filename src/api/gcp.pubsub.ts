@@ -36,7 +36,9 @@ export function createTopic(
       },
       body: JSON.stringify({
         labels: stringToLabels(topic.labels),
-        messageRetentionDuration: topic.messageRetentionDuration,
+        messageRetentionDuration: topic.messageRetentionDuration
+          ? topic.messageRetentionDuration
+          : undefined,
       }),
     },
   );

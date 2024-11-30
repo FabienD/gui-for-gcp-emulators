@@ -10,6 +10,7 @@ import { TopicType } from './Topic';
 
 type SubscriptionNameType = {
   readonly name: string;
+  readonly short_name: string;
 };
 
 type SubscriptionType = SubscriptionNameType & {

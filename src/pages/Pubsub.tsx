@@ -7,9 +7,9 @@ import Title from '../components/ui/Title';
 import EmulatorContext, { EmulatorContextType } from '../contexts/emulators';
 import { SettingsType } from '../components/emulator/Settings';
 import Topic, { TopicType } from '../components/pubsub/Topic';
-import { getTopics } from '../api/gcp.pubsub';
 import Subscription from '../components/pubsub/Subscription';
 import icon from '../assets/icons/pubsub.svg';
+import { getTopics } from '../api/pubsub';
 
 function Pubsub(): React.ReactElement {
   const { getEmulator } = useContext(EmulatorContext) as EmulatorContextType;
@@ -20,18 +20,8 @@ function Pubsub(): React.ReactElement {
   const [topics, setTopics] = useState<TopicType[]>([]);
 
   const getTopicsCallback = useCallback(async (settings: SettingsType) => {
-    const response = await getTopics(settings);
-    const content = await response.json();
-
-    if (
-      content != undefined &&
-      content.topics != undefined &&
-      content.topics.length > 0
-    ) {
-      setTopics([...content.topics]);
-    } else {
-      setTopics([]);
-    }
+    const topics = await getTopics(settings);
+    setTopics([...topics]);
   }, []);
 
   const handleTabChange = (_event: React.SyntheticEvent, newValue: string) => {

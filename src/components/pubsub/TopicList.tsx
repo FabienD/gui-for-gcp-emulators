@@ -68,7 +68,7 @@ function TopicList({
 
       if (status == 200) {
         const filteredTopics = topics.filter(
-          (t: TopicType) => shortName(t) !== topicName.name,
+          (t: TopicType) => shortName(t.name) !== topicName.name,
         );
         setTopics(filteredTopics);
       }
@@ -149,7 +149,7 @@ function TopicList({
 
   const rows = topics.map((topic: TopicType) => {
     return {
-      id: shortName(topic),
+      id: shortName(topic.name),
       name: topic.name,
       labels: labelsToString(topic),
       //messageRetentionDuration: topic.messageRetentionDuration,
