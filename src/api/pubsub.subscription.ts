@@ -1,60 +1,9 @@
 import { SettingsType } from '../components/emulator/Settings';
-import { PubSubMessageType } from '../components/pubsub/PublishMessage';
 import {
   SubscriptionNameType,
   SubscriptionType,
 } from '../components/pubsub/Subscription';
 import { TopicNameType } from '../components/pubsub/Topic';
-import { TopicFormType } from '../components/pubsub/TopicCreate';
-import { stringToLabels } from '../utils/pubsub';
-
-export function getTopics(settings: SettingsType): Promise<Response> {
-  return fetch(
-    `http://${settings.host}:${settings.port}/v1/projects/${settings.project_id}/topics`,
-  );
-}
-
-export function getTopic(
-  settings: SettingsType,
-  topicName: TopicNameType,
-): Promise<Response> {
-  return fetch(
-    `http://${settings.host}:${settings.port}/v1/projects/${settings.project_id}/topics/${topicName.name}`,
-  );
-}
-
-export function createTopic(
-  settings: SettingsType,
-  topic: TopicFormType,
-): Promise<Response> {
-  return fetch(
-    `http://${settings.host}:${settings.port}/v1/projects/${settings.project_id}/topics/${topic.name}`,
-    {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        labels: stringToLabels(topic.labels),
-        messageRetentionDuration: topic.messageRetentionDuration
-          ? topic.messageRetentionDuration
-          : undefined,
-      }),
-    },
-  );
-}
-
-export function deleteTopic(
-  settings: SettingsType,
-  topicName: TopicNameType,
-): Promise<Response> {
-  return fetch(
-    `http://${settings.host}:${settings.port}/v1/projects/${settings.project_id}/topics/${topicName.name}`,
-    {
-      method: 'DELETE',
-    },
-  );
-}
 
 export function getTopicSubscriptions(
   settings: SettingsType,
@@ -103,30 +52,6 @@ export function deleteSubscription(
     `http://${settings.host}:${settings.port}/v1/${subscriptionName.name}`,
     {
       method: 'DELETE',
-    },
-  );
-}
-
-export function publishMessage(
-  settings: SettingsType,
-  topicName: TopicNameType,
-  pubSubMessage: PubSubMessageType,
-): Promise<Response> {
-  return fetch(
-    `http://${settings.host}:${settings.port}/v1/projects/${settings.project_id}/topics/${topicName.name}:publish`,
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        messages: [
-          {
-            attributes: pubSubMessage.attributes,
-            data: pubSubMessage.data,
-          },
-        ],
-      }),
     },
   );
 }

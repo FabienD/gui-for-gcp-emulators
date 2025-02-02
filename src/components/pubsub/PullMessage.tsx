@@ -14,7 +14,10 @@ import { atelierSulphurpoolLight } from 'react-syntax-highlighter/dist/esm/style
 
 import EmulatorContext, { EmulatorContextType } from '../../contexts/emulators';
 import { SubscriptionNameType } from './Subscription';
-import { ackSubscription, pullSubscription } from '../../api/gcp.pubsub';
+import {
+  ackSubscription,
+  pullSubscription,
+} from '../../api/pubsub.subscription';
 
 type PullMessageProps = {
   open: boolean;

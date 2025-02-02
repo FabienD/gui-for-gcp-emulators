@@ -1,10 +1,10 @@
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useCallback, useContext, useMemo, useState } from 'react';
 
 import { Refresh } from '@mui/icons-material';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import InfoIcon from '@mui/icons-material/Info';
 import MessageIcon from '@mui/icons-material/Message';
-import { Alert, Button, Tooltip } from '@mui/material';
+import { Alert, Button, CircularProgress, Tooltip } from '@mui/material';
 import {
   DataGrid,
   GridActionsCellItem,
@@ -12,7 +12,7 @@ import {
   GridRowId,
 } from '@mui/x-data-grid';
 
-import { deleteTopic } from '../../api/gcp.pubsub';
+import { deleteTopic } from '../../api/pubsub.topic';
 import EmulatorContext, { EmulatorContextType } from '../../contexts/emulators';
 import { labelsToString, shortName } from '../../utils/pubsub';
 import { SettingsType } from '../emulator/Settings';
@@ -31,42 +31,47 @@ function TopicList({
   setTopics,
   getTopicsCallback,
 }: TopicListProps): React.ReactElement {
+  const [loading, setLoading] = useState(false);
   const [openPublishMessage, setOpenPublishMessage] = useState(false);
   const [openTopicDefinition, setOpenTopicDefinition] = useState(false);
   const [topicName, setTopicName] = useState<TopicNameType>();
   const { getEmulator } = useContext(EmulatorContext) as EmulatorContextType;
   const emulator = getEmulator();
 
-  const handleDeleteClick = (id: GridRowId) => () => {
-    deleteTopicAction({ name: id.toString() });
-  };
+  const handleActionClick = (
+    action: 'delete' | 'message' | 'definition',
+    id: GridRowId,
+  ) => {
+    const name = id.toString();
+    setTopicName({ name });
 
-  const handleMessageClick = (id: GridRowId) => () => {
-    setTopicName({ name: id.toString() });
-    setOpenPublishMessage(true);
-  };
-
-  const handleDefinitionClick = (id: GridRowId) => () => {
-    setTopicName({ name: id.toString() });
-    setOpenTopicDefinition(true);
+    if (action === 'delete') {
+      deleteTopicAction({ name });
+    } else if (action === 'message') {
+      setOpenPublishMessage(true);
+    } else if (action === 'definition') {
+      setOpenTopicDefinition(true);
+    }
   };
 
   const handleTopicsRefresh = () => {
     if (emulator != undefined) {
+      setLoading(true);
       getTopicsCallback({
         host: emulator.host,
         port: emulator.port,
         project_id: emulator.project_id,
+      }).finally(() => {
+        setLoading(false);
       });
     }
   };
 
   const deleteTopicCallback = useCallback(
     async (settings: SettingsType, topicName: TopicNameType) => {
-      const response = await deleteTopic(settings, topicName);
-      const status = response.status;
+      const isDeleted = await deleteTopic(settings, topicName);
 
-      if (status == 200) {
+      if (isDeleted) {
         const filteredTopics = topics.filter(
           (t: TopicType) => shortName(t.name) !== topicName.name,
         );
@@ -94,74 +99,79 @@ function TopicList({
     [emulator, deleteTopicCallback],
   );
 
-  const columns: GridColDef[] = [
-    {
-      headerName: 'ID',
-      field: 'id',
-      minWidth: 150,
-    },
-    {
-      headerName: 'Name',
-      field: 'name',
-      flex: 1,
-    },
-    {
-      headerName: 'Labels',
-      field: 'labels',
-      minWidth: 200,
-    },
-    {
-      field: 'actions',
-      type: 'actions',
-      headerName: 'Actions',
-      minWidth: 150,
-      cellClassName: 'actions',
-      getActions: ({ id }) => {
-        return [
-          <Tooltip title="Information" key="information">
-            <GridActionsCellItem
-              icon={<InfoIcon />}
-              label="Information"
-              onClick={handleDefinitionClick(id)}
-              color="inherit"
-            />
-          </Tooltip>,
-          <Tooltip title="Publish a message" key="publish">
-            <GridActionsCellItem
-              icon={<MessageIcon />}
-              label="Publish a message"
-              onClick={handleMessageClick(id)}
-              color="inherit"
-            />
-          </Tooltip>,
-          <Tooltip title="Delete" key="delete">
-            <GridActionsCellItem
-              icon={<DeleteIcon />}
-              label="Delete"
-              onClick={handleDeleteClick(id)}
-              color="inherit"
-            />
-          </Tooltip>,
-        ];
+  const columns: GridColDef[] = useMemo(
+    () => [
+      {
+        headerName: 'ID',
+        field: 'id',
+        minWidth: 150,
       },
-    },
-  ];
+      {
+        headerName: 'Name',
+        field: 'name',
+        flex: 1,
+      },
+      {
+        headerName: 'Labels',
+        field: 'labels',
+        minWidth: 200,
+      },
+      {
+        field: 'actions',
+        type: 'actions',
+        headerName: 'Actions',
+        minWidth: 150,
+        cellClassName: 'actions',
+        getActions: ({ id }) => {
+          return [
+            <Tooltip title="Information" key="information">
+              <GridActionsCellItem
+                icon={<InfoIcon />}
+                label="Information"
+                onClick={() => handleActionClick('definition', id)}
+                color="inherit"
+              />
+            </Tooltip>,
+            <Tooltip title="Publish a message" key="publish">
+              <GridActionsCellItem
+                icon={<MessageIcon />}
+                label="Publish a message"
+                onClick={() => handleActionClick('message', id)}
+                color="inherit"
+              />
+            </Tooltip>,
+            <Tooltip title="Delete" key="delete">
+              <GridActionsCellItem
+                icon={<DeleteIcon />}
+                label="Delete"
+                onClick={() => handleActionClick('delete', id)}
+                color="inherit"
+              />
+            </Tooltip>,
+          ];
+        },
+      },
+    ],
+    [handleActionClick],
+  );
 
-  const rows = topics.map((topic: TopicType) => {
-    return {
-      id: shortName(topic.name),
-      name: topic.name,
-      labels: labelsToString(topic),
-      //messageRetentionDuration: topic.messageRetentionDuration,
-      //state: topic.state,
-      //messageStoragePolicy: topic.messageStoragePolicy,
-      //schemaSettings: topic.schemaSettings
-    };
-  });
+  const rows = useMemo(
+    () =>
+      topics.map((topic: TopicType) => ({
+        id: shortName(topic.name),
+        name: topic.name,
+        labels: labelsToString(topic),
+      })),
+    [topics],
+  );
 
   return (
     <>
-      {topics.length == 0 ? (
+      {loading ? (
+        <div className="flex justify-center mt-10">
+          <CircularProgress />
+        </div>
+      ) : topics.length === 0 ? (
         <Alert severity="info" className="my-5">
           No topics
         </Alert>

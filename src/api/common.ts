@@ -1,0 +1,63 @@
+import { SettingsType } from '../components/emulator/Settings';
+
+class ApiError extends Error {
+  public statusCode: number;
+  public endpoint: string;
+
+  constructor(message: string, statusCode: number, endpoint: string) {
+    super(message);
+    this.statusCode = statusCode;
+    this.endpoint = endpoint;
+    this.name = 'ApiError';
+  }
+}
+
+async function apiCall<T>(
+  settings: SettingsType,
+  endpoint: string,
+  method: string = 'GET',
+  body: any = null,
+  retries: number = 3,
+  delay: number = 1000,
+): Promise<T> {
+  const url = `http://${settings.host}:${settings.port}/v1/projects/${settings.project_id}${endpoint}`;
+  const options: RequestInit = {
+    method,
+    headers: { 'Content-Type': 'application/json' },
+  };
+
+  if (body) {
+    options.body = JSON.stringify(body);
+  }
+
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    try {
+      const response = await fetch(url, options);
+
+      if (!response.ok) {
+        throw new ApiError(
+          `HTTP error: ${response.status} ${response.statusText}`,
+          response.status,
+          endpoint,
+        );
+      }
+
+      const content = await response.json();
+      return content as T;
+    } catch (error) {
+      if (attempt === retries) {
+        throw error;
+      }
+
+      console.warn(
+        `Attempt ${attempt + 1} failed: ${error.message}. Retrying in ${delay}ms...`,
+      );
+      await new Promise(resolve => setTimeout(resolve, delay));
+    }
+  }
+
+  throw new ApiError('Max retries reached', 500, endpoint);
+}
+
+export default apiCall;
+export { ApiError };

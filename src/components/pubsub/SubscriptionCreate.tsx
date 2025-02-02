@@ -17,7 +17,7 @@ import {
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 
 import EmulatorContext, { EmulatorContextType } from '../../contexts/emulators';
-import { createSubscription } from '../../api/gcp.pubsub';
+import { createSubscription } from '../../api/pubsub.subscription';
 import { SettingsType } from '../emulator/Settings';
 import { SubscriptionType } from './Subscription';
 import { TopicType } from './Topic';

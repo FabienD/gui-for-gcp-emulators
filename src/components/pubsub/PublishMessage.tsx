@@ -13,7 +13,7 @@ import {
 } from '@mui/material';
 
 import { TopicNameType } from './Topic';
-import { publishMessage } from '../../api/gcp.pubsub';
+import { publishMessage } from '../../api/pubsub.topic';
 import EmulatorContext, { EmulatorContextType } from '../../contexts/emulators';
 
 type PublishMessageProps = {
@@ -59,23 +59,17 @@ function PublishMessage({
       data: btoa(data.messageData),
     };
     if (topicName !== undefined && emulator !== undefined) {
-      const response = await publishMessage(emulator, topicName, message);
-      const status = response.status;
-      const content = await response.json();
+      const isMessagePublished = await publishMessage(
+        emulator,
+        topicName,
+        message,
+      );
 
-      if (
-        status === 200 &&
-        content != undefined &&
-        content.messageIds != undefined
-      ) {
+      if (isMessagePublished) {
         setIsPublished(true);
         reset();
       } else {
-        if (content.error != undefined && content.error.message != undefined) {
-          setError(content.error.message);
-        } else {
-          setError('Unknown error');
-        }
+        setError('Error, message is not published');
       }
     }
 

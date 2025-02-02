@@ -5,7 +5,7 @@ import EmulatorContext, { EmulatorContextType } from '../../contexts/emulators';
 import SubscriptionCreate from './SubscriptionCreate';
 import SubscriptionList from './SubscriptionList';
 import { SettingsType } from '../emulator/Settings';
-import { getSubscriptions } from '../../api/gcp.pubsub';
+import { getSubscriptions } from '../../api/pubsub.subscription';
 import { TopicType } from './Topic';
 
 type SubscriptionNameType = {

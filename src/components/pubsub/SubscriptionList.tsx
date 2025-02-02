@@ -12,7 +12,7 @@ import MarkChatReadIcon from '@mui/icons-material/MarkChatRead';
 
 import { SubscriptionNameType, SubscriptionType } from './Subscription';
 import { SettingsType } from '../emulator/Settings';
-import { deleteSubscription } from '../../api/gcp.pubsub';
+import { deleteSubscription } from '../../api/pubsub.subscription';
 import EmulatorContext, { EmulatorContextType } from '../../contexts/emulators';
 import PullMessage from './PullMessage';
 import { Refresh } from '@mui/icons-material';

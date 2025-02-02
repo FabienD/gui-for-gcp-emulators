@@ -9,19 +9,30 @@ import { SettingsType } from '../components/emulator/Settings';
 import Topic, { TopicType } from '../components/pubsub/Topic';
 import Subscription from '../components/pubsub/Subscription';
 import icon from '../assets/icons/pubsub.svg';
-import { getTopics } from '../api/pubsub';
+import { getTopics } from '../api/pubsub.topic';
+import { ApiError } from '../api/common';
+import Schema from '../components/pubsub/Schema';
 
 function Pubsub(): React.ReactElement {
   const { getEmulator } = useContext(EmulatorContext) as EmulatorContextType;
-
   const emulator = getEmulator();
 
   const [tabIndex, setTabIndex] = React.useState('1');
   const [topics, setTopics] = useState<TopicType[]>([]);
 
   const getTopicsCallback = useCallback(async (settings: SettingsType) => {
-    const topics = await getTopics(settings);
-    setTopics([...topics]);
+    try {
+      const fetchedTopics = await getTopics(settings);
+      setTopics(fetchedTopics);
+    } catch (error) {
+      if (error instanceof ApiError) {
+        console.error(
+          `API Error: ${error.message} (Status: ${error.statusCode})`,
+        );
+      } else {
+        console.error('Unexpected error', error);
+      }
+    }
   }, []);
 
   const handleTabChange = (_event: React.SyntheticEvent, newValue: string) => {
@@ -29,12 +40,13 @@ function Pubsub(): React.ReactElement {
   };
 
   useEffect(() => {
-    if (emulator != undefined) {
-      getTopicsCallback({
+    if (emulator) {
+      const settings: SettingsType = {
         host: emulator.host,
         port: emulator.port,
         project_id: emulator.project_id,
-      }).catch(console.error);
+      };
+      getTopicsCallback(settings);
     }
   }, [emulator, getTopicsCallback]);
 
@@ -47,6 +59,7 @@ function Pubsub(): React.ReactElement {
           <TabList onChange={handleTabChange} aria-label="Pubsub resources">
             <Tab label="Topic" value="1" />
             <Tab label="Subscription" value="2" />
+            <Tab label="Schema" value="3" />
           </TabList>
         </Box>
         <TabPanel value="1">
@@ -58,6 +71,9 @@ function Pubsub(): React.ReactElement {
         </TabPanel>
         <TabPanel value="2">
           <Subscription topics={topics} />
+        </TabPanel>
+        <TabPanel value="3">
+          <Schema />
         </TabPanel>
       </TabContext>
     </>
