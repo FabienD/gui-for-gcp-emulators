@@ -1,10 +1,9 @@
 import React, { useCallback, useContext, useMemo, useState } from 'react';
 
-import { Refresh } from '@mui/icons-material';
+import { Alert, Button, CircularProgress, Tooltip } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import InfoIcon from '@mui/icons-material/Info';
-import MessageIcon from '@mui/icons-material/Message';
-import { Alert, Button, CircularProgress, Tooltip } from '@mui/material';
+import Refresh from '@mui/icons-material/Refresh';
 import {
   DataGrid,
   GridActionsCellItem,
@@ -12,52 +11,48 @@ import {
   GridRowId,
 } from '@mui/x-data-grid';
 
-import { deleteTopic } from '../../api/pubsub.topic';
-import EmulatorContext, { EmulatorContextType } from '../../contexts/emulators';
-import { labelsToString, shortName } from '../../utils/pubsub';
-import { SettingsType } from '../emulator/Settings';
-import PublishMessage from './PublishMessage';
-import { TopicNameType, TopicType } from './Topic';
-import TopicDefinition from './TopicDefinition';
 
-type TopicListProps = {
-  topics: TopicType[];
-  setTopics: React.Dispatch<React.SetStateAction<TopicType[]>>;
-  getTopicsCallback: (settings: SettingsType) => Promise<void>;
+import EmulatorContext, { EmulatorContextType } from '../../contexts/emulators';
+import { SettingsType } from '../emulator/Settings';
+import { SchemaNameType, SchemaType } from './Schema';
+import { shortName } from '../../utils/pubsub';
+import { deleteSchema } from '../../api/pubsub.schema';
+
+type SchemaListProps = {
+  schemas: SchemaType[];
+  setSchemas: React.Dispatch<React.SetStateAction<SchemaType[]>>;
+  getSchemasCallback: (settings: SettingsType) => Promise<void>;
 };
 
-function TopicList({
-  topics,
-  setTopics,
-  getTopicsCallback,
-}: TopicListProps): React.ReactElement {
+function SchemaList({
+  schemas,
+  setSchemas,
+  getSchemasCallback,
+}: SchemaListProps): React.ReactElement {
   const [loading, setLoading] = useState(false);
-  const [openPublishMessage, setOpenPublishMessage] = useState(false);
-  const [openTopicDefinition, setOpenTopicDefinition] = useState(false);
-  const [topicName, setTopicName] = useState<TopicNameType>();
+  const [openSchemaDefinition, setOpenSchemaDefinition] = useState(false);
+  const [schemaName, setSchemaName] = useState<SchemaNameType>();
   const { getEmulator } = useContext(EmulatorContext) as EmulatorContextType;
   const emulator = getEmulator();
 
   const handleActionClick = (
-    action: 'delete' | 'message' | 'definition',
+    action: 'delete' | 'definition',
     id: GridRowId,
   ) => {
     const name = id.toString();
-    setTopicName({ name });
+    setSchemaName({ name });
 
     if (action === 'delete') {
-      deleteTopicAction({ name });
-    } else if (action === 'message') {
-      setOpenPublishMessage(true);
+      deleteSchemaAction({ name });
     } else if (action === 'definition') {
-      setOpenTopicDefinition(true);
+      setOpenSchemaDefinition(true);
     }
   };
 
-  const handleTopicsRefresh = () => {
+  const handleSchemasRefresh = () => {
     if (emulator != undefined) {
       setLoading(true);
-      getTopicsCallback({
+      getSchemasCallback({
         host: emulator.host,
         port: emulator.port,
         project_id: emulator.project_id,
@@ -67,36 +62,36 @@ function TopicList({
     }
   };
 
-  const deleteTopicCallback = useCallback(
-    async (settings: SettingsType, topicName: TopicNameType) => {
-      const isDeleted = await deleteTopic(settings, topicName);
+  const deleteSchemaCallback = useCallback(
+    async (settings: SettingsType, schemaName: SchemaNameType) => {
+      const isDeleted = await deleteSchema(settings, schemaName);
 
       if (isDeleted) {
-        const filteredTopics = topics.filter(
-          (t: TopicType) => shortName(t.name) !== topicName.name,
+        const filteredSchemas = schemas.filter(
+          (t: SchemaType) => shortName(t.name) !== schemaName.name,
         );
-        setTopics(filteredTopics);
+        setSchemas(filteredSchemas);
       }
     },
-    [topics],
+    [schemas],
   );
 
-  const deleteTopicAction = useCallback(
-    async (topicName: TopicNameType) => {
+  const deleteSchemaAction = useCallback(
+    async (schemaName: SchemaNameType) => {
       if (emulator != undefined) {
-        deleteTopicCallback(
+        deleteSchemaCallback(
           {
             host: emulator.host,
             port: emulator.port,
             project_id: emulator.project_id,
           },
           {
-            name: topicName.name,
+            name: schemaName.name,
           },
         ).catch(console.error);
       }
     },
-    [emulator, deleteTopicCallback],
+    [emulator, deleteSchemaCallback],
   );
 
   const columns: GridColDef[] = useMemo(
@@ -124,7 +119,7 @@ function TopicList({
         cellClassName: 'actions',
         getActions: ({ id }) => {
           return [
-            <Tooltip title="Information" key={`information-${id}`}>
+            <Tooltip title="Information" key="information">
               <GridActionsCellItem
                 icon={<InfoIcon />}
                 label="Information"
@@ -132,15 +127,7 @@ function TopicList({
                 color="inherit"
               />
             </Tooltip>,
-            <Tooltip title="Publish a message" key={`message-${id}`}>
-              <GridActionsCellItem
-                icon={<MessageIcon />}
-                label="Publish a message"
-                onClick={() => handleActionClick('message', id)}
-                color="inherit"
-              />
-            </Tooltip>,
-            <Tooltip title="Delete" key={`delete-${id}`}>
+            <Tooltip title="Delete" key="delete">
               <GridActionsCellItem
                 icon={<DeleteIcon />}
                 label="Delete"
@@ -157,12 +144,11 @@ function TopicList({
 
   const rows = useMemo(
     () =>
-      topics.map((topic: TopicType) => ({
-        id: shortName(topic.name),
-        name: topic.name,
-        labels: labelsToString(topic),
+      schemas.map((schema: SchemaType) => ({
+        id: shortName(schema.name),
+        name: schema.name,
       })),
-    [topics],
+    [schemas],
   );
 
   return (
@@ -171,9 +157,9 @@ function TopicList({
         <div className="flex justify-center mt-10">
           <CircularProgress />
         </div>
-      ) : topics.length === 0 ? (
+      ) : schemas.length === 0 ? (
         <Alert severity="info" className="my-5">
-          No topics
+          No Schemas
         </Alert>
       ) : (
         <>
@@ -188,25 +174,14 @@ function TopicList({
               }}
               pageSizeOptions={[10]}
             />
-            <Button onClick={handleTopicsRefresh} startIcon={<Refresh />}>
-              topics list
-            </Button>
           </div>
-
-          <PublishMessage
-            open={openPublishMessage}
-            setOpen={setOpenPublishMessage}
-            topicName={topicName}
-          />
-          <TopicDefinition
-            open={openTopicDefinition}
-            setOpen={setOpenTopicDefinition}
-            topicName={topicName}
-          />
+          <Button onClick={handleSchemasRefresh} startIcon={<Refresh />}>
+            schema list
+          </Button>
         </>
       )}
     </>
   );
 }
 
-export default TopicList;
+export default SchemaList;

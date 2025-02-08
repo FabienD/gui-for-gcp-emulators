@@ -1,21 +1,21 @@
 import React, { useCallback, useContext, useState } from 'react';
 
 import { Alert, Button, Tooltip } from '@mui/material';
+import { Refresh } from '@mui/icons-material';
+import DeleteIcon from '@mui/icons-material/DeleteOutlined';
+import MarkChatReadIcon from '@mui/icons-material/MarkChatRead';
 import {
   DataGrid,
   GridActionsCellItem,
   GridColDef,
   GridRowId,
 } from '@mui/x-data-grid';
-import DeleteIcon from '@mui/icons-material/DeleteOutlined';
-import MarkChatReadIcon from '@mui/icons-material/MarkChatRead';
 
-import { SubscriptionNameType, SubscriptionType } from './Subscription';
-import { SettingsType } from '../emulator/Settings';
-import { deleteSubscription } from '../../api/pubsub.subscription';
 import EmulatorContext, { EmulatorContextType } from '../../contexts/emulators';
+import { SettingsType } from '../emulator/Settings';
+import { SubscriptionNameType, SubscriptionType } from './Subscription';
 import PullMessage from './PullMessage';
-import { Refresh } from '@mui/icons-material';
+import { deleteSubscription } from '../../api/pubsub.subscription';
 import { shortName } from '../../utils/pubsub';
 
 type SubscriptionsListProps = {
@@ -116,7 +116,7 @@ function SubscriptionList({
       cellClassName: 'actions',
       getActions: ({ id }) => {
         return [
-          <Tooltip title="Delete">
+          <Tooltip title="Delete" key={`delete-${id}`}>
             <GridActionsCellItem
               icon={<DeleteIcon />}
               label="Delete"
@@ -124,7 +124,7 @@ function SubscriptionList({
               color="inherit"
             />
           </Tooltip>,
-          <Tooltip title="Pull Message">
+          <Tooltip title="Pull Message" key={`pull-${id}`}>
             <GridActionsCellItem
               icon={<MarkChatReadIcon />}
               label="Pull Message"

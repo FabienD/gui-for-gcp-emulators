@@ -1,5 +1,6 @@
 import { SettingsType } from '../components/emulator/Settings';
-import { SchemaType } from '../components/pubsub/Schema';
+import { SchemaNameType, SchemaType } from '../components/pubsub/Schema';
+import { SchemaFormType } from '../components/pubsub/SchemaCreate';
 import apiCall from './common';
 
 export async function getSchemas(
@@ -17,4 +18,29 @@ export async function getSchema(
   schema: SchemaType,
 ): Promise<SchemaType> {
   return await apiCall<SchemaType>(settings, `/schemas/${schema.name}`);
+}
+
+export async function createSchema(
+  settings: SettingsType,
+  schema: SchemaFormType,
+): Promise<SchemaType> {
+  const body = {
+    name: schema.name,
+    type: schema.type.toString(),
+    definition: schema.definition,
+  };
+  return await apiCall<SchemaType>(
+    settings,
+    `/schemas/${schema.name}`,
+    'PUT',
+    body,
+  );
+}
+
+export async function deleteSchema(
+  settings: SettingsType,
+  schemaName: SchemaNameType,
+): Promise<boolean> {
+  await apiCall<void>(settings, `/schemas/${schemaName.name}`, 'DELETE');
+  return true;
 }

@@ -10,8 +10,9 @@ import Topic, { TopicType } from '../components/pubsub/Topic';
 import Subscription from '../components/pubsub/Subscription';
 import icon from '../assets/icons/pubsub.svg';
 import { getTopics } from '../api/pubsub.topic';
+import { getSchemas } from '../api/pubsub.schema';
 import { ApiError } from '../api/common';
-import Schema from '../components/pubsub/Schema';
+import Schema, { SchemaType } from '../components/pubsub/Schema';
 
 function Pubsub(): React.ReactElement {
   const { getEmulator } = useContext(EmulatorContext) as EmulatorContextType;
@@ -19,11 +20,27 @@ function Pubsub(): React.ReactElement {
 
   const [tabIndex, setTabIndex] = React.useState('1');
   const [topics, setTopics] = useState<TopicType[]>([]);
+  const [schemas, setSchemas] = useState<SchemaType[]>([]);
 
   const getTopicsCallback = useCallback(async (settings: SettingsType) => {
     try {
       const fetchedTopics = await getTopics(settings);
       setTopics(fetchedTopics);
+    } catch (error) {
+      if (error instanceof ApiError) {
+        console.error(
+          `API Error: ${error.message} (Status: ${error.statusCode})`,
+        );
+      } else {
+        console.error('Unexpected error', error);
+      }
+    }
+  }, []);
+
+  const getSchemasCallBack = useCallback(async (settings: SettingsType) => {
+    try {
+      const fetchedSchemas = await getSchemas(settings);
+      setTopics(fetchedSchemas);
     } catch (error) {
       if (error instanceof ApiError) {
         console.error(
@@ -73,7 +90,11 @@ function Pubsub(): React.ReactElement {
           <Subscription topics={topics} />
         </TabPanel>
         <TabPanel value="3">
-          <Schema />
+          <Schema 
+            schemas={schemas}
+            setSchemas={setSchemas}
+            getSchemasCallBack={getSchemasCallBack}
+          />
         </TabPanel>
       </TabContext>
     </>

@@ -6,7 +6,6 @@ import {
   Button,
   Collapse,
   Stack,
-  TextareaAutosize,
   TextField,
   Tooltip,
 } from '@mui/material';
