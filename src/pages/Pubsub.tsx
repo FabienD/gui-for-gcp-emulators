@@ -37,7 +37,7 @@ function Pubsub(): React.ReactElement {
     }
   }, []);
 
-  const getSchemasCallBack = useCallback(async (settings: SettingsType) => {
+  const getSchemasCallback = useCallback(async (settings: SettingsType) => {
     try {
       const fetchedSchemas = await getSchemas(settings);
       setTopics(fetchedSchemas);
@@ -84,16 +84,17 @@ function Pubsub(): React.ReactElement {
             topics={topics}
             setTopics={setTopics}
             getTopicsCallback={getTopicsCallback}
+            schemas={schemas}
           />
         </TabPanel>
         <TabPanel value="2">
           <Subscription topics={topics} />
         </TabPanel>
         <TabPanel value="3">
-          <Schema 
+          <Schema
             schemas={schemas}
             setSchemas={setSchemas}
-            getSchemasCallBack={getSchemasCallBack}
+            getSchemasCallback={getSchemasCallback}
           />
         </TabPanel>
       </TabContext>

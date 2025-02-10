@@ -1,7 +1,18 @@
 import React, { useCallback, useContext, useState } from 'react';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 
-import { Box, InputLabel, MenuItem, Select, Stack, TextField, Tooltip } from '@mui/material';
+import {
+  Alert,
+  Box,
+  Button,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  Stack,
+  TextField,
+  Tooltip,
+} from '@mui/material';
 
 import EmulatorContext, { EmulatorContextType } from '../../contexts/emulators';
 import { SettingsType } from '../emulator/Settings';
@@ -15,7 +26,7 @@ type SchemaCreateProps = {
 
 type SchemaFormType = {
   name: string;
-  type: SchemaTypes;
+  type: string;
   definition: string;
 };
 
@@ -29,7 +40,12 @@ function SchemaCreate({
 
   const emulator = getEmulator();
 
-  const { control, reset, handleSubmit } = useForm({
+  const {
+    control,
+    formState: { errors },
+    reset,
+    handleSubmit,
+  } = useForm({
     defaultValues: {
       name: '',
       type: '',
@@ -39,14 +55,16 @@ function SchemaCreate({
 
   const createSChemaCallback = useCallback(
     async (settings: SettingsType, schema: SchemaFormType) => {
-      const createdSchema = await createSchema(settings, schema);
-
-      if (createdSchema) {
-        setIsCreated(true);
-        setSchemas([...schemas, createdSchema]);
-        reset();
-      } else {
-        setError('Error creating topic');
+      try {
+        const createdSchema = await createSchema(settings, schema);
+        if (createdSchema) {
+          setIsCreated(true);
+          setSchemas([...schemas, createdSchema]);
+          reset();
+        }
+      } catch (error) {
+        setError('Error creating schema');
+        console.error(error);
       }
 
       setTimeout(resetAlerts, 3000);
@@ -57,10 +75,6 @@ function SchemaCreate({
   const onSubmit: SubmitHandler<SchemaFormType> = (Formdata): void => {
     resetAlerts();
 
-    if (Formdata.name === undefined || Formdata.name === '') {
-      setError('Name is required');
-      return;
-    }
     if (emulator != undefined) {
       createSChemaCallback(emulator, Formdata).catch(console.error);
     }
@@ -85,6 +99,7 @@ function SchemaCreate({
           <Controller
             name="name"
             control={control}
+            rules={{ required: true }}
             render={({ field }) => (
               <Tooltip title="Schema name" placement="top-start">
                 <TextField
@@ -94,6 +109,7 @@ function SchemaCreate({
                   label="Name"
                   size="small"
                   variant="filled"
+                  error={errors.name ? true : false}
                 />
               </Tooltip>
             )}
@@ -102,42 +118,63 @@ function SchemaCreate({
           <Controller
             name="type"
             control={control}
+            rules={{ required: true }}
             render={({ field }) => (
+              <FormControl variant="filled" sx={{ minWidth: 120 }}>
+                <InputLabel
+                  id="schema-type-label"
+                  error={errors.type ? true : false}
+                >
+                  Type *
+                </InputLabel>
                 <Tooltip title="Schema type" placement="top-start">
-                    <Select
-                      {...field}
-                      required
-                      id="type"
-                      label="Type"
-                      size="small"
-                      variant="filled"
-                    >
-                      <MenuItem value={SchemaTypes.TYPE_UNSPECIFIED}>Unspecified</MenuItem>
-                      <MenuItem value={SchemaTypes.AVRO}>Avro</MenuItem>
-                      <MenuItem value={SchemaTypes.PROTOCOL_BUFFER}>Protocol Buffer</MenuItem>
-                    </Select>
-              </Tooltip>
+                  <Select
+                    {...field}
+                    required
+                    id="type"
+                    labelId="schema-type-label"
+                    size="small"
+                    variant="filled"
+                    error={errors.type ? true : false}
+                  >
+                    <MenuItem value="AVRO">{SchemaTypes.AVRO}</MenuItem>
+                    <MenuItem value="PROTOCOL_BUFFER">
+                      {SchemaTypes.PROTOCOL_BUFFER}
+                    </MenuItem>
+                  </Select>
+                </Tooltip>
+              </FormControl>
             )}
           />
 
-          <Controller
-            name="definition"
-            control={control}
-            render={({ field }) => (
-              <Tooltip title="Schema definition" placement="top-start">
-                <TextField
-                  {...field}
-                  required
-                  id="definition"
-                  label="Definition"
-                  size="small"
-                  variant="filled"
-                />
-              </Tooltip>
-            )}
-          />
+          <Button variant="contained" size="small" type="submit">
+            Create
+          </Button>
 
+          {Error != undefined && <Alert severity="error">{Error}</Alert>}
+          {IsCreated && <Alert severity="success">Schema is created</Alert>}
         </Stack>
+
+        <Controller
+          name="definition"
+          control={control}
+          rules={{ required: true }}
+          render={({ field }) => (
+            <Tooltip title="Schema definition" placement="top-start">
+              <TextField
+                {...field}
+                required
+                id="definition"
+                label="Definition"
+                size="small"
+                variant="filled"
+                error={errors.definition ? true : false}
+                rows={20}
+                multiline
+              />
+            </Tooltip>
+          )}
+        />
       </Box>
     </>
   );

@@ -25,15 +25,16 @@ export async function createSchema(
   schema: SchemaFormType,
 ): Promise<SchemaType> {
   const body = {
-    name: schema.name,
-    type: schema.type.toString(),
+    type: schema.type,
     definition: schema.definition,
   };
+
   return await apiCall<SchemaType>(
     settings,
-    `/schemas/${schema.name}`,
-    'PUT',
+    `/schemas?schemaId=${schema.name}`,
+    'POST',
     body,
+    0,
   );
 }
 

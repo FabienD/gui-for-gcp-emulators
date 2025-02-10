@@ -7,11 +7,9 @@ import { SettingsType } from '../emulator/Settings';
 import SchemaCreate from './SchemaCreate';
 import SchemaList from './SchemaList';
 
-
 enum SchemaTypes {
-  TYPE_UNSPECIFIED,
-  PROTOCOL_BUFFER,
-  AVRO,
+  PROTOCOL_BUFFER = 'Protocol Buffer',
+  AVRO = 'Avro',
 }
 
 type SchemaNameType = {
@@ -41,10 +39,10 @@ function Schema({
   return isConnected() ? (
     <>
       <SchemaCreate schemas={schemas} setSchemas={setSchemas} />
-      <SchemaList 
-          schemas={schemas}
-          setSchemas={setSchemas}
-          getSchemasCallback={getSchemasCallback}
+      <SchemaList
+        schemas={schemas}
+        setSchemas={setSchemas}
+        getSchemasCallback={getSchemasCallback}
       />
     </>
   ) : (
