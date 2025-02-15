@@ -16,6 +16,7 @@ async function apiCall<T>(
   settings: SettingsType,
   endpoint: string,
   method: string = 'GET',
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   body: any = null,
   retries: number = 3,
   delay: number = 1000,

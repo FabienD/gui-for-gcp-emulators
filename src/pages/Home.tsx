@@ -33,7 +33,7 @@ function Home(): React.ReactElement {
         </span>{' '}
         Google™ application.
       </Typography>
-      <Typography variant="body1" className="mt-4">
+      <Typography variant="body1" className="pt-2">
         I started the project as a simple test, to play with Tauri-App V2,
         ReactJs & Typescript and finally implement something that works with
         Pub/Sub. The project is under development and doesn&apos;t cover all the

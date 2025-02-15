@@ -21,6 +21,7 @@ import { TopicType } from './Topic';
 import { createTopic } from '../../api/pubsub.topic';
 import { SchemaType } from './Schema';
 import { shortName } from '../../utils/pubsub';
+import HelpLink from '../ui/HelpLink';
 
 type TopicCreateProps = {
   topics: TopicType[];
@@ -40,7 +41,7 @@ function TopicCreate({
   topics,
   setTopics,
   schemas,
-}: TopicCreateProps): React.ReactElement {
+}: TopicCreateProps): Promise<React.ReactElement> {
   const { getEmulator } = useContext(EmulatorContext) as EmulatorContextType;
   const [SubmitError, setSubmitError] = useState<string | undefined>(undefined);
   const [IsCreated, setIsCreated] = useState(false);
@@ -130,6 +131,7 @@ function TopicCreate({
         onSubmit={handleSubmit(onSubmit)}
       >
         <Stack direction="row" className="gap-2">
+          <HelpLink linkUrl="https://cloud.google.com/pubsub/docs/reference/rest/v1/projects.topics" />
           <Controller
             name="name"
             control={control}

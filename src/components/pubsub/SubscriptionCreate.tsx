@@ -21,6 +21,7 @@ import { SettingsType } from '../emulator/Settings';
 import { SubscriptionType } from './Subscription';
 import { TopicType } from './Topic';
 import { createSubscription } from '../../api/pubsub.subscription';
+import HelpLink from '../ui/HelpLink';
 
 type SubscriptionCreateProps = {
   topics: TopicType[];
@@ -138,6 +139,7 @@ function SubscriptionCreate({
         className="grid grid-cols-2 gap-2"
         onSubmit={handleSubmit(onSubmit)}
       >
+        <HelpLink linkUrl="https://cloud.google.com/pubsub/docs/reference/rest/v1/projects.subscriptions" />
         <Controller
           name="name"
           control={control}
@@ -157,7 +159,7 @@ function SubscriptionCreate({
           name="topic"
           control={control}
           render={({ field }) => (
-            <FormControl sx={{ minWidth: 200 }}>
+            <FormControl sx={{ minWidth: 180, maxWidth: '90%' }}>
               <InputLabel
                 id="subscription-topic-select-label"
                 size="small"

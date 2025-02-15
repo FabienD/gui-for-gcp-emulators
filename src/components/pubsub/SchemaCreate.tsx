@@ -18,6 +18,7 @@ import EmulatorContext, { EmulatorContextType } from '../../contexts/emulators';
 import { SettingsType } from '../emulator/Settings';
 import { SchemaType, SchemaTypes } from './Schema';
 import { createSchema } from '../../api/pubsub.schema';
+import HelpLink from '../ui/HelpLink';
 
 type SchemaCreateProps = {
   schemas: SchemaType[];
@@ -96,6 +97,7 @@ function SchemaCreate({
         onSubmit={handleSubmit(onSubmit)}
       >
         <Stack direction="row" className="gap-2">
+          <HelpLink linkUrl="https://cloud.google.com/pubsub/docs/reference/rest/v1/projects.schemas" />
           <Controller
             name="name"
             control={control}
