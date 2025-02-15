@@ -89,7 +89,7 @@ function Home(): React.ReactElement {
           </ul>
         </CardContent>
       </Box>
-      <Typography variant="body1" className="my-4">
+      <Typography variant="body1" className="pt-5">
         <strong>The project is Open Source</strong>,{' '}
         <a
           href="https://github.com/FabienD/gui-for-gcp-emulator"

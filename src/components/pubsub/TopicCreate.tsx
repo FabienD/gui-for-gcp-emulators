@@ -12,6 +12,7 @@ import {
   Stack,
   TextField,
   Tooltip,
+  Typography,
 } from '@mui/material';
 
 import EmulatorContext, { EmulatorContextType } from '../../contexts/emulators';
@@ -210,29 +211,32 @@ function TopicCreate({
               name="schemaName"
               control={control}
               render={({ field }) => (
-                <FormControl variant="filled" sx={{ minWidth: 120 }}>
-                  <InputLabel
-                    id="schema-name-label"
-                    error={errors.schemaName ? true : false}
-                  >
-                    Schema name
-                  </InputLabel>
-                  <Tooltip title="Schema" placement="top-start">
-                    <Select
-                      {...field}
-                      id="schmea"
-                      labelId="schema-name-label"
-                      size="small"
-                      variant="filled"
+                <>
+                  <Typography className="p-1">Associate as schema:</Typography>
+                  <FormControl variant="filled" sx={{ minWidth: 120 }}>
+                    <InputLabel
+                      id="schema-name-label"
                       error={errors.schemaName ? true : false}
                     >
-                      <MenuItem key="schema-name-none" value="">
-                        <em>None</em>
-                      </MenuItem>
-                      {schemaItems}
-                    </Select>
-                  </Tooltip>
-                </FormControl>
+                      Schema name
+                    </InputLabel>
+                    <Tooltip title="Schema" placement="top-start">
+                      <Select
+                        {...field}
+                        id="schmea"
+                        labelId="schema-name-label"
+                        size="small"
+                        variant="filled"
+                        error={errors.schemaName ? true : false}
+                      >
+                        <MenuItem key="schema-name-none" value="">
+                          <em>None</em>
+                        </MenuItem>
+                        {schemaItems}
+                      </Select>
+                    </Tooltip>
+                  </FormControl>
+                </>
               )}
             />
 

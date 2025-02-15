@@ -10,13 +10,10 @@ interface NavItemProps {
 
 function NavItem({ href, icon, name }: NavItemProps): React.ReactElement {
   return (
-    <MenuItem
-      className="py-1 cursor-pointer text-white hover:text-blue-200"
-      id={name}
-    >
+    <MenuItem className="py-1 cursor-pointer" id={name}>
       <NavLink to={href}>
         <img src={icon} className="w-4 h-4 inline mb-1" alt={name} />
-        <span className="pl-2">{name}</span>
+        <span className="pl-2 text-white hover:text-blue-200">{name}</span>
       </NavLink>
     </MenuItem>
   );

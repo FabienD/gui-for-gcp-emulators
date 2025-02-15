@@ -1,3 +1,5 @@
+import React from 'react';
+
 import { Alert, Box } from '@mui/material';
 import Title from './Title';
 

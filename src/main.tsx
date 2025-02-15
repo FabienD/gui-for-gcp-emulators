@@ -12,7 +12,6 @@ import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 
 import './styles.css';
-import './normalize.css';
 import { theme } from './theme';
 
 const rootElement = document.getElementById('root');
