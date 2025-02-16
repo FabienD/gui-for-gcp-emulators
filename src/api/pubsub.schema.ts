@@ -34,7 +34,6 @@ export async function createSchema(
     `/schemas?schemaId=${schema.name}`,
     'POST',
     body,
-    0,
   );
 }
 

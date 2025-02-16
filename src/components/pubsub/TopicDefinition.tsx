@@ -10,7 +10,7 @@ import {
   DialogTitle,
   Typography,
 } from '@mui/material';
-import Grid from '@mui/material/Grid2';
+
 import { TopicNameType, TopicType } from './Topic';
 import EmulatorContext, { EmulatorContextType } from '../../contexts/emulators';
 import { SettingsType } from '../emulator/Settings';
@@ -88,43 +88,34 @@ function TopicDefinition({
 
     if (topic) {
       return (
-        <Grid container spacing={2}>
-          <Grid size={{ xs: 12, sm: 6 }}>
-            <Box padding={2} border={1} borderRadius={2}>
-              <Typography variant="h6">Short Name</Typography>
-              <Typography variant="body1">{shortName(topic.name)}</Typography>
-            </Box>
-          </Grid>
-
-          <Grid size={{ xs: 12, sm: 6 }}>
-            <Box padding={2} border={1} borderRadius={2}>
-              <Typography variant="h6">Name</Typography>
-              <Typography variant="body1">{topic.name}</Typography>
-            </Box>
-          </Grid>
-
-          <Grid size={{ xs: 12, sm: 6 }}>
-            <Box padding={2} border={1} borderRadius={2}>
-              <Typography variant="h6">Labels</Typography>
-              <Typography variant="body1">
-                {topic.labels === undefined ? '--' : labelsToString(topic)}
-              </Typography>
-            </Box>
-          </Grid>
-
-          <Grid size={{ xs: 12, sm: 6 }}>
-            <Box padding={2} border={1} borderRadius={2}>
-              <Typography variant="h6">
-                Message Retention Duration (s)
-              </Typography>
-              <Typography variant="body1">
-                {topic.messageRetentionDuration === undefined
-                  ? '--'
-                  : topic.messageRetentionDuration}
-              </Typography>
-            </Box>
-          </Grid>
-        </Grid>
+        <>
+          <Box padding={2} border={1} borderRadius={2}>
+            <Typography variant="h6">
+              Name: <em>{shortName(topic.name)}</em>
+            </Typography>
+            <Typography variant="body1">
+              <em>{topic.name}</em>
+            </Typography>
+            <Typography variant="h6">Labels</Typography>
+            <Typography variant="body1">
+              {topic.labels === undefined ? '--' : labelsToString(topic)}
+            </Typography>
+            <Typography variant="h6">Message Retention Duration (s)</Typography>
+            <Typography variant="body1">
+              {topic.messageRetentionDuration === undefined
+                ? '--'
+                : topic.messageRetentionDuration}
+            </Typography>
+            <Typography variant="h6">Schema</Typography>
+            <Typography variant="body1">
+              {topic.schemaSettings === undefined
+                ? '--'
+                : topic.schemaSettings.schema +
+                  ' / ' +
+                  topic.schemaSettings.encoding}
+            </Typography>
+          </Box>
+        </>
       );
     }
 

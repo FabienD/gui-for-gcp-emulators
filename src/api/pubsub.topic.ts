@@ -21,10 +21,24 @@ export async function createTopic(
   settings: SettingsType,
   topic: TopicFormType,
 ): Promise<TopicType> {
-  const body = {
+  let body = {};
+  const common = {
     labels: stringToLabels(topic.labels),
     messageRetentionDuration: topic.messageRetentionDuration || undefined,
   };
+
+  if (topic.schemaName && topic.schemaEncoding) {
+    body = {
+      ...common,
+      schemaSettings: {
+        schema: topic.schemaName,
+        encoding: topic.schemaEncoding,
+      },
+    };
+  } else {
+    body = common;
+  }
+
   return await apiCall<TopicType>(
     settings,
     `/topics/${topic.name}`,

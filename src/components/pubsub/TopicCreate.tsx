@@ -52,7 +52,6 @@ function TopicCreate({
     control,
     reset,
     handleSubmit,
-    setError,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -179,6 +178,9 @@ function TopicCreate({
             <Controller
               name="messageRetentionDuration"
               control={control}
+              rules={{
+                pattern: /^[0-9]+s$/i,
+              }}
               render={({ field }) => (
                 <Tooltip
                   title="Duration in seconds. Between 10 min & 31 days. Example: 600s"
@@ -190,6 +192,7 @@ function TopicCreate({
                     label="Message retention duration in seconds"
                     size="small"
                     variant="filled"
+                    error={errors.messageRetentionDuration ? true : false}
                   />
                 </Tooltip>
               )}

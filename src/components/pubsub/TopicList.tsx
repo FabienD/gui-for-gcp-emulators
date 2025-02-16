@@ -34,7 +34,7 @@ function TopicList({
   const [loading, setLoading] = useState(false);
   const [openPublishMessage, setOpenPublishMessage] = useState(false);
   const [openTopicDefinition, setOpenTopicDefinition] = useState(false);
-  const [topicName, setTopicName] = useState<TopicNameType>();
+  const [topicName, setTopicName] = useState<TopicNameType | undefined>();
   const { getEmulator } = useContext(EmulatorContext) as EmulatorContextType;
   const emulator = getEmulator();
 
@@ -46,6 +46,7 @@ function TopicList({
     setTopicName({ name });
 
     if (action === 'delete') {
+      setTopicName(undefined);
       deleteTopicAction({ name });
     } else if (action === 'message') {
       setOpenPublishMessage(true);

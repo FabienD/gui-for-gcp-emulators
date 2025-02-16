@@ -18,7 +18,7 @@ async function apiCall<T>(
   method: string = 'GET',
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   body: any = null,
-  retries: number = 3,
+  retries: number = 0,
   delay: number = 1000,
 ): Promise<T> {
   const url = `http://${settings.host}:${settings.port}/v1/projects/${settings.project_id}${endpoint}`;
