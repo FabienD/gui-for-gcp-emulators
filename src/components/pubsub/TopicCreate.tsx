@@ -85,21 +85,6 @@ function TopicCreate({
   );
 
   const onSubmit: SubmitHandler<TopicFormType> = (Formdata): void => {
-    if (Formdata.schemaName != '' && Formdata.schemaEncoding == '') {
-      setError('schemaEncoding', {
-        type: 'custom',
-        message: 'Schema encoding is required.',
-      });
-      return;
-    }
-    if (Formdata.schemaName == '' && Formdata.schemaEncoding != '') {
-      setError('schemaName', {
-        type: 'custom',
-        message: 'Schema name is required.',
-      });
-      return;
-    }
-
     resetAlerts();
 
     if (emulator != undefined) {
@@ -212,6 +197,18 @@ function TopicCreate({
             <Controller
               name="schemaName"
               control={control}
+              rules={{
+                validate: {
+                  checkSchemaEncoding: async (
+                    schemaName,
+                    { schemaEncoding },
+                  ) => {
+                    if (schemaName === '' && schemaEncoding !== '') {
+                      return 'Schema is required';
+                    }
+                  },
+                },
+              }}
               render={({ field }) => (
                 <>
                   <Typography className="p-1">Associate as schema:</Typography>
@@ -225,7 +222,7 @@ function TopicCreate({
                     <Tooltip title="Schema" placement="top-start">
                       <Select
                         {...field}
-                        id="schmea"
+                        id="scheme"
                         labelId="schema-name-label"
                         size="small"
                         variant="filled"
@@ -245,6 +242,18 @@ function TopicCreate({
             <Controller
               name="schemaEncoding"
               control={control}
+              rules={{
+                validate: {
+                  checkSchemaEncoding: async (
+                    schemaEncoding,
+                    { schemaName },
+                  ) => {
+                    if (schemaName !== '' && schemaEncoding === '') {
+                      return 'Schema encoding is required';
+                    }
+                  },
+                },
+              }}
               render={({ field }) => (
                 <FormControl variant="filled" sx={{ minWidth: 120 }}>
                   <InputLabel
