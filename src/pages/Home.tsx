@@ -13,7 +13,9 @@ function Home(): React.ReactElement {
 
   return (
     <>
-      <Typography variant="h1">GUI for GCP Emulators</Typography>
+      <Typography variant="h1" color="primary">
+        GUI for GCP Emulators
+      </Typography>
 
       <Typography variant="body1">
         This application provides a graphical interface for interacting with{' '}
@@ -41,14 +43,18 @@ function Home(): React.ReactElement {
         project useful and decided to keep it and develop it further.
       </Typography>
 
-      <Typography variant="h2">Let&apos;s play</Typography>
+      <Typography variant="h2" color="primary">
+        Let&apos;s play
+      </Typography>
       <EmulatorSettings
         host={emulator ? emulator.host : 'localhost'}
         port={emulator ? emulator.port : 8085}
         project_id={emulator ? emulator.project_id : 'project_id'}
       />
 
-      <Typography variant="h2">The state of the project</Typography>
+      <Typography variant="h2" color="primary">
+        The state of the project
+      </Typography>
 
       <Box className="flex">
         <CardContent className="bg-green-100 rounded-xl p-4 mx-4 w-1/2">
@@ -69,7 +75,7 @@ function Home(): React.ReactElement {
         <CardContent className="bg-pink-100 rounded-xl p-4 mx-4  w-1/2">
           <Typography
             variant="h3"
-            className="text-sm font-semibold text-pink-900 uppercase"
+            className="text-sm font-semibold uppercase text-pink-800"
           >
             Not implemented
           </Typography>

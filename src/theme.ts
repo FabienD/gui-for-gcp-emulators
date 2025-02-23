@@ -22,19 +22,16 @@ const theme = createTheme({
       fontSize: '2em',
       fontWeight: 500,
       margin: '0 0 0.6em 0',
-      color: primary,
     },
     h2: {
       fontSize: '1.6em',
       fontWeight: 500,
       margin: '1em 0 1em 0',
-      color: primary,
     },
     h3: {
       fontSize: '1.2em',
       fontWeight: 400,
       margin: '1em 0 1em 0',
-      color: primary,
     },
     body2: {
       fontSize: '0.8em',

@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useState } from 'react';
 
-import { Alert, Button, Tooltip } from '@mui/material';
+import { Alert, Button, CircularProgress, Tooltip } from '@mui/material';
 import { Refresh } from '@mui/icons-material';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import MarkChatReadIcon from '@mui/icons-material/MarkChatRead';
@@ -21,7 +21,7 @@ import { shortName } from '../../utils/pubsub';
 type SubscriptionsListProps = {
   subscriptions: SubscriptionType[];
   setSubscriptions: React.Dispatch<React.SetStateAction<SubscriptionType[]>>;
-  getSubscriptionsCallback: any;
+  getSubscriptionsCallback: (settings: SettingsType) => Promise<void>;
 };
 
 function SubscriptionList({
@@ -29,41 +29,49 @@ function SubscriptionList({
   setSubscriptions,
   getSubscriptionsCallback,
 }: SubscriptionsListProps): React.ReactElement {
+  const [loading, setLoading] = useState(false);
   const { getEmulator } = useContext(EmulatorContext) as EmulatorContextType;
   const emulator = getEmulator();
   const [open, setOpen] = useState(false);
   const [subscriptionName, setSubscriptionName] =
     useState<SubscriptionNameType>();
 
-  const handleDeleteClick = (id: GridRowId) => () => {
-    deleteSubscriptionAction(id.toString());
-  };
+  const handleActionClick = (action: 'delete' | 'pull', id: GridRowId) => {
+    const name = id.toString();
+    setSubscriptionName({ name: name, short_name: shortName(name) });
 
-  const handlePullMessageClick = (id: GridRowId) => () => {
-    setOpen(true);
-    setSubscriptionName({ name: id.toString() });
+    if (action === 'delete') {
+      setSubscriptionName(undefined);
+      deleteSubscriptionAction(id.toString());
+    }
+    if (action === 'pull') {
+      setOpen(true);
+      setSubscriptionName({ name: name, short_name: shortName(name) });
+    }
   };
 
   const handleSubscriptionsRefresh = () => {
     if (emulator != undefined) {
+      setLoading(true);
       getSubscriptionsCallback({
         host: emulator.host,
         port: emulator.port,
         project_id: emulator.project_id,
+      }).finally(() => {
+        setLoading(false);
       });
     }
   };
 
   const deleteSubscriptionCallback = useCallback(
     async (settings: SettingsType, subscriptionName: SubscriptionNameType) => {
-      const response = await deleteSubscription(settings, subscriptionName);
-      const status = response.status;
+      const isDeleted = await deleteSubscription(settings, subscriptionName);
 
-      if (status == 200) {
-        const filteredTopics = subscriptions.filter(
+      if (isDeleted) {
+        const filteredSubscriptions = subscriptions.filter(
           (t: SubscriptionType) => t.name !== subscriptionName.name,
         );
-        setSubscriptions(filteredTopics);
+        setSubscriptions(filteredSubscriptions);
       }
     },
     [subscriptions],
@@ -80,6 +88,7 @@ function SubscriptionList({
           },
           {
             name: id,
+            short_name: shortName(id),
           },
         ).catch(console.error);
       }
@@ -120,7 +129,7 @@ function SubscriptionList({
             <GridActionsCellItem
               icon={<DeleteIcon />}
               label="Delete"
-              onClick={handleDeleteClick(id)}
+              onClick={() => handleActionClick('delete', id)}
               color="inherit"
             />
           </Tooltip>,
@@ -128,7 +137,7 @@ function SubscriptionList({
             <GridActionsCellItem
               icon={<MarkChatReadIcon />}
               label="Pull Message"
-              onClick={handlePullMessageClick(id)}
+              onClick={() => handleActionClick('pull', id)}
               color="inherit"
             />
           </Tooltip>,
@@ -149,7 +158,11 @@ function SubscriptionList({
 
   return (
     <>
-      {subscriptions.length == 0 ? (
+      {loading ? (
+        <div className="flex justify-center mt-10">
+          <CircularProgress />
+        </div>
+      ) : subscriptions.length === 0 ? (
         <Alert severity="info" className="my-5">
           No subscriptions
         </Alert>

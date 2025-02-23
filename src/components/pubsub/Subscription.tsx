@@ -8,6 +8,7 @@ import { TopicType } from './Topic';
 import SubscriptionCreate from './SubscriptionCreate';
 import SubscriptionList from './SubscriptionList';
 import { getSubscriptions } from '../../api/pubsub.subscription';
+import { ApiError } from '../../api/common';
 
 type SubscriptionNameType = {
   readonly name: string;
@@ -40,15 +41,17 @@ function Subscription({ topics }: SubscriptionProps): React.ReactElement {
 
   const getSubscriptionsCallback = useCallback(
     async (settings: SettingsType) => {
-      const response = await getSubscriptions(settings);
-      const content = await response.json();
-
-      if (
-        content != undefined &&
-        content.subscriptions != undefined &&
-        content.subscriptions.length > 0
-      ) {
-        setSubscriptions([...subscriptions, ...content.subscriptions]);
+      try {
+        const fetchedSubscriptions = await getSubscriptions(settings);
+        setSubscriptions(fetchedSubscriptions);
+      } catch (error) {
+        if (error instanceof ApiError) {
+          console.error(
+            `API Error: ${error.message} (Status: ${error.statusCode})`,
+          );
+        } else {
+          console.error('Unexpected error', error);
+        }
       }
     },
     [],

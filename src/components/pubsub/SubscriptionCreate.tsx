@@ -1,4 +1,4 @@
-import React, { useCallback, useContext } from 'react';
+import React, { useCallback, useContext, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 
 import {
@@ -36,30 +36,6 @@ type SubscriptionFormType = {
   pushEndpoint?: string;
 };
 
-function buildSubscription(data: SubscriptionFormType): SubscriptionType {
-  if (
-    data.pushConfig &&
-    data.pushEndpoint != undefined &&
-    data.pushEndpoint != ''
-  ) {
-    const subscription: SubscriptionType = {
-      name: data.name,
-      topic: data.topic,
-      pushConfig: {
-        pushEndpoint: data.pushEndpoint,
-      },
-    };
-    return subscription;
-  }
-
-  const subscription: SubscriptionType = {
-    name: data.name,
-    topic: data.topic,
-  };
-
-  return subscription;
-}
-
 function SubscriptionCreate({
   topics,
   subscriptions,
@@ -67,11 +43,16 @@ function SubscriptionCreate({
 }: SubscriptionCreateProps): React.ReactElement {
   const { getEmulator } = useContext(EmulatorContext) as EmulatorContextType;
   const emulator = getEmulator();
+  const [SubmitError, setSubmitError] = useState<string | undefined>(undefined);
+  const [IsCreated, setIsCreated] = useState(false);
 
-  const [Error, setError] = React.useState<string | undefined>(undefined);
-  const [IsCreated, setIsCreated] = React.useState(false);
-
-  const { control, watch, reset, handleSubmit } = useForm({
+  const {
+    control,
+    watch,
+    reset,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
     defaultValues: {
       name: '',
       topic: '',
@@ -82,21 +63,21 @@ function SubscriptionCreate({
   const watchPushConfig = watch('pushConfig');
 
   const createSubscriptionCallback = useCallback(
-    async (settings: SettingsType, subscription: SubscriptionType) => {
-      const response = await createSubscription(settings, subscription);
-      const status = response.status;
-      const content = await response.json();
+    async (settings: SettingsType, subscription: SubscriptionFormType) => {
+      try {
+        const createdSubscription = await createSubscription(
+          settings,
+          subscription,
+        );
 
-      if (status === 200 && content != undefined && content.name != undefined) {
-        setIsCreated(true);
-        setSubscriptions([...subscriptions, content]);
-        reset();
-      } else {
-        if (content.error != undefined && content.error.message != undefined) {
-          setError(content.error.message);
-        } else {
-          setError('Unknown error');
+        if (createdSubscription) {
+          setIsCreated(true);
+          setSubscriptions([...subscriptions, createdSubscription]);
+          reset();
         }
+      } catch (error) {
+        setSubmitError('Error creating subscription');
+        console.error(error);
       }
 
       setTimeout(resetAlerts, 3000);
@@ -107,26 +88,15 @@ function SubscriptionCreate({
   const onSubmit: SubmitHandler<SubscriptionFormType> = (Formdata): void => {
     resetAlerts();
 
-    if (Formdata.name === undefined || Formdata.name === '') {
-      setError('Subscription name is required');
-      return;
-    }
-    if (Formdata.topic === undefined || Formdata.topic === '') {
-      setError('Topic name is required');
-      return;
-    }
-
     if (emulator != undefined) {
-      createSubscriptionCallback(emulator, buildSubscription(Formdata)).catch(
-        console.error,
-      );
+      createSubscriptionCallback(emulator, Formdata).catch(console.error);
       reset();
     }
   };
 
   const resetAlerts = () => {
     setIsCreated(false);
-    setError(undefined);
+    setSubmitError(undefined);
   };
 
   return (
@@ -143,6 +113,7 @@ function SubscriptionCreate({
         <Controller
           name="name"
           control={control}
+          rules={{ required: true }}
           render={({ field }) => (
             <TextField
               {...field}
@@ -151,6 +122,7 @@ function SubscriptionCreate({
               label="Name"
               size="small"
               variant="filled"
+              error={errors.name ? true : false}
             />
           )}
         />
@@ -158,12 +130,14 @@ function SubscriptionCreate({
         <Controller
           name="topic"
           control={control}
+          rules={{ required: true }}
           render={({ field }) => (
             <FormControl sx={{ minWidth: 180, maxWidth: '90%' }}>
               <InputLabel
                 id="subscription-topic-select-label"
                 size="small"
                 variant="filled"
+                error={errors.topic ? true : false}
               >
                 Topic name
               </InputLabel>
@@ -175,6 +149,7 @@ function SubscriptionCreate({
                 label="Topic"
                 size="small"
                 variant="filled"
+                error={errors.topic ? true : false}
               >
                 {topics.map(topic => (
                   <MenuItem value={topic.name} key={topic.name}>
@@ -224,7 +199,10 @@ function SubscriptionCreate({
           <Button variant="contained" type="submit" className="mt-2 mb-5">
             Create
           </Button>
-          {Error != undefined && <Alert severity="error">{Error}</Alert>}
+
+          {SubmitError != undefined && (
+            <Alert severity="error">{SubmitError}</Alert>
+          )}
           {IsCreated && (
             <Alert severity="success">Subscription is created</Alert>
           )}
@@ -236,3 +214,4 @@ function SubscriptionCreate({
 }
 
 export default SubscriptionCreate;
+export type { SubscriptionFormType };

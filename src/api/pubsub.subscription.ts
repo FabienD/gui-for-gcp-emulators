@@ -3,57 +3,69 @@ import {
   SubscriptionNameType,
   SubscriptionType,
 } from '../components/pubsub/Subscription';
+import { SubscriptionFormType } from '../components/pubsub/SubscriptionCreate';
 import { TopicNameType } from '../components/pubsub/Topic';
+import apiCall from './common';
 
-export function getTopicSubscriptions(
+export async function getTopicSubscriptions(
   settings: SettingsType,
   topicName: TopicNameType,
-): Promise<Response> {
-  return fetch(
-    `http://${settings.host}:${settings.port}/v1/${topicName.name}/subscriptions`,
-    {
-      method: 'GET',
-    },
+): Promise<SubscriptionType[]> {
+  const content = await apiCall<{ subscriptions: SubscriptionType[] }>(
+    settings,
+    `${topicName.name}/subscriptions/subscriptions`,
   );
+  return content?.subscriptions || [];
 }
 
-export function getSubscriptions(settings: SettingsType): Promise<Response> {
-  return fetch(
-    `http://${settings.host}:${settings.port}/v1/projects/${settings.project_id}/subscriptions`,
-  );
-}
-
-export function createSubscription(
+export async function getSubscriptions(
   settings: SettingsType,
-  subscription: SubscriptionType,
-): Promise<Response> {
-  return fetch(
-    `http://${settings.host}:${settings.port}/v1/projects/${settings.project_id}/subscriptions/${subscription.name}`,
-    {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
+): Promise<SubscriptionType[]> {
+  const content = await apiCall<{ subscriptions: SubscriptionType[] }>(
+    settings,
+    '/subscriptions',
+  );
+  return content?.subscriptions || [];
+}
+
+export async function createSubscription(
+  settings: SettingsType,
+  subscription: SubscriptionFormType,
+): Promise<SubscriptionType> {
+  let body = {};
+  const common = {
+    topic: subscription.topic,
+  };
+
+  if (subscription.pushConfig === true) {
+    body = {
+      ...common,
+      pushConfig: {
+        pushEndpoint: subscription.pushEndpoint,
       },
-      body: JSON.stringify({
-        topic: subscription.topic,
-        pushConfig: {
-          pushEndpoint: subscription.pushConfig?.pushEndpoint,
-        },
-      }),
-    },
+    };
+  } else {
+    body = common;
+  }
+
+  return await apiCall<SubscriptionType>(
+    settings,
+    `/subscriptions/${subscription.name}`,
+    'PUT',
+    body,
   );
 }
 
-export function deleteSubscription(
+export async function deleteSubscription(
   settings: SettingsType,
   subscriptionName: SubscriptionNameType,
-): Promise<Response> {
-  return fetch(
-    `http://${settings.host}:${settings.port}/v1/${subscriptionName.name}`,
-    {
-      method: 'DELETE',
-    },
+): Promise<boolean> {
+  await apiCall<void>(
+    settings,
+    `/subscriptions/${subscriptionName.short_name}`,
+    'DELETE',
   );
+  return true;
 }
 
 export function pullSubscription(
