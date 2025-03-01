@@ -68,41 +68,72 @@ export async function deleteSubscription(
   return true;
 }
 
-export function pullSubscription(
+export type ReceivedMessage = {
+  ackId: string;
+  message: {
+    data: string;
+    messageId: string;
+    publishTime: string;
+    attributes?: { [key: string]: string };
+  };
+};
+
+export async function pullSubscription(
   settings: SettingsType,
   subscriptionName: SubscriptionNameType,
   maxMessages: number = 1,
-): Promise<Response> {
-  return fetch(
-    `http://${settings.host}:${settings.port}/v1/projects/${settings.project_id}/subscriptions/${subscriptionName.name}:pull`,
+): Promise<{ receivedMessages: ReceivedMessage[] }> {
+  return await apiCall<{ receivedMessages: ReceivedMessage[] }>(
+    settings,
+    `/subscriptions/${subscriptionName.short_name}:pull`,
+    'POST',
     {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        returnImmediately: true,
-        maxMessages: maxMessages,
-      }),
+      returnImmediately: true,
+      maxMessages: maxMessages,
     },
   );
 }
 
-export function ackSubscription(
+export async function ackSubscription(
   settings: SettingsType,
   subscriptionName: SubscriptionNameType,
-  ackId: string,
-): Promise<Response> {
-  return fetch(
-    `http://${settings.host}:${settings.port}/v1/projects/${settings.project_id}/subscriptions/${subscriptionName.name}:acknowledge`,
+  ackIds: string[],
+): Promise<boolean> {
+  const content = await apiCall<string>(
+    settings,
+    `/subscriptions/${subscriptionName.short_name}:acknowledge`,
+    'POST',
     {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        ackIds: [ackId],
-      }),
+      ackIds: ackIds,
     },
   );
+
+  if (content === '') {
+    return true;
+  }
+
+  return false;
+}
+
+export async function purgeSubscription(
+  settings: SettingsType,
+  subscriptionName: SubscriptionNameType,
+): Promise<void> {
+  let hasMessages = true;
+  const maxMessages = 100;
+
+  while (hasMessages) {
+    const { receivedMessages } = await pullSubscription(
+      settings,
+      subscriptionName,
+      maxMessages,
+    );
+
+    if (receivedMessages && receivedMessages.length > 0) {
+      const ackIds = receivedMessages.map((msg: ReceivedMessage) => msg.ackId);
+      await ackSubscription(settings, subscriptionName, ackIds);
+    } else {
+      hasMessages = false;
+    }
+  }
 }

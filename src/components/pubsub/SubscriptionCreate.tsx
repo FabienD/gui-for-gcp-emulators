@@ -5,14 +5,14 @@ import {
   Alert,
   Box,
   Button,
+  Collapse,
   FormControl,
-  FormControlLabel,
   FormGroup,
   FormLabel,
   InputLabel,
   MenuItem,
   Select,
-  Switch,
+  Stack,
   TextField,
 } from '@mui/material';
 
@@ -45,6 +45,7 @@ function SubscriptionCreate({
   const emulator = getEmulator();
   const [SubmitError, setSubmitError] = useState<string | undefined>(undefined);
   const [IsCreated, setIsCreated] = useState(false);
+  const [isAdvanced, setIsAdvanced] = useState(false);
 
   const {
     control,
@@ -106,98 +107,72 @@ function SubscriptionCreate({
         name="subscition_create"
         noValidate
         autoComplete="off"
-        className="grid grid-cols-2 gap-2"
+        className="flex flex-col gap-2"
         onSubmit={handleSubmit(onSubmit)}
       >
-        <HelpLink linkUrl="https://cloud.google.com/pubsub/docs/reference/rest/v1/projects.subscriptions" />
-        <Controller
-          name="name"
-          control={control}
-          rules={{ required: true }}
-          render={({ field }) => (
-            <TextField
-              {...field}
-              required
-              id="name"
-              label="Name"
-              size="small"
-              variant="filled"
-              error={errors.name ? true : false}
-            />
-          )}
-        />
-
-        <Controller
-          name="topic"
-          control={control}
-          rules={{ required: true }}
-          render={({ field }) => (
-            <FormControl sx={{ minWidth: 180, maxWidth: '90%' }}>
-              <InputLabel
-                id="subscription-topic-select-label"
-                size="small"
-                variant="filled"
-                error={errors.topic ? true : false}
-              >
-                Topic name
-              </InputLabel>
-              <Select
+        <Stack direction="row" className="gap-2">
+          <HelpLink linkUrl="https://cloud.google.com/pubsub/docs/reference/rest/v1/projects.subscriptions" />
+          <Controller
+            name="name"
+            control={control}
+            rules={{ required: true }}
+            render={({ field }) => (
+              <TextField
                 {...field}
                 required
-                id="topic"
-                labelId="subscription-topic-select-label"
-                label="Topic"
+                id="name"
+                label="Name"
                 size="small"
                 variant="filled"
-                error={errors.topic ? true : false}
-              >
-                {topics.map(topic => (
-                  <MenuItem value={topic.name} key={topic.name}>
-                    {topic.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          )}
-        />
-
-        <Controller
-          name="pushConfig"
-          control={control}
-          render={({ field }) => (
-            <FormGroup>
-              <FormControlLabel
-                control={<Switch {...field} id="pushConfig" />}
-                label="Push Subscription"
+                error={errors.name ? true : false}
               />
-            </FormGroup>
-          )}
-        />
+            )}
+          />
 
-        {watchPushConfig && (
           <Controller
-            name="pushEndpoint"
+            name="topic"
             control={control}
+            rules={{ required: true }}
             render={({ field }) => (
-              <FormControl component="fieldset" className="col-span-2">
-                <FormLabel component="legend">Push config</FormLabel>
-                <FormGroup>
-                  <TextField
-                    {...field}
-                    id="pushEndpoint"
-                    label="Endpoint"
-                    size="small"
-                    variant="filled"
-                  />
-                </FormGroup>
+              <FormControl sx={{ minWidth: 180 }}>
+                <InputLabel
+                  id="subscription-topic-select-label"
+                  size="small"
+                  variant="filled"
+                  error={errors.topic ? true : false}
+                >
+                  Topic name
+                </InputLabel>
+                <Select
+                  {...field}
+                  required
+                  id="topic"
+                  labelId="subscription-topic-select-label"
+                  label="Topic"
+                  size="small"
+                  variant="filled"
+                  error={errors.topic ? true : false}
+                >
+                  {topics.map(topic => (
+                    <MenuItem value={topic.name} key={topic.name}>
+                      {topic.name}
+                    </MenuItem>
+                  ))}
+                </Select>
               </FormControl>
             )}
           />
-        )}
 
-        <Box className="col-span-2">
-          <Button variant="contained" type="submit" className="mt-2 mb-5">
+          <Button variant="contained" type="submit" size="small">
             Create
+          </Button>
+
+          <Button
+            variant="outlined"
+            size="small"
+            onClick={() => setIsAdvanced(prev => !prev)} // Toggle the advanced mode
+          >
+            {isAdvanced ? 'Hide Advanced' : 'Show Advanced'}
           </Button>
 
           {SubmitError != undefined && (
@@ -206,9 +181,46 @@ function SubscriptionCreate({
           {IsCreated && (
             <Alert severity="success">Subscription is created</Alert>
           )}
-        </Box>
+        </Stack>
+
+        <Collapse in={isAdvanced}>
+          <Stack className="gap-2">
+            <Controller
+              name="pushEndpoint"
+              control={control}
+              rules={{
+                validate: {
+                  checkUrlFormat: async pushEndpoint => {
+                    try {
+                      if (pushEndpoint !== '') {
+                        new URL(pushEndpoint);
+                      }
+                    } catch (error) {
+                      console.error(error);
+                      return 'Enpoint URL is not valid';
+                    }
+                  },
+                },
+              }}
+              render={({ field }) => (
+                <FormControl component="fieldset" className="col-span-2">
+                  <FormLabel component="legend">Push config</FormLabel>
+                  <FormGroup>
+                    <TextField
+                      {...field}
+                      id="pushEndpoint"
+                      label="Endpoint"
+                      size="small"
+                      variant="filled"
+                      error={errors.pushEndpoint ? true : false}
+                    />
+                  </FormGroup>
+                </FormControl>
+              )}
+            />
+          </Stack>
+        </Collapse>
       </Box>
-      <Box></Box>
     </>
   );
 }

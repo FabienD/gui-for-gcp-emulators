@@ -13,11 +13,11 @@ import {
   Typography,
 } from '@mui/material';
 
-
 import EmulatorContext, { EmulatorContextType } from '../../contexts/emulators';
 import {
   ackSubscription,
   pullSubscription,
+  ReceivedMessage,
 } from '../../api/pubsub.subscription';
 import { SubscriptionNameType } from './Subscription';
 
@@ -35,9 +35,9 @@ function PullMessage({
   const { getEmulator } = useContext(EmulatorContext) as EmulatorContextType;
   const [error, setError] = React.useState<string | undefined>(undefined);
   const [message, setMessage] = React.useState<string | undefined>(undefined);
-  const [rawMessage, setRawMessage] = React.useState<string | undefined>(
-    undefined,
-  );
+  const [rawMessage, setRawMessage] = React.useState<
+    ReceivedMessage | undefined
+  >(undefined);
   const emulator = getEmulator();
 
   const handlePull = () => handlePullSubscription(false);
@@ -47,49 +47,37 @@ function PullMessage({
     resetAlerts();
 
     if (subscriptionName !== undefined && emulator !== undefined) {
-      const response = await pullSubscription(emulator, subscriptionName);
-      const status = response.status;
-      const content = await response.json();
+      try {
+        const { receivedMessages }: { receivedMessages: ReceivedMessage[] } =
+          await pullSubscription(emulator, subscriptionName);
 
-      if (status === 200) {
-        if (
-          content != undefined &&
-          content.receivedMessages != undefined &&
-          content.receivedMessages[0].message != undefined
-        ) {
-          setRawMessage(content.receivedMessages[0]);
-          setMessage(atob(content.receivedMessages[0].message.data));
+        if (receivedMessages.length === 1) {
+          setRawMessage(receivedMessages[0]);
+          setMessage(atob(receivedMessages[0].message.data));
 
           if (ack == true) {
-            await ackMessage(content.receivedMessages[0].ackId);
+            await ackMessage(receivedMessages[0].ackId);
           }
         } else {
           setError('No message to pull');
         }
-      } else {
-        if (content.error != undefined && content.error.message != undefined) {
-          setError(content.error.message);
-        } else {
-          setError('Unknown pull error');
-        }
+      } catch (error) {
+        console.error(error);
+        setError('An error occurred.');
       }
     }
   };
 
   const ackMessage = async (ackId: string) => {
     if (subscriptionName !== undefined && emulator !== undefined) {
-      const response = await ackSubscription(emulator, subscriptionName, ackId);
-      const status = response.status;
-      const content = await response.json();
-
-      if (status === 200) {
-        console.log('Message Acked');
-      } else {
-        if (content.error != undefined && content.error.message != undefined) {
-          setError(content.error.message);
-        } else {
-          setError('Unknown ack error');
+      try {
+        if (
+          (await ackSubscription(emulator, subscriptionName, [ackId])) === false
+        ) {
+          console.error('Message not acked');
         }
+      } catch {
+        setError('An error occurred');
       }
     }
   };

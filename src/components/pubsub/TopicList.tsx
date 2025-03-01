@@ -1,10 +1,19 @@
 import React, { useCallback, useContext, useMemo, useState } from 'react';
-
 import { Refresh } from '@mui/icons-material';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import InfoIcon from '@mui/icons-material/Info';
 import MessageIcon from '@mui/icons-material/Message';
-import { Alert, Button, CircularProgress, Tooltip } from '@mui/material';
+import {
+  Alert,
+  Button,
+  CircularProgress,
+  Tooltip,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from '@mui/material';
 import {
   DataGrid,
   GridActionsCellItem,
@@ -19,6 +28,7 @@ import { SettingsType } from '../emulator/Settings';
 import PublishMessage from './PublishMessage';
 import { TopicNameType, TopicType } from './Topic';
 import TopicDefinition from './TopicDefinition';
+import ConfirmationDialog from '../navigation/ConfirmationDialog';
 
 type TopicListProps = {
   topics: TopicType[];
@@ -35,6 +45,10 @@ function TopicList({
   const [openPublishMessage, setOpenPublishMessage] = useState(false);
   const [openTopicDefinition, setOpenTopicDefinition] = useState(false);
   const [topicName, setTopicName] = useState<TopicNameType | undefined>();
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [topicToDelete, setTopicToDelete] = useState<TopicNameType | null>(
+    null,
+  );
   const { getEmulator } = useContext(EmulatorContext) as EmulatorContextType;
   const emulator = getEmulator();
 
@@ -46,12 +60,20 @@ function TopicList({
     setTopicName({ name });
 
     if (action === 'delete') {
-      setTopicName(undefined);
-      deleteTopicAction({ name });
+      setTopicToDelete({ name });
+      setConfirmOpen(true);
     } else if (action === 'message') {
       setOpenPublishMessage(true);
     } else if (action === 'definition') {
       setOpenTopicDefinition(true);
+    }
+  };
+
+  const handleDeleteConfirm = () => {
+    if (topicToDelete) {
+      deleteTopicAction(topicToDelete);
+      setTopicToDelete(null);
+      setConfirmOpen(false);
     }
   };
 
@@ -79,7 +101,7 @@ function TopicList({
         setTopics(filteredTopics);
       }
     },
-    [topics],
+    [topics, setTopics],
   );
 
   const deleteTopicAction = useCallback(
@@ -123,34 +145,32 @@ function TopicList({
         headerName: 'Actions',
         minWidth: 150,
         cellClassName: 'actions',
-        getActions: ({ id }) => {
-          return [
-            <Tooltip title="Information" key={`information-${id}`}>
-              <GridActionsCellItem
-                icon={<InfoIcon />}
-                label="Information"
-                onClick={() => handleActionClick('definition', id)}
-                color="inherit"
-              />
-            </Tooltip>,
-            <Tooltip title="Publish a message" key={`message-${id}`}>
-              <GridActionsCellItem
-                icon={<MessageIcon />}
-                label="Publish a message"
-                onClick={() => handleActionClick('message', id)}
-                color="inherit"
-              />
-            </Tooltip>,
-            <Tooltip title="Delete" key={`delete-${id}`}>
-              <GridActionsCellItem
-                icon={<DeleteIcon />}
-                label="Delete"
-                onClick={() => handleActionClick('delete', id)}
-                color="inherit"
-              />
-            </Tooltip>,
-          ];
-        },
+        getActions: ({ id }) => [
+          <Tooltip title="Information" key={`information-${id}`}>
+            <GridActionsCellItem
+              icon={<InfoIcon />}
+              label="Information"
+              onClick={() => handleActionClick('definition', id)}
+              color="inherit"
+            />
+          </Tooltip>,
+          <Tooltip title="Publish a message" key={`message-${id}`}>
+            <GridActionsCellItem
+              icon={<MessageIcon />}
+              label="Publish a message"
+              onClick={() => handleActionClick('message', id)}
+              color="inherit"
+            />
+          </Tooltip>,
+          <Tooltip title="Delete" key={`delete-${id}`}>
+            <GridActionsCellItem
+              icon={<DeleteIcon />}
+              label="Delete"
+              onClick={() => handleActionClick('delete', id)}
+              color="inherit"
+            />
+          </Tooltip>,
+        ],
       },
     ],
     [handleActionClick],
@@ -206,6 +226,14 @@ function TopicList({
           />
         </>
       )}
+
+      <ConfirmationDialog
+        open={confirmOpen}
+        title="Confirm Deletion"
+        description="Are you sure you want to delete this topic?"
+        onConfirm={handleDeleteConfirm}
+        onCancel={() => setConfirmOpen(false)}
+      />
     </>
   );
 }

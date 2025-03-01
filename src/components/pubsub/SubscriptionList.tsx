@@ -1,9 +1,8 @@
 import React, { useCallback, useContext, useState } from 'react';
 
 import { Alert, Button, CircularProgress, Tooltip } from '@mui/material';
-import { Refresh } from '@mui/icons-material';
+import { Email, MailLockOutlined, Refresh } from '@mui/icons-material';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
-import MarkChatReadIcon from '@mui/icons-material/MarkChatRead';
 import {
   DataGrid,
   GridActionsCellItem,
@@ -15,8 +14,12 @@ import EmulatorContext, { EmulatorContextType } from '../../contexts/emulators';
 import { SettingsType } from '../emulator/Settings';
 import { SubscriptionNameType, SubscriptionType } from './Subscription';
 import PullMessage from './PullMessage';
-import { deleteSubscription } from '../../api/pubsub.subscription';
+import {
+  deleteSubscription,
+  purgeSubscription,
+} from '../../api/pubsub.subscription';
 import { shortName } from '../../utils/pubsub';
+import ConfirmationDialog from '../navigation/ConfirmationDialog';
 
 type SubscriptionsListProps = {
   subscriptions: SubscriptionType[];
@@ -35,18 +38,49 @@ function SubscriptionList({
   const [open, setOpen] = useState(false);
   const [subscriptionName, setSubscriptionName] =
     useState<SubscriptionNameType>();
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [subscriptionToDelete, setSubscriptionToDelete] = useState<
+    string | null
+  >(null);
+  const [confirmPurgeOpen, setConfirmPurgeOpen] = useState(false);
+  const [subscriptionToPurge, setSubscriptionToPurge] = useState<string | null>(
+    null,
+  );
 
-  const handleActionClick = (action: 'delete' | 'pull', id: GridRowId) => {
+  const handleActionClick = (
+    action: 'delete' | 'pull' | 'purge',
+    id: GridRowId,
+  ) => {
     const name = id.toString();
     setSubscriptionName({ name: name, short_name: shortName(name) });
 
     if (action === 'delete') {
-      setSubscriptionName(undefined);
-      deleteSubscriptionAction(id.toString());
+      setSubscriptionToDelete(name);
+      setConfirmOpen(true);
     }
     if (action === 'pull') {
       setOpen(true);
       setSubscriptionName({ name: name, short_name: shortName(name) });
+    }
+    if (action === 'purge') {
+      setSubscriptionToPurge(name);
+      setConfirmPurgeOpen(true);
+    }
+  };
+
+  const handleDeleteConfirm = () => {
+    if (subscriptionToDelete) {
+      deleteSubscriptionAction(subscriptionToDelete);
+      setSubscriptionToDelete(null);
+      setConfirmOpen(false);
+    }
+  };
+
+  const handlePurgeConfirm = () => {
+    if (subscriptionToPurge) {
+      purgeSubscriptionAction(subscriptionToPurge);
+      setSubscriptionToPurge(null);
+      setConfirmPurgeOpen(false);
     }
   };
 
@@ -96,16 +130,42 @@ function SubscriptionList({
     [emulator, deleteSubscriptionCallback],
   );
 
+  const purgeSubscriptionCallback = useCallback(
+    async (settings: SettingsType, subscriptionName: SubscriptionNameType) => {
+      await purgeSubscription(settings, subscriptionName);
+    },
+    [],
+  );
+
+  const purgeSubscriptionAction = useCallback(
+    async (id: string) => {
+      if (emulator != undefined) {
+        purgeSubscriptionCallback(
+          {
+            host: emulator.host,
+            port: emulator.port,
+            project_id: emulator.project_id,
+          },
+          {
+            name: id,
+            short_name: shortName(id),
+          },
+        ).catch(console.error);
+      }
+    },
+    [emulator, purgeSubscriptionCallback],
+  );
+
   const columns: GridColDef[] = [
     {
       field: 'name',
       headerName: 'Subscription ID',
-      width: 150,
+      minWidth: 150,
     },
     {
       field: 'type',
       headerName: 'Type',
-      width: 100,
+      minWidth: 100,
     },
     {
       field: 'topic',
@@ -115,29 +175,37 @@ function SubscriptionList({
     {
       field: 'pushEndpoint',
       headerName: 'Push endpoint',
-      width: 300,
+      flex: 1,
     },
     {
       field: 'actions',
       type: 'actions',
       headerName: 'Actions',
-      width: 100,
+      minWidth: 150,
       cellClassName: 'actions',
       getActions: ({ id }) => {
         return [
+          <Tooltip title="Pull Message" key={`pull-${id}`}>
+            <GridActionsCellItem
+              icon={<Email />}
+              label="Pull Message"
+              onClick={() => handleActionClick('pull', id)}
+              color="inherit"
+            />
+          </Tooltip>,
+          <Tooltip title="Purge Message" key={`purge-${id}`}>
+            <GridActionsCellItem
+              icon={<MailLockOutlined />}
+              label="Purge Message"
+              onClick={() => handleActionClick('purge', id)}
+              color="inherit"
+            />
+          </Tooltip>,
           <Tooltip title="Delete" key={`delete-${id}`}>
             <GridActionsCellItem
               icon={<DeleteIcon />}
               label="Delete"
               onClick={() => handleActionClick('delete', id)}
-              color="inherit"
-            />
-          </Tooltip>,
-          <Tooltip title="Pull Message" key={`pull-${id}`}>
-            <GridActionsCellItem
-              icon={<MarkChatReadIcon />}
-              label="Pull Message"
-              onClick={() => handleActionClick('pull', id)}
               color="inherit"
             />
           </Tooltip>,
@@ -188,6 +256,20 @@ function SubscriptionList({
           </Button>
         </div>
       )}
+      <ConfirmationDialog
+        open={confirmOpen}
+        title="Confirm Deletion"
+        description="Are you sure you want to delete this subscription?"
+        onConfirm={handleDeleteConfirm}
+        onCancel={() => setConfirmOpen(false)}
+      />
+      <ConfirmationDialog
+        open={confirmPurgeOpen}
+        title="Confirm Purge"
+        description="Are you sure you want to purge all messages from this subscription?"
+        onConfirm={handlePurgeConfirm}
+        onCancel={() => setConfirmPurgeOpen(false)}
+      />
     </>
   );
 }
