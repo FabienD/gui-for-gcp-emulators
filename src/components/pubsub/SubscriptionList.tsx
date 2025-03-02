@@ -19,7 +19,7 @@ import {
   purgeSubscription,
 } from '../../api/pubsub.subscription';
 import { shortName } from '../../utils/pubsub';
-import ConfirmationDialog from '../navigation/ConfirmationDialog';
+import ConfirmationDialog from '../ui/ConfirmationDialog';
 
 type SubscriptionsListProps = {
   subscriptions: SubscriptionType[];

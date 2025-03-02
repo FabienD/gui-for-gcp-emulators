@@ -11,12 +11,12 @@ import {
   GridRowId,
 } from '@mui/x-data-grid';
 
-
 import EmulatorContext, { EmulatorContextType } from '../../contexts/emulators';
 import { SettingsType } from '../emulator/Settings';
 import { SchemaNameType, SchemaType } from './Schema';
 import { shortName } from '../../utils/pubsub';
 import { deleteSchema } from '../../api/pubsub.schema';
+import ConfirmationDialog from '../ui/ConfirmationDialog';
 
 type SchemaListProps = {
   schemas: SchemaType[];
@@ -32,6 +32,10 @@ function SchemaList({
   const [loading, setLoading] = useState(false);
   const [openSchemaDefinition, setOpenSchemaDefinition] = useState(false);
   const [schemaName, setSchemaName] = useState<SchemaNameType>();
+  const [schemaToDelete, setSchemaToDelete] = useState<SchemaNameType | null>(
+    null,
+  );
+  const [confirmOpen, setConfirmOpen] = useState(false);
   const { getEmulator } = useContext(EmulatorContext) as EmulatorContextType;
   const emulator = getEmulator();
 
@@ -43,9 +47,18 @@ function SchemaList({
     setSchemaName({ name });
 
     if (action === 'delete') {
-      deleteSchemaAction({ name });
+      setSchemaToDelete({ name });
+      setConfirmOpen(true);
     } else if (action === 'definition') {
       setOpenSchemaDefinition(true);
+    }
+  };
+
+  const handleDeleteConfirm = () => {
+    if (schemaToDelete) {
+      deleteSchemaAction(schemaToDelete);
+      setSchemaToDelete(null);
+      setConfirmOpen(false);
     }
   };
 
@@ -178,6 +191,14 @@ function SchemaList({
           <Button onClick={handleSchemasRefresh} startIcon={<Refresh />}>
             schema list
           </Button>
+
+          <ConfirmationDialog
+            open={confirmOpen}
+            title="Confirm Deletion"
+            description="Are you sure you want to delete this schema?"
+            onConfirm={handleDeleteConfirm}
+            onCancel={() => setConfirmOpen(false)}
+          />
         </>
       )}
     </>

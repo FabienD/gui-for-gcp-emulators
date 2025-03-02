@@ -3,17 +3,7 @@ import { Refresh } from '@mui/icons-material';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import InfoIcon from '@mui/icons-material/Info';
 import MessageIcon from '@mui/icons-material/Message';
-import {
-  Alert,
-  Button,
-  CircularProgress,
-  Tooltip,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-} from '@mui/material';
+import { Alert, Button, CircularProgress, Tooltip } from '@mui/material';
 import {
   DataGrid,
   GridActionsCellItem,
@@ -28,7 +18,7 @@ import { SettingsType } from '../emulator/Settings';
 import PublishMessage from './PublishMessage';
 import { TopicNameType, TopicType } from './Topic';
 import TopicDefinition from './TopicDefinition';
-import ConfirmationDialog from '../navigation/ConfirmationDialog';
+import ConfirmationDialog from '../ui/ConfirmationDialog';
 
 type TopicListProps = {
   topics: TopicType[];
@@ -213,7 +203,6 @@ function TopicList({
               topics list
             </Button>
           </div>
-
           <PublishMessage
             open={openPublishMessage}
             setOpen={setOpenPublishMessage}

@@ -49,7 +49,6 @@ function SubscriptionCreate({
 
   const {
     control,
-    watch,
     reset,
     handleSubmit,
     formState: { errors },
@@ -61,7 +60,6 @@ function SubscriptionCreate({
       pushEndpoint: '',
     },
   });
-  const watchPushConfig = watch('pushConfig');
 
   const createSubscriptionCallback = useCallback(
     async (settings: SettingsType, subscription: SubscriptionFormType) => {

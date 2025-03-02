@@ -2,7 +2,6 @@ import React, { useCallback, useContext, useEffect, useState } from 'react';
 
 import {
   Box,
-  Button,
   CircularProgress,
   Dialog,
   DialogActions,
@@ -16,6 +15,7 @@ import EmulatorContext, { EmulatorContextType } from '../../contexts/emulators';
 import { SettingsType } from '../emulator/Settings';
 import { labelsToString, shortName } from '../../utils/pubsub';
 import { getTopic } from '../../api/pubsub.topic';
+import CloseButton from '../ui/CloseButton';
 
 type TopicDefinitionProps = {
   open: boolean;
@@ -108,11 +108,15 @@ function TopicDefinition({
             </Typography>
             <Typography variant="h6">Schema</Typography>
             <Typography variant="body1">
-              {topic.schemaSettings === undefined
-                ? '--'
-                : topic.schemaSettings.schema +
-                  ' / ' +
-                  topic.schemaSettings.encoding}
+              {topic.schemaSettings === undefined ? (
+                <span>--</span>
+              ) : (
+                <div>
+                  Schema: <em>{topic.schemaSettings.schema}</em>
+                  <br />
+                  Encoding: <em>{topic.schemaSettings.encoding}</em>
+                </div>
+              )}
             </Typography>
           </Box>
         </>
@@ -127,7 +131,9 @@ function TopicDefinition({
       <DialogTitle color="primary">Topic Definition</DialogTitle>
       <DialogContent>{renderContent()}</DialogContent>
       <DialogActions>
-        <Button onClick={handleClose}>Close</Button>
+        <Box className="absolute right-5 top-3">
+          <CloseButton onClick={handleClose} />
+        </Box>
       </DialogActions>
     </Dialog>
   );

@@ -115,6 +115,25 @@ export async function ackSubscription(
   return false;
 }
 
+export async function pullAckSubscription(
+  settings: SettingsType,
+  subscriptionName: SubscriptionNameType,
+  maxMessages: number = 1,
+): Promise<ReceivedMessage[]> {
+  const { receivedMessages } = await pullSubscription(
+    settings,
+    subscriptionName,
+    maxMessages,
+  );
+
+  if (receivedMessages && receivedMessages.length > 0) {
+    const ackIds = receivedMessages.map((msg: ReceivedMessage) => msg.ackId);
+    await ackSubscription(settings, subscriptionName, ackIds);
+  }
+
+  return receivedMessages;
+}
+
 export async function purgeSubscription(
   settings: SettingsType,
   subscriptionName: SubscriptionNameType,

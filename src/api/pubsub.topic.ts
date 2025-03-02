@@ -59,21 +59,20 @@ export async function publishMessage(
   settings: SettingsType,
   topicName: TopicNameType,
   pubSubMessage: PubSubMessageType,
-): Promise<boolean> {
+): Promise<{ messageIds: string[] }> {
   const body = {
     messages: [
       {
         attributes: pubSubMessage.attributes,
-        data: pubSubMessage.data,
+        data: btoa(pubSubMessage.data),
       },
     ],
   };
 
-  await apiCall<void>(
+  return await apiCall<{ messageIds: string[] }>(
     settings,
     `/topics/${topicName.name}:publish`,
     'POST',
     body,
   );
-  return true;
 }
