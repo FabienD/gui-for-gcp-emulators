@@ -142,6 +142,7 @@ function SchemaCreate({
                     <MenuItem value="AVRO">{SchemaTypes.AVRO}</MenuItem>
                     <MenuItem value="PROTOCOL_BUFFER">
                       {SchemaTypes.PROTOCOL_BUFFER}
+                      <em>(Not supported by emulator)</em>
                     </MenuItem>
                   </Select>
                 </Tooltip>

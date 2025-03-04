@@ -8,7 +8,7 @@ export async function getSchemas(
 ): Promise<SchemaType[]> {
   const content = await apiCall<{ schemas: SchemaType[] }>(
     settings,
-    '?feedbackSchemaView=FULL',
+    '/schemas',
   );
   return content?.schemas || [];
 }

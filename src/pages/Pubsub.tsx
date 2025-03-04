@@ -40,7 +40,7 @@ function Pubsub(): React.ReactElement {
   const getSchemasCallback = useCallback(async (settings: SettingsType) => {
     try {
       const fetchedSchemas = await getSchemas(settings);
-      setTopics(fetchedSchemas);
+      setSchemas(fetchedSchemas);
     } catch (error) {
       if (error instanceof ApiError) {
         console.error(
@@ -64,8 +64,9 @@ function Pubsub(): React.ReactElement {
         project_id: emulator.project_id,
       };
       getTopicsCallback(settings);
+      getSchemasCallback(settings);
     }
-  }, [emulator, getTopicsCallback]);
+  }, [emulator, getTopicsCallback, getSchemasCallback]);
 
   return (
     <>

@@ -192,6 +192,12 @@ function SchemaList({
             schema list
           </Button>
 
+          <SchemaDefinition
+            open={openSchemaDefinition}
+            setOpen={setOpenSchemaDefinition}
+            topicName={schemaName}
+          />
+
           <ConfirmationDialog
             open={confirmOpen}
             title="Confirm Deletion"
