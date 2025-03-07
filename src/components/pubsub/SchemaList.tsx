@@ -17,6 +17,7 @@ import { SchemaNameType, SchemaType } from './Schema';
 import { shortName } from '../../utils/pubsub';
 import { deleteSchema } from '../../api/pubsub.schema';
 import ConfirmationDialog from '../ui/ConfirmationDialog';
+import SchemaDefinition from './SchemaDefinition';
 
 type SchemaListProps = {
   schemas: SchemaType[];
@@ -195,7 +196,7 @@ function SchemaList({
           <SchemaDefinition
             open={openSchemaDefinition}
             setOpen={setOpenSchemaDefinition}
-            topicName={schemaName}
+            shemaName={schemaName}
           />
 
           <ConfirmationDialog

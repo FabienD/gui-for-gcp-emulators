@@ -15,15 +15,20 @@ type SchemaDefinitionProps = {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
+
+
 function SchemaDefinition({
   open,
   schemaName,
   setOpen,
 }: SchemaDefinitionProps): React.ReactElement {
+  const handleClose = () => setOpen(false);
+
+
   return (
     <Dialog fullWidth maxWidth="sm" open={open} onClose={handleClose}>
       <DialogTitle color="primary">Topic Definition</DialogTitle>
-      <DialogContent>{renderContent()}</DialogContent>
+      <DialogContent>To implement...</DialogContent>
       <DialogActions>
         <Box className="absolute right-5 top-3">
           <CloseButton onClick={handleClose} />

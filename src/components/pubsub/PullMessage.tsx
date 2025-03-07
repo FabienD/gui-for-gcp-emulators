@@ -88,10 +88,6 @@ function PullMessage({
     setHoveredMessage(message || null);
   };
 
-  const handleCopy = (text: string) => {
-    navigator.clipboard.writeText(text);
-  };
-
   const columns: GridColDef[] = [
     { field: 'messageId', headerName: 'Message ID', width: 100 },
     {
@@ -165,7 +161,7 @@ function PullMessage({
                   </Typography>
                   <CopyableSyntaxHighlighter
                     language="json"
-                    value={atob(hoveredMessage.message.data)}
+                    value={JSON.stringify((JSON.parse(atob(hoveredMessage.message.data))), null, 2)}
                   />
                 </div>
               )}
