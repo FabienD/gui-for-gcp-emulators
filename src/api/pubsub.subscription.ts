@@ -37,7 +37,7 @@ export async function createSubscription(
     topic: subscription.topic,
   };
 
-  if (subscription.pushConfig === true) {
+  if (subscription.pushEndpoint !== '') {
     body = {
       ...common,
       pushConfig: {

@@ -16,21 +16,20 @@ As **Open source project**, feel free to participate, contribute, fork, etc. :
 
 - PubSub emulator support :
 
-  - Create / Delete Pubsub topic
-  - Publish a message in a topic
-  - Create / Delete a topic Subscription (Pull & Push)
-  - Pull messages from a Subscription
-  - Create / Delete Schema
+  - Pubsub Topic management (Create, View, Delete, List).
+  - Pubsub Subscription management (Create, Delete, List).
+  - Publish messages in a Topic.
+  - Pull messages & see details from a Subscription
+  - Pubsub Schema management (Create, View, Delete, List).
 
-![GUI for GCP - Home](./doc/assets/gcp_gui_home_preview.png)
-![GUI for GCP - Pubsub topic list](./doc/assets/gcp_gui_pubsub_topic.png)
-![GUI for GCP - Pubsub topic creation](./doc/assets/gcp_gui_pubsub_topic_create.png)
+![GUI for GCP - Home](./doc/assets/gcp_gui_home.png)
+![GUI for GCP - Pubsub topic list & creation](./doc/assets/gcp_gui_pubsub_topic_create.png)
 ![GUI for GCP - Pubsub topic details](./doc/assets/gcp_gui_pubsub_details.png)
 ![GUI for GCP - Pubsub subscription list](./doc/assets/gcp_gui_pubsub_subscription.png)
 ![GUI for GCP - Pubsub subscription creation](./doc/assets/gcp_gui_pubsub_subscription_create.png)
 ![GUI for GCP - Publish messages](./doc/assets/gcp_gui_pubsub_topic_publish.png)
 ![GUI for GCP - Pull messages & see details](./doc/assets/gcp_gui_pubsub_subscription_pull_message.png)
-![GUI for GCP - Pubsub schema](./doc/assets/gcp_gui_pubsub_schema.png)
+![GUI for GCP - Pubsub schema](./doc/assets/gcp_gui_pubsub_schema_create.png)
 ![GUI for GCP - Pubsub schema details](./doc/assets/gcp_gui_pubsub_schema_details.png)
 
 ## Next steps
@@ -53,6 +52,7 @@ As **Open source project**, feel free to participate, contribute, fork, etc. :
 
 ### Run in dev mode
 
+    npm install
     npm run tauri dev
 
 ### Build

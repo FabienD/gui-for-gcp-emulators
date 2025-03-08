@@ -84,6 +84,14 @@ function PullMessage({
     setHoveredMessage(message || null);
   };
 
+  const decodeAndFOrmatMessage = (message: string) => {
+    try {
+      return JSON.stringify(JSON.parse(atob(message)), null, 2);
+    } catch {
+      return atob(message);
+    }
+  }
+
   const columns: GridColDef[] = [
     { field: 'messageId', headerName: 'Message ID', width: 100 },
     {
@@ -157,11 +165,7 @@ function PullMessage({
                   </Typography>
                   <CopyableSyntaxHighlighter
                     language="json"
-                    value={JSON.stringify(
-                      JSON.parse(atob(hoveredMessage.message.data)),
-                      null,
-                      2,
-                    )}
+                    value={decodeAndFOrmatMessage(hoveredMessage.message.data)}
                   />
                 </div>
               )}

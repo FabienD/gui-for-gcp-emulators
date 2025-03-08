@@ -5,10 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [0.4.0] - 2025-03-09
+## [0.4.0] - 2025-03-08
 
-- New subscription messages view.
-- Add Schema support for topics.
+- New Subscription messages view.
+- Add Schema support for Topics.
 - Add Topic details view.
 - Add GCP API documentation link for each Pub/Sub components.
 - Improve UX & Code.
