@@ -1,6 +1,4 @@
 import React, { useContext, useEffect, useState } from 'react';
-import SyntaxHighlighter from 'react-syntax-highlighter';
-import { solarizedLight } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import {
   Alert,
   Button,
@@ -11,10 +9,8 @@ import {
   DialogTitle,
   Typography,
   Tooltip,
-  IconButton,
   Box,
 } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
 import { DataGrid, GridColDef, GridRowParams } from '@mui/x-data-grid';
 import EmulatorContext, { EmulatorContextType } from '../../contexts/emulators';
 import {
@@ -161,7 +157,11 @@ function PullMessage({
                   </Typography>
                   <CopyableSyntaxHighlighter
                     language="json"
-                    value={JSON.stringify((JSON.parse(atob(hoveredMessage.message.data))), null, 2)}
+                    value={JSON.stringify(
+                      JSON.parse(atob(hoveredMessage.message.data)),
+                      null,
+                      2,
+                    )}
                   />
                 </div>
               )}

@@ -196,7 +196,7 @@ function SchemaList({
           <SchemaDefinition
             open={openSchemaDefinition}
             setOpen={setOpenSchemaDefinition}
-            shemaName={schemaName}
+            schemaName={schemaName}
           />
 
           <ConfirmationDialog

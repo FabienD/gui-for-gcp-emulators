@@ -15,7 +15,7 @@ export async function getSchemas(
 
 export async function getSchema(
   settings: SettingsType,
-  schema: SchemaType,
+  schema: SchemaNameType,
 ): Promise<SchemaType> {
   return await apiCall<SchemaType>(settings, `/schemas/${schema.name}`);
 }

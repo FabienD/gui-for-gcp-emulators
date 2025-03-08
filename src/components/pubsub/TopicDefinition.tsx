@@ -53,7 +53,7 @@ function TopicDefinition({
   );
 
   useEffect(() => {
-    if (emulator && topicName) {
+    if (emulator && topicName && open) {
       const settings: SettingsType = {
         host: emulator.host,
         port: emulator.port,
@@ -61,7 +61,7 @@ function TopicDefinition({
       };
       getTopicCallback(settings, topicName);
     }
-  }, [topicName, emulator, getTopicCallback]);
+  }, [open, topicName, emulator, getTopicCallback]);
 
   const renderContent = () => {
     if (loading) {
@@ -89,36 +89,40 @@ function TopicDefinition({
     if (topic) {
       return (
         <>
-          <Box padding={2} border={1} borderRadius={2}>
-            <Typography variant="h6">
-              Name: <em>{shortName(topic.name)}</em>
-            </Typography>
-            <Typography variant="body1">
-              <em>{topic.name}</em>
-            </Typography>
-            <Typography variant="h6">Labels</Typography>
-            <Typography variant="body1">
-              {topic.labels === undefined ? '--' : labelsToString(topic)}
-            </Typography>
-            <Typography variant="h6">Message Retention Duration (s)</Typography>
-            <Typography variant="body1">
-              {topic.messageRetentionDuration === undefined
-                ? '--'
-                : topic.messageRetentionDuration}
-            </Typography>
-            <Typography variant="h6">Schema</Typography>
-            <Typography variant="body1">
-              {topic.schemaSettings === undefined ? (
-                <span>--</span>
-              ) : (
-                <div>
-                  Schema: <em>{topic.schemaSettings.schema}</em>
-                  <br />
-                  Encoding: <em>{topic.schemaSettings.encoding}</em>
-                </div>
-              )}
-            </Typography>
-          </Box>
+          <Typography variant="h6" className="py-2">
+            Name: <em>{shortName(topic.name)}</em>
+          </Typography>
+          <Typography variant="body1">
+            <em>{topic.name}</em>
+          </Typography>
+          <Typography variant="h6" className="py-2">
+            Labels
+          </Typography>
+          <Typography variant="body1">
+            {topic.labels === undefined ? '--' : labelsToString(topic)}
+          </Typography>
+          <Typography variant="h6" className="py-2">
+            Message Retention Duration (s)
+          </Typography>
+          <Typography variant="body1">
+            {topic.messageRetentionDuration === undefined
+              ? '--'
+              : topic.messageRetentionDuration}
+          </Typography>
+          <Typography variant="h6" className="py-2">
+            Schema
+          </Typography>
+          <Typography variant="body1">
+            {topic.schemaSettings === undefined ? (
+              <span>--</span>
+            ) : (
+              <div>
+                Schema: <em>{topic.schemaSettings.schema}</em>
+                <br />
+                Encoding: <em>{topic.schemaSettings.encoding}</em>
+              </div>
+            )}
+          </Typography>
         </>
       );
     }
@@ -127,7 +131,7 @@ function TopicDefinition({
   };
 
   return (
-    <Dialog fullWidth maxWidth="sm" open={open} onClose={handleClose}>
+    <Dialog fullScreen open={open} onClose={handleClose}>
       <DialogTitle color="primary">Topic Definition</DialogTitle>
       <DialogContent>{renderContent()}</DialogContent>
       <DialogActions>
