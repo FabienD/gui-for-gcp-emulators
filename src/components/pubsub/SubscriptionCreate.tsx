@@ -1,212 +1,227 @@
-import React, { useCallback, useContext } from "react";
+import React, { useCallback, useContext, useState } from 'react';
+import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 
-import { Alert, Box, Button, TextField, Select, MenuItem, InputLabel, FormControl, FormLabel, FormGroup, FormControlLabel, Switch } from "@mui/material";
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import {
+  Alert,
+  Box,
+  Button,
+  Collapse,
+  FormControl,
+  FormGroup,
+  FormLabel,
+  InputLabel,
+  MenuItem,
+  Select,
+  Stack,
+  TextField,
+} from '@mui/material';
 
-import EmulatorContext, { EmulatorContextType } from "../../contexts/emulators";
-import { createSubscription } from "../../api/gcp.pubsub";
-import { SettingsType } from "../emulator/Settings";
-import { SubscriptionType } from "./Subscription";
-import { TopicType } from "./Topic";
-
+import EmulatorContext, { EmulatorContextType } from '../../contexts/emulators';
+import { SettingsType } from '../emulator/Settings';
+import { SubscriptionType } from './Subscription';
+import { TopicType } from './Topic';
+import { createSubscription } from '../../api/pubsub.subscription';
+import HelpLink from '../ui/HelpLink';
 
 type SubscriptionCreateProps = {
-    topics: TopicType[]
-    subscriptions: SubscriptionType[],
-    setSubscriptions: React.Dispatch<React.SetStateAction<SubscriptionType[]>>
-}
+  topics: TopicType[];
+  subscriptions: SubscriptionType[];
+  setSubscriptions: React.Dispatch<React.SetStateAction<SubscriptionType[]>>;
+};
 
 type SubscriptionFormType = {
-    name: string,
-    topic: string,
-    pushConfig: boolean,
-    pushEndpoint?: string,
-}
+  name: string;
+  topic: string;
+  pushConfig: boolean;
+  pushEndpoint?: string;
+};
 
-function buildSubscription(data: SubscriptionFormType): SubscriptionType {
-    if (data.pushConfig 
-        && data.pushEndpoint != undefined
-        && data.pushEndpoint != ''
-    ) {
-        const subscription: SubscriptionType = {
-            name: data.name,
-            topic: data.topic,
-            pushConfig: {
-                pushEndpoint: data.pushEndpoint,
-            }
+function SubscriptionCreate({
+  topics,
+  subscriptions,
+  setSubscriptions,
+}: SubscriptionCreateProps): React.ReactElement {
+  const { getEmulator } = useContext(EmulatorContext) as EmulatorContextType;
+  const emulator = getEmulator();
+  const [SubmitError, setSubmitError] = useState<string | undefined>(undefined);
+  const [IsCreated, setIsCreated] = useState(false);
+  const [isAdvanced, setIsAdvanced] = useState(false);
+
+  const {
+    control,
+    reset,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      name: '',
+      topic: '',
+      pushConfig: false,
+      pushEndpoint: '',
+    },
+  });
+
+  const createSubscriptionCallback = useCallback(
+    async (settings: SettingsType, subscription: SubscriptionFormType) => {
+      try {
+        const createdSubscription = await createSubscription(
+          settings,
+          subscription,
+        );
+
+        if (createdSubscription) {
+          setIsCreated(true);
+          setSubscriptions([...subscriptions, createdSubscription]);
+          reset();
         }
-        return subscription;
+      } catch (error) {
+        setSubmitError('Error creating subscription');
+        console.error(error);
+      }
+
+      setTimeout(resetAlerts, 3000);
+    },
+    [subscriptions],
+  );
+
+  const onSubmit: SubmitHandler<SubscriptionFormType> = (Formdata): void => {
+    resetAlerts();
+
+    if (emulator != undefined) {
+      createSubscriptionCallback(emulator, Formdata).catch(console.error);
+      reset();
     }
+  };
 
-    const subscription: SubscriptionType = {
-        name: data.name,
-        topic: data.topic,
-    }
+  const resetAlerts = () => {
+    setIsCreated(false);
+    setSubmitError(undefined);
+  };
 
-    return subscription;
-}
+  return (
+    <>
+      <Box
+        component="form"
+        name="subscition_create"
+        noValidate
+        autoComplete="off"
+        className="flex flex-col gap-2"
+        onSubmit={handleSubmit(onSubmit)}
+      >
+        <Stack direction="row" className="gap-2">
+          <HelpLink linkUrl="https://cloud.google.com/pubsub/docs/reference/rest/v1/projects.subscriptions" />
+          <Controller
+            name="name"
+            control={control}
+            rules={{ required: true }}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                required
+                id="name"
+                label="Name"
+                size="small"
+                variant="filled"
+                error={errors.name ? true : false}
+              />
+            )}
+          />
 
-function SubscriptionCreate({topics, subscriptions, setSubscriptions}: SubscriptionCreateProps): React.ReactElement {
-    const { getEmulatorByType } = useContext(EmulatorContext) as EmulatorContextType;
-    const emulator = getEmulatorByType("pubsub");
-    
-    const [Error, setError] = React.useState<string|undefined>(undefined);
-    const [IsCreated, setIsCreated] = React.useState(false);
+          <Controller
+            name="topic"
+            control={control}
+            rules={{ required: true }}
+            render={({ field }) => (
+              <FormControl sx={{ minWidth: 180 }}>
+                <InputLabel
+                  id="subscription-topic-select-label"
+                  size="small"
+                  variant="filled"
+                  error={errors.topic ? true : false}
+                >
+                  Topic name
+                </InputLabel>
+                <Select
+                  {...field}
+                  required
+                  id="topic"
+                  labelId="subscription-topic-select-label"
+                  label="Topic"
+                  size="small"
+                  variant="filled"
+                  error={errors.topic ? true : false}
+                >
+                  {topics.map(topic => (
+                    <MenuItem value={topic.name} key={topic.name}>
+                      {topic.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            )}
+          />
 
-    const { control, watch, reset, handleSubmit } = useForm({
-        defaultValues: {
-            name: "",
-            topic: "",
-            pushConfig: false,
-            pushEndpoint: "",
-        }
-    })  
-    const watchPushConfig = watch("pushConfig");
+          <Button variant="contained" type="submit" size="small">
+            Create
+          </Button>
 
-    const createSubscriptionCallback = useCallback(async (
-        settings: SettingsType, 
-        subscription: SubscriptionType
-    ) => {
-        const response = await createSubscription(settings, subscription)
-        const status = response.status
-        const content = await response.json()
-        
-        if (status === 200 
-            && content != undefined
-            && content.name != undefined
-        ) {
-            setIsCreated(true)
-            setSubscriptions([...subscriptions, content])
-            reset()
-        } else {
-            if (content.error != undefined 
-                && content.error.message != undefined
-            ) {
-                setError(content.error.message)
-            } else {
-                setError("Unknown error")
-            }
-        }
+          <Button
+            variant="outlined"
+            size="small"
+            onClick={() => setIsAdvanced(prev => !prev)} // Toggle the advanced mode
+          >
+            {isAdvanced ? 'Hide Advanced' : 'Show Advanced'}
+          </Button>
 
-        setTimeout(resetAlerts, 3000)
-    }, [subscriptions])
+          {SubmitError != undefined && (
+            <Alert severity="error">{SubmitError}</Alert>
+          )}
+          {IsCreated && (
+            <Alert severity="success">Subscription is created</Alert>
+          )}
+        </Stack>
 
-    const onSubmit: SubmitHandler<SubscriptionFormType> = (Formdata): void => {
-        resetAlerts()
-
-        if (Formdata.name === undefined || Formdata.name === "") {
-            setError("Subscription name is required");
-            return;
-        }
-        if (Formdata.topic === undefined || Formdata.topic === "") {
-            setError("Topic name is required");
-            return;
-        }
-
-        if (emulator != undefined) {
-            createSubscriptionCallback(emulator, buildSubscription(Formdata)).catch(console.error)
-            reset()    
-        }
-    }  
-
-    const resetAlerts = () => {
-        setIsCreated(false);
-        setError(undefined);
-    }
-
-    return (
-        <>
-            <Box
-                component="form"
-                name="subscition_create"
-                noValidate
-                autoComplete="off"
-                className='grid grid-cols-2 gap-2'
-                onSubmit={handleSubmit(onSubmit)}
-            >
-                <Controller
-                    name="name"
-                    control={control}
-                    render={({ field }) => <TextField
-                        {...field}
-                        required
-                        id="name"
-                        label="Name"
-                        size='small'
-                        variant="filled"
-                    />}
-                />
-
-                <Controller
-                    name="topic"
-                    control={control}
-                    render={({ field }) =>
-                        <FormControl sx={{ minWidth:200 }}>
-                            <InputLabel id="subscription-topic-select-label" size="small" variant="filled">Topic name</InputLabel> 
-                            <Select
-                                {...field}
-                                required
-                                id="topic"
-                                labelId="subscription-topic-select-label"
-                                label="Topic"
-                                size='small'
-                                variant="filled"
-                            >
-                                {(
-                                    topics.map((topic) => (
-                                        <MenuItem value={topic.name}>{topic.name}</MenuItem>
-                                    ))
-                                )}
-                            </Select>
-                        </FormControl>
+        <Collapse in={isAdvanced}>
+          <Stack className="gap-2">
+            <Controller
+              name="pushEndpoint"
+              control={control}
+              rules={{
+                validate: {
+                  checkUrlFormat: async pushEndpoint => {
+                    try {
+                      if (pushEndpoint !== '') {
+                        new URL(pushEndpoint);
+                      }
+                    } catch (error) {
+                      console.error(error);
+                      return 'Enpoint URL is not valid';
                     }
-                />
-
-                <Controller
-                     name="pushConfig"
-                     control={control}
-                     render={({ field }) => 
-                        <FormGroup>
-                            <FormControlLabel control={<Switch 
-                                {...field}
-                                id="pushConfig"
-                            />} label="Push Subscription" />
-                        </FormGroup>
-                     }
-                />
-                
-                {watchPushConfig && (
-                    <Controller
-                        name="pushEndpoint"
-                        control={control}
-                        render={({field}) => 
-                            <FormControl component="fieldset" className="col-span-2">
-                                <FormLabel component="legend">Push config</FormLabel>
-                                <FormGroup>
-                                    <TextField
-                                        {...field}
-                                        id="pushEndpoint"
-                                        label="Endpoint"
-                                        size="small"
-                                        variant="filled"
-                                    />
-                                </FormGroup>
-                            </FormControl>
-                        }
+                  },
+                },
+              }}
+              render={({ field }) => (
+                <FormControl component="fieldset" className="col-span-2">
+                  <FormLabel component="legend">Push config</FormLabel>
+                  <FormGroup>
+                    <TextField
+                      {...field}
+                      id="pushEndpoint"
+                      label="Endpoint"
+                      size="small"
+                      variant="filled"
+                      error={errors.pushEndpoint ? true : false}
                     />
-                )}
-
-                <Box className="col-span-2">
-                    <Button variant="contained" type="submit" className="mt-2 mb-5">Create</Button>   
-                    {Error != undefined && <Alert severity="error">{Error}</Alert>}
-                    {IsCreated && <Alert severity="success">Subscription is created</Alert>}
-                </Box>
-            </Box>
-            <Box>
-                
-            </Box>
-        </>
-    )
+                  </FormGroup>
+                </FormControl>
+              )}
+            />
+          </Stack>
+        </Collapse>
+      </Box>
+    </>
+  );
 }
 
 export default SubscriptionCreate;
+export type { SubscriptionFormType };

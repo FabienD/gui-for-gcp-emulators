@@ -1,130 +1,195 @@
-import React, { useContext } from "react";
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { Alert, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, Typography } from "@mui/material";
+import React, { useContext, useEffect, useState } from 'react';
+import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 
-import { TopicType } from "./Topic";
-import { publishMessage } from "../../api/gcp.pubsub";
-import EmulatorContext, { EmulatorContextType } from "../../contexts/emulators";
+import {
+  Alert,
+  Box,
+  Button,
+  CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  TextField,
+  Typography,
+} from '@mui/material';
+
+import EmulatorContext, { EmulatorContextType } from '../../contexts/emulators';
+import { publishMessage, getTopic } from '../../api/pubsub.topic';
+import { TopicNameType, TopicType } from './Topic';
+import CloseButton from '../ui/CloseButton';
 
 type PublishMessageProps = {
-    open: boolean,
-    topic: TopicType | undefined
-    setOpen: React.Dispatch<React.SetStateAction<boolean>>
-}
+  open: boolean;
+  topicName: TopicNameType | undefined;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+};
 
 interface PubSubMessageAttributeType {
-    [key: string]: string
+  [key: string]: string;
 }
 
 interface PubSubMessageType {
-    attributes: PubSubMessageAttributeType[] | undefined,
-    data: string,
+  attributes: PubSubMessageAttributeType[] | undefined;
+  data: string;
 }
 
 interface PubSubMessageForm {
-    MessageData: string
+  messageData: string;
 }
 
-function PublishMessage({ open, topic, setOpen }: PublishMessageProps): React.ReactElement {
-    const { getEmulatorByType } = useContext(EmulatorContext) as EmulatorContextType;
-    const [Error, setError] = React.useState<string|undefined>(undefined);
-    const [IsPublished, setIsPublished] = React.useState(false);
-    const emulator = getEmulatorByType("pubsub");
-    
-    const { handleSubmit, control, reset } = useForm<PubSubMessageForm>({
-        defaultValues: {
-            MessageData: ""
-        },
-    })
-    
-    const onSubmit: SubmitHandler<PubSubMessageForm> = async (data) => {
-        resetAlerts()
-        
-        const message = {
-            'attributes': undefined,
-            'data': btoa(data.MessageData)
-        }
-        if (topic !== undefined && emulator !== undefined) {
-            const response = await publishMessage(emulator, topic, message);
-            const status = response.status;
-            const content = await response.json();
-            
-            if (status === 200 
-                && content != undefined
-                && content.messageIds != undefined
-            ) {
-                setIsPublished(true);
-                reset();
-            } else {
-                if (content.error != undefined 
-                    && content.error.message != undefined
-                ) {
-                    setError(content.error.message);
-                } else {
-                    setError("Unknown error");
-                }
-            }
-        }
+function PublishMessage({
+  open,
+  topicName,
+  setOpen,
+}: PublishMessageProps): React.ReactElement {
+  const { getEmulator } = useContext(EmulatorContext) as EmulatorContextType;
+  const [Error, setError] = useState<string | undefined>(undefined);
+  const [IsPublished, setIsPublished] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [topic, setTopic] = useState<TopicType | undefined>(undefined);
+  const emulator = getEmulator();
 
-        reset()
-        setTimeout(() => {
-            resetStates()
-        }, 5000)
+  const { handleSubmit, control, reset } = useForm<PubSubMessageForm>({
+    defaultValues: {
+      messageData: '',
+    },
+  });
+
+  useEffect(() => {
+    const fetchTopic = async () => {
+      if (topicName !== undefined && emulator !== undefined) {
+        try {
+          const fetchedTopic: TopicType = await getTopic(emulator, topicName);
+          console.log(fetchedTopic.schemaSettings);
+          setTopic(fetchedTopic);
+        } catch (error) {
+          console.error(error);
+          setError('An error occurred while fetching the topic information.');
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+
+    if (open) {
+      fetchTopic();
+    }
+  }, [open, topicName, emulator]);
+
+  const onSubmit: SubmitHandler<PubSubMessageForm> = async data => {
+    resetAlerts();
+
+    const message = {
+      attributes: undefined,
+      data: data.messageData,
+    };
+
+    if (topicName !== undefined && emulator !== undefined) {
+      try {
+        const { messageIds }: { messageIds: string[] } = await publishMessage(
+          emulator,
+          topicName,
+          message,
+        );
+
+        if (messageIds !== undefined) {
+          setIsPublished(true);
+          reset();
+        } else {
+          setError('Error, message is not published');
+        }
+      } catch (error) {
+        console.error(error);
+        setError('An error occurred, message is not published');
+      }
     }
 
-    const resetAlerts = () => {
-        setIsPublished(false);
-        setError(undefined);
-    }
+    reset();
+    setTimeout(() => {
+      resetStates();
+    }, 5000);
+  };
 
-    const resetStates = () => {
-        resetAlerts()
-        setOpen(false)
-    }    
+  const resetAlerts = () => {
+    setIsPublished(false);
+    setError(undefined);
+  };
 
-    const handleClose = () => resetStates()
+  const resetStates = () => {
+    resetAlerts();
+  };
 
-    return (
-        <Dialog 
-            fullWidth={true}
-            maxWidth="sm"
-            open={open} 
-            onClose={handleClose}
-        >
-            <form onSubmit={handleSubmit(onSubmit)}>
-                <DialogTitle>Publish message</DialogTitle>
-                <DialogContent>
-                    <DialogContentText>
-                        <Typography variant="subtitle1" marginBottom={2}>
-                            Define the <strong>raw value</strong> of the pubsub <strong>data message attribute only</strong>.
-                            The raw content will be base64 encoded by the application.
-                        </Typography>
-                        <Controller
-                            name="MessageData"
-                            control={control}
-                            rules={{ required: true }}
-                            render={({ field }) => <TextField
-                                    {...field}
-                                    id="pubsub-message-data"
-                                    label="Raw data attribute value"
-                                    multiline
-                                    rows={15}
-                                    fullWidth={true}
-                                />
-                            }
-                        />
-                    </DialogContentText>
-                    {Error != undefined && <Alert severity="error">{Error}</Alert>}
-                    {IsPublished && <Alert severity="success">Message is published</Alert>}
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleClose}>Close</Button>
-                    <Button variant="contained" size='small' type="submit" onClick={handleSubmit(onSubmit)}>Publish</Button>
-                </DialogActions>
-            </form>
-        </Dialog>
-    )
+  const handleClose = () => {
+    resetStates();
+    setOpen(false);
+  };
+
+  return (
+    <Dialog fullWidth={true} maxWidth="sm" open={open} onClose={handleClose}>
+      {loading ? (
+        <CircularProgress />
+      ) : topic ? (
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <DialogTitle color="primary">Publish message</DialogTitle>
+          <DialogContent>
+            {topic.schemaSettings !== undefined ? (
+              <Alert severity="warning">
+                Publishing a message for a topic linked with a schema is not yet
+                supported.
+              </Alert>
+            ) : (
+              <DialogContentText>
+                <Typography variant="subtitle1" marginBottom={2}>
+                  Define the <strong>raw value</strong> of the pubsub{' '}
+                  <strong>data message attribute only</strong>. The raw content
+                  will be base64 encoded by the application.
+                </Typography>
+                <Controller
+                  name="messageData"
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      id="pubsub-message-data"
+                      label="Raw data attribute value"
+                      multiline
+                      rows={15}
+                      fullWidth={true}
+                    />
+                  )}
+                />
+              </DialogContentText>
+            )}
+            {Error != undefined && <Alert severity="error">{Error}</Alert>}
+            {IsPublished && (
+              <Alert severity="success">Message is published</Alert>
+            )}
+          </DialogContent>
+          <DialogActions>
+            {topic.schemaSettings === undefined && (
+              <Button
+                variant="contained"
+                size="small"
+                type="submit"
+                onClick={handleSubmit(onSubmit)}
+              >
+                Publish
+              </Button>
+            )}
+            <Box className="absolute right-5 top-3">
+              <CloseButton onClick={handleClose} />
+            </Box>
+          </DialogActions>
+        </form>
+      ) : (
+        <Alert severity="error">Failed to load topic information.</Alert>
+      )}
+    </Dialog>
+  );
 }
 
-export default PublishMessage
-export type { PubSubMessageType }
+export default PublishMessage;
+export type { PubSubMessageType };
