@@ -41,7 +41,7 @@ function TopicCreate({
   topics,
   setTopics,
   schemas,
-}: TopicCreateProps): Promise<React.ReactElement> {
+}: TopicCreateProps): React.ReactElement {
   const { getEmulator } = useContext(EmulatorContext) as EmulatorContextType;
   const [SubmitError, setSubmitError] = useState<string | undefined>(undefined);
   const [IsCreated, setIsCreated] = useState(false);

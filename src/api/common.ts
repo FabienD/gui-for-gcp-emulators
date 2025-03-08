@@ -51,7 +51,7 @@ async function apiCall<T>(
       }
 
       console.warn(
-        `Attempt ${attempt + 1} failed: ${error.message}. Retrying in ${delay}ms...`,
+        `Attempt ${attempt + 1} failed: ${(error as Error).message}. Retrying in ${delay}ms...`,
       );
       await new Promise(resolve => setTimeout(resolve, delay));
     }
