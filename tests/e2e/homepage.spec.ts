@@ -6,8 +6,9 @@ test('I should see the home page', async ({ page }) => {
   await expect(page).toHaveTitle(/GUI for GCP emulator/);
 });
 
-
-test('I should be able to connect to the Pub/Sub emulator', async ({ page }) => {
+test('I should be able to connect to the Pub/Sub emulator', async ({
+  page,
+}) => {
   await page.goto('/');
 
   // Fill in the emulator connection form
@@ -24,13 +25,14 @@ test('I should be able to connect to the Pub/Sub emulator', async ({ page }) => 
   await expect(alertText).toHaveText('Emulator is connected.');
 });
 
-
-test('I should be able to see error when the emulator connection failed', async ({ page }) => {
+test('I should be able to see error when the emulator connection failed', async ({
+  page,
+}) => {
   await page.goto('/');
 
   // Fill in the emulator connection form
-  await page.fill('#host', 'localhost');
-  await page.fill('#port', '8088');
+  await page.fill('#host', 'fakehost');
+  await page.fill('#port', '8085');
   await page.fill('#project_id', 'test-project');
 
   // Click the "Connect" button

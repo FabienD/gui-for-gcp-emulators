@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 
-import { invoke } from '@tauri-apps/api/core';
 import { Alert, Box, InputAdornment, TextField } from '@mui/material';
 import Button from '@mui/material/Button';
 import BoltIcon from '@mui/icons-material/Bolt';
@@ -14,10 +13,14 @@ type SettingsType = {
   project_id: string;
 };
 
-async function checkEmulatorConnection(host: string, port: number): Promise<boolean> {
+async function checkEmulatorConnection(
+  host: string,
+  port: number,
+): Promise<boolean> {
   try {
     const response = await fetch(`http://${host}:${port}/`, {
       method: 'GET',
+      signal: AbortSignal.timeout(2000),
     });
 
     // Check if the response status is OK (200-299)
@@ -57,14 +60,16 @@ function EmulatorSettings({
   useEffect(() => {
     resetAlerts();
     if (settings != undefined) {
-      checkEmulatorConnection(settings.host, settings.port).then((res): void => {
-        if (res) {
-          saveEmulator({ ...settings, is_connected: true });
-          setIsCheckConnection(true);
-        } else {
-          setIsCheckConnection(false);
-        }
-      });
+      checkEmulatorConnection(settings.host, settings.port).then(
+        (res): void => {
+          if (res) {
+            saveEmulator({ ...settings, is_connected: true });
+            setIsCheckConnection(true);
+          } else {
+            setIsCheckConnection(false);
+          }
+        },
+      );
     }
   }, [settings]);
 
