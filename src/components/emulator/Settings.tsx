@@ -14,6 +14,20 @@ type SettingsType = {
   project_id: string;
 };
 
+async function checkEmulatorConnection(host: string, port: number): Promise<boolean> {
+  try {
+    const response = await fetch(`http://${host}:${port}/`, {
+      method: 'GET',
+    });
+
+    // Check if the response status is OK (200-299)
+    return response.ok;
+  } catch (error) {
+    console.error('Error connecting to the emulator:', error);
+    return false;
+  }
+}
+
 function EmulatorSettings({
   host,
   port,
@@ -41,8 +55,9 @@ function EmulatorSettings({
   };
 
   useEffect(() => {
+    resetAlerts();
     if (settings != undefined) {
-      invoke<boolean>('check_connection', { ...settings }).then((res): void => {
+      checkEmulatorConnection(settings.host, settings.port).then((res): void => {
         if (res) {
           saveEmulator({ ...settings, is_connected: true });
           setIsCheckConnection(true);
@@ -50,8 +65,6 @@ function EmulatorSettings({
           setIsCheckConnection(false);
         }
       });
-
-      setTimeout(resetAlerts, 3000);
     }
   }, [settings]);
 
