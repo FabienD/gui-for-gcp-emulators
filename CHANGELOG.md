@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.4.1] - 2025-04-03
+
+ - Update library / security advisory
+
 ## [0.4.0] - 2025-03-08
 
 - New Subscription messages view.
