@@ -16,7 +16,7 @@ const items: Array<NavItemProps> = [
   { href: '/bigtable', icon: bigtable, name: 'Bigtable' },
   { href: '/datastore', icon: datastore, name: 'Datastore' },
   { href: '/firestore', icon: firestore, name: 'Firestore' },
-  { href: '/pubsub', icon: pubsub, name: 'Pub/Sub' },
+  { href: '/pubsub', icon: pubsub, name: 'PubSub' },
   { href: '/spanner', icon: spanner, name: 'Spanner' },
 ];
 
