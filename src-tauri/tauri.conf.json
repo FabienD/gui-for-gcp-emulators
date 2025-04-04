@@ -12,7 +12,7 @@
     "createUpdaterArtifacts": false
   },
   "productName": "gui-for-gcp-emulators",
-  "version": "0.4.1",
+  "version": "0.5.0",
   "identifier": "com.gui-for-gcp-emulators.dev",
   "plugins": {},
   "app": {
