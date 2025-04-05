@@ -119,7 +119,22 @@ function TopicCreate({
           <Controller
             name="name"
             control={control}
-            rules={{ required: true }}
+            rules={{ 
+              validate: {
+                checkFormat: (name: string) => {
+                    const regex = /^[a-zA-Z]{1}[a-zA-Z0-9\-_%+~]{2,254}$/i;
+                    if (!regex.test(name)) {
+                      return 'Topic name format is not correct';
+                    }
+                },          
+                checkName: (name: string) => {
+                    if (name.toLowerCase().includes('goog')) {
+                      return 'Topic name cannot contain "goog"';
+                    }
+                }
+              },
+              required: true
+            }}
             render={({ field }) => (
               <Tooltip title="Topic name" placement="top-start">
                 <TextField
@@ -130,6 +145,7 @@ function TopicCreate({
                   size="small"
                   variant="filled"
                   error={errors.name ? true : false}
+                  helperText={errors.name?.message}
                 />
               </Tooltip>
             )}
