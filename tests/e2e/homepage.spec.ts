@@ -14,7 +14,7 @@ test('I should be able to connect to the Pub/Sub emulator', async ({
   // Fill in the emulator connection form
   await page.fill('#host', 'localhost');
   await page.fill('#port', '8085');
-  await page.fill('#project_id', 'test-project');
+  await page.fill('#project_id', 'project_test');
 
   // Click the "Connect" button
   await page.click('button:has-text("Connect")');
@@ -33,7 +33,7 @@ test('I should be able to see error when the emulator connection failed', async 
   // Fill in the emulator connection form
   await page.fill('#host', 'fakehost');
   await page.fill('#port', '8085');
-  await page.fill('#project_id', 'test-project');
+  await page.fill('#project_id', 'project_fake');
 
   // Click the "Connect" button
   await page.click('button:has-text("Connect")');
