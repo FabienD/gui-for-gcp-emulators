@@ -80,15 +80,15 @@ test.describe('PubSub Topic - create', () => {
   }) => {
     await pubsubConnection.connect('/', 'localhost', '8085', 'project_test');
     await page.locator('#PubSub a').click();
-
+    // Create a first topic
     await page.locator('form #name').fill('topic-1');
     await page.getByRole('button', { name: 'Create', exact: true }).click();
     await expect(page.getByRole('row', { name: 'topic-1 projects/project_test' })).toHaveCount(1);
-
+    // Create a second topic
     await page.locator('form #name').fill('topic-2');
     await page.getByRole('button', { name: 'Create', exact: true }).click();
     await expect(page.getByRole('row', { name: 'topic-2 projects/project_test' })).toHaveCount(1);
-
+    // Count all topics in the list
     await expect(page.getByRole('row', { name: 'projects/project_test' })).toHaveCount(2);
   });
 });
