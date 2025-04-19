@@ -2,10 +2,16 @@ import { test as base, Page } from '@playwright/test';
 import { getSubscriptions, deleteSubscription } from '../../src/api/pubsub.subscription';
 import { SettingsType } from '../../src/components/emulator/Settings';
 import { shortName } from '../../src/utils/pubsub';
-import { deleteTopic, getTopics } from '../../src/api/pubsub.topic';
+import { deleteTopic, getTopics, createTopic } from '../../src/api/pubsub.topic';
 import { deleteSchema, getSchemas } from '../../src/api/pubsub.schema';
 
-export class PubSubConnectionPage {
+const settings: SettingsType = {
+  host: 'localhost',
+  port: 8085,
+  project_id: 'project_test',
+}  
+
+class PubSubConnectionPage {
   constructor(private page: Page) {}
   async connect(connectionUrl: string, host: string, port: string, projectId: string) {
     await this.page.goto(connectionUrl);
@@ -19,14 +25,9 @@ export class PubSubConnectionPage {
   }
 }
 
-export class DeletePubSubResources {
+class DeletePubSubResources {
   constructor(private page: Page) {}
   async delete() {
-    const settings: SettingsType = {
-      host: 'localhost',
-      port: 8085,
-      project_id: 'project_test',
-    }  
     
     const subscriptions = await getSubscriptions(settings);
     if (subscriptions.length !== 0) {
@@ -51,15 +52,27 @@ export class DeletePubSubResources {
   }
 }
 
+class PubSubUtils {
+  constructor(private page: Page) {}
+
+  async createTopic(topicName: string): Promise<void> {
+    await createTopic(settings, { name: topicName });   
+  }
+}
+
 export const test = base.extend<{
   pubsubConnection: PubSubConnectionPage;
   deletePubSubResources: DeletePubSubResources;
+  pubsubUtils: PubSubUtils;
 }>({
   pubsubConnection: async ({ page }, use) => {
     await use(new PubSubConnectionPage(page));
   },
   deletePubSubResources: async ({ page }, use) => {
     await use(new DeletePubSubResources(page));
+  },
+  pubsubUtils: async ({ page }, use) => {
+    await use(new PubSubUtils(page));
   },
 });
 

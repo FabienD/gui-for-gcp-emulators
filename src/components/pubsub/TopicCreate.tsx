@@ -108,6 +108,7 @@ function TopicCreate({
     <>
       <Box
         component="form"
+        id="topic_create"
         name="topic_create"
         noValidate
         autoComplete="off"

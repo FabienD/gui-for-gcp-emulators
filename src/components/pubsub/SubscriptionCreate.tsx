@@ -78,8 +78,6 @@ function SubscriptionCreate({
         setSubmitError('Error creating subscription');
         console.error(error);
       }
-
-      setTimeout(resetAlerts, 3000);
     },
     [subscriptions],
   );
@@ -102,7 +100,8 @@ function SubscriptionCreate({
     <>
       <Box
         component="form"
-        name="subscition_create"
+        id="subscription_create"
+        name="subscription_create"
         noValidate
         autoComplete="off"
         className="flex flex-col gap-2"
@@ -113,7 +112,22 @@ function SubscriptionCreate({
           <Controller
             name="name"
             control={control}
-            rules={{ required: true }}
+            rules={{ 
+              validate: {
+                checkFormat: (name: string) => {
+                    const regex = /^[a-zA-Z]{1}[a-zA-Z0-9\-_%+~]{2,254}$/i;
+                    if (!regex.test(name)) {
+                      return 'Subscription name format is not correct';
+                    }
+                },          
+                checkName: (name: string) => {
+                    if (name.toLowerCase().includes('goog')) {
+                      return 'Subscription name cannot contain "goog"';
+                    }
+                }
+              },
+              required: true
+            }}
             render={({ field }) => (
               <TextField
                 {...field}
