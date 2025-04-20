@@ -69,7 +69,7 @@ test.describe('PubSub Subscription', () => {
 
    test('I can create a subscription, then I see it in the list', async ({ page }) => {
     const topicName = 'my-topic-for-subs';
-    const subName = 'my-subscription-1';
+    let subName = 'my-subscription-1';
     await createTopic(page, topicName);
 
     // Fill the subscription form
@@ -80,8 +80,18 @@ test.describe('PubSub Subscription', () => {
 
     // Verify the subscription appears in the list
     await expect(page.getByRole('row', { name: subName })).toBeVisible();
-    await expect(page.getByRole('row', { name: subName })).toContainText(topicName); // Check topic association
+    await expect(page.getByRole('row', { name: subName })).toContainText(topicName);
     await expect(page.getByRole('row')).toHaveCount(2); // Header row + 1 subscription row
+
+    subName = 'my-subscription-2';
+    await page.locator('form#subscription_create input#name').fill(subName);
+    await page.locator('#topic').click(); // Click to open the dropdown
+    await page.getByRole('option', { name: `projects/project_test/topics/${topicName}` }).click();
+    await page.locator('form#subscription_create button:has-text("Create")').click();
+
+    await expect(page.getByRole('row', { name: subName })).toBeVisible();
+    await expect(page.getByRole('row', { name: subName })).toContainText(topicName);
+    await expect(page.getByRole('row')).toHaveCount(3); // Header row + 2 subscription row
   });
 
   test('I can delete a subscription', async ({ page }) => {
@@ -106,6 +116,28 @@ test.describe('PubSub Subscription', () => {
     await expect(page.locator('.MuiAlert-standardInfo')).toHaveText('No subscriptions');
   });
 
-  // Add more tests for pull, purge, push config etc. as needed
+  test('I can create a subscription as a push subscription', async ({ page }) => {
+    const topicName = 'topic-for-push-sub';
+    const subName = 'push-subscription';
+    const endpoint = 'https://example.com/push-endpoint';
+    await createTopic(page, topicName);
+
+    // Fill the subscription form
+    await page.locator('form#subscription_create input#name').fill(subName);
+    await page.locator('#topic').click(); // Click to open the dropdown
+    await page.getByRole('option', { name: `projects/project_test/topics/${topicName}` }).click();
+    // Show advanced options
+    await page.locator('button:has-text("Show Advanced")').click();
+    // Endpoint option should be be visible now
+    await expect(page.locator('input[name="pushEndpoint"]')).toBeVisible();
+    await page.locator('input[name="pushEndpoint"]').fill(endpoint);
+    await page.locator('form#subscription_create button:has-text("Create")').click();
+
+    // Verify the subscription appears in the list
+    await expect(page.getByRole('row', { name: subName })).toBeVisible();
+    await expect(page.getByRole('row', { name: subName })).toContainText(topicName);
+    await expect(page.getByRole('row', { name: subName })).toContainText(endpoint);
+  });
+
 });
 
