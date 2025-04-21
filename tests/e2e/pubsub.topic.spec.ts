@@ -91,4 +91,54 @@ test.describe('PubSub Topic - create', () => {
     // Count all topics in the list
     await expect(page.getByRole('row', { name: 'projects/project_test' })).toHaveCount(2);
   });
+
+  test('I can create a topic with labels', async ({
+    page,
+    pubsubConnection,    
+  }) => {
+
+    await pubsubConnection.connect('/', 'localhost', '8085', 'project_test');
+    await page.locator('#PubSub a').click();
+    // Create a topic with labels
+    await page.locator('form#topic_create #name').fill('topic-1');
+    await page.locator('form#topic_create #labels').fill('key1:value1, key2:value2');
+    await page.getByRole('button', { name: 'Create', exact: true }).click();
+    await expect(page.getByRole('row', { name: 'topic-1 projects/project_test' })).toHaveCount(1);
+    // Check that the labels are displayed
+    const row = page.getByRole('row', { name: 'topic-1 projects/project_test' });
+    await expect(row.getByRole('gridcell', { name: 'key1:value1, key2:value2'})).toHaveCount(1);
+  });
+
+  test('I can create a topic with schema using the advanced form setting', async ({
+    page,
+    pubsubConnection,
+    pubsubUtils
+  }) => {
+    await pubsubUtils.createSchema({
+      name: 'schema-1',
+      type: 'AVRO',
+      definition:'{"fields":[{"default":"","name":"ProductName","type":"string"},{"default":0,"name":"SKU","type":"int"},{"default":false,"name":"InStock","type":"boolean"}],"name":"Avro","type":"record"}',
+    });
+
+    await pubsubConnection.connect('/', 'localhost', '8085', 'project_test');
+    await page.locator('#PubSub a').click();
+    await page.locator('form#topic_create #name').fill('topic-1');
+    // Open the advanced form
+    expect(page.locator('form#topic_create #schema-name')).not.toBeVisible();
+    expect(page.locator('form#topic_create #schema-encoding')).not.toBeVisible();
+    await page.getByRole('button', { name: 'Show advanced' }).click();
+    expect(page.locator('form#topic_create #schema-name')).toBeVisible();
+    expect(page.locator('form#topic_create #schema-encoding')).toBeVisible();
+
+    // Select the schema from the dropdown
+    await page.locator('#schema-name').click();
+    await page.getByRole('option', { name: 'schema-1'}).click();;
+    await page.locator('#schema-encoding').click();
+    await page.getByRole('option', { name: 'binary'}).click();
+    
+    await page.getByRole('button', { name: 'Create', exact: true }).click();
+
+    await expect(page.getByRole('row', { name: 'topic-1 projects/project_test' })).toHaveCount(1);
+
+  });
 });

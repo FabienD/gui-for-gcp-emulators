@@ -187,7 +187,7 @@ function TopicCreate({
           {SubmitError != undefined && (
             <Alert severity="error">{SubmitError}</Alert>
           )}
-          {IsCreated && <Alert severity="success">Topic is created</Alert>}
+          {IsCreated && <Alert severity="success">Topic created</Alert>}
         </Stack>
 
         <Collapse in={isAdvanced}>
@@ -242,7 +242,7 @@ function TopicCreate({
                     <Tooltip title="Schema" placement="top-start">
                       <Select
                         {...field}
-                        id="scheme"
+                        id="schema-name"
                         labelId="schema-name-label"
                         size="small"
                         variant="filled"

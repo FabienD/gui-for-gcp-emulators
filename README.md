@@ -78,3 +78,12 @@ npm run test:e2e:ui
 - [TypeScript](https://www.typescriptlang.org/)
 - [Material UI](https://material-ui.com/)
 - [Tailwind CSS](https://tailwindcss.com/)
+
+
+## License
+
+This project is under [GNU license](LICENSE)
+
+### Tier assets license
+
+"Animal Hive" icon created by "Diemen Design" is under MIT license, downloaded from [SVG Repo](https://www.svgrepo.com)

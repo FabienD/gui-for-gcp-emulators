@@ -14,7 +14,7 @@ function Home(): React.ReactElement {
   return (
     <>
       <Typography variant="h1" color="primary">
-        GUI for GCP Emulators
+        App for GCP Emulators
       </Typography>
 
       <Typography variant="body1">
@@ -36,11 +36,8 @@ function Home(): React.ReactElement {
         Google™ application.
       </Typography>
       <Typography variant="body1" className="pt-2">
-        I started the project as a simple test, to play with Tauri-App V2,
-        ReactJs & Typescript and finally implement something that works with
-        Pub/Sub. The project is under development and doesn&apos;t cover all the
-        emulator APIs and isn&apos;t covered by tests. Despite this, I found the
-        project useful and decided to keep it and develop it further.
+          When I began the project, it was just a simple test to experiment with Tauri V2, React.js, and TypeScript. Now, I have implemented the PubSub API and am using the application at work. 
+          Because of this, I have decided to continue developing the application, but it requires time and effort.
       </Typography>
 
       <Typography variant="h2" color="primary">

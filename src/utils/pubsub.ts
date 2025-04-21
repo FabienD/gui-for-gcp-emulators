@@ -9,7 +9,7 @@ function labelsToString(topic: TopicType): string {
   if (topic.labels !== undefined) {
     for (const [key, value] of Object.entries(topic.labels)) {
       const tag = key + ':' + value;
-      labels += labels.length > 0 ? ' ,' + tag : tag;
+      labels += labels.length > 0 ? ', ' + tag : tag;
     }
   }
   return labels;

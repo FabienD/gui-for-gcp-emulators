@@ -78,6 +78,8 @@ function SubscriptionCreate({
         setSubmitError('Error creating subscription');
         console.error(error);
       }
+
+      setTimeout(resetAlerts, 3000);
     },
     [subscriptions],
   );
@@ -191,7 +193,7 @@ function SubscriptionCreate({
             <Alert severity="error">{SubmitError}</Alert>
           )}
           {IsCreated && (
-            <Alert severity="success">Subscription is created</Alert>
+            <Alert severity="success">Subscription created</Alert>
           )}
         </Stack>
 

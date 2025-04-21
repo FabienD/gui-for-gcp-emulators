@@ -22,6 +22,7 @@ test.describe('PubSub Subscription', () => {
   test('I should see the PubSub Subscription page', async ({ page }) => {
     const heading = page.locator('main h1');
     await expect(heading).toHaveText('Pub/Sub');
+    // Check if the Subscription tab is selected
     await expect(page.locator('button[role="tab"][aria-selected="true"]:has-text("Subscription")')).toBeVisible();
   });
 

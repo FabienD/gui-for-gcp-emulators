@@ -3,7 +3,8 @@ import { getSubscriptions, deleteSubscription } from '../../src/api/pubsub.subsc
 import { SettingsType } from '../../src/components/emulator/Settings';
 import { shortName } from '../../src/utils/pubsub';
 import { deleteTopic, getTopics, createTopic } from '../../src/api/pubsub.topic';
-import { deleteSchema, getSchemas } from '../../src/api/pubsub.schema';
+import { createSchema, deleteSchema, getSchemas } from '../../src/api/pubsub.schema';
+import { SchemaFormType } from '../../src/components/pubsub/SchemaCreate';
 
 const settings: SettingsType = {
   host: 'localhost',
@@ -57,6 +58,10 @@ class PubSubUtils {
 
   async createTopic(topicName: string): Promise<void> {
     await createTopic(settings, { name: topicName });   
+  }
+
+  async createSchema(schema: SchemaFormType): Promise<void> {
+    await createSchema(settings, schema);
   }
 }
 
