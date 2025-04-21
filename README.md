@@ -34,7 +34,7 @@ As **Open source project**, feel free to participate, contribute, fork, etc. :
 ## Next steps
 
 - [x] Ehance UI and support for PubSub emulator.
-- [x] Cover existing features by end-to-end tests (run with [Playwright](https://playwright.dev/)).
+- [x] Cover existing main features by end-to-end tests (run with [Playwright](https://playwright.dev/)).
 - [ ] Provide application updater.
 
 - [ ] Create Proxy Subscription to real GCP PubSub.
