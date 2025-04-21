@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Run tests
-        uses: ./.github/workflows/playwright.yml
+        uses: playwright.yml
 
   create-release:
     permissions:
