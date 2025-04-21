@@ -90,7 +90,8 @@ function SchemaCreate({
     <>
       <Box
         component="form"
-        name="topic_create"
+        name="schema_create"
+        id="schema_create"
         noValidate
         autoComplete="off"
         className="flex flex-col gap-2"
@@ -101,7 +102,22 @@ function SchemaCreate({
           <Controller
             name="name"
             control={control}
-            rules={{ required: true }}
+            rules={{ 
+              validate: {
+                checkFormat: (name: string) => {
+                    const regex = /^[a-zA-Z]{1}[a-zA-Z0-9\-_%+~]{2,254}$/i;
+                    if (!regex.test(name)) {
+                      return 'Subscription name format is not correct';
+                    }
+                },          
+                checkName: (name: string) => {
+                    if (name.toLowerCase().includes('goog')) {
+                      return 'Subscription name cannot contain "goog"';
+                    }
+                }
+              },
+              required: true
+            }}
             render={({ field }) => (
               <Tooltip title="Schema name" placement="top-start">
                 <TextField
@@ -155,7 +171,7 @@ function SchemaCreate({
           </Button>
 
           {Error != undefined && <Alert severity="error">{Error}</Alert>}
-          {IsCreated && <Alert severity="success">Schema is created</Alert>}
+          {IsCreated && <Alert severity="success">Schema created</Alert>}
         </Stack>
 
         <Controller

@@ -6,7 +6,7 @@ This application provides a basic UI for interacting with [Google Cloud Platform
 
 This application is **not an official** Google application.
 
-The application is under development and doesn't cover all emulator product APIs. I started this project to test Tauri App V2, then thought it would be intersting to provide something more functional. As an exploration project, I didn't cover features by tests.
+The application is under development and doesn't cover all emulator product APIs. I started this project to test Tauri App V2, then thought it would be intersting to provide something more functional.
 
 As **Open source project**, feel free to participate, contribute, fork, etc. :
 
@@ -24,7 +24,6 @@ As **Open source project**, feel free to participate, contribute, fork, etc. :
 
 ![GUI for GCP - Home](./doc/assets/gcp_gui_home.png)
 ![GUI for GCP - Pubsub topic list & creation](./doc/assets/gcp_gui_pubsub_topic_create.png)
-![GUI for GCP - Pubsub topic details](./doc/assets/gcp_gui_pubsub_details.png)
 ![GUI for GCP - Pubsub subscription list](./doc/assets/gcp_gui_pubsub_subscription.png)
 ![GUI for GCP - Pubsub subscription creation](./doc/assets/gcp_gui_pubsub_subscription_create.png)
 ![GUI for GCP - Publish messages](./doc/assets/gcp_gui_pubsub_topic_publish.png)
@@ -35,8 +34,8 @@ As **Open source project**, feel free to participate, contribute, fork, etc. :
 ## Next steps
 
 - [x] Ehance UI and support for PubSub emulator.
-
-- [ ] Cover existing features by tests.
+- [x] Cover existing main features by end-to-end tests (run with [Playwright](https://playwright.dev/)).
+- [ ] Provide application updater.
 
 - [ ] Create Proxy Subscription to real GCP PubSub.
 - [ ] Create BigQuery Subscription to Open Source BigQuery Emulator.
@@ -52,12 +51,24 @@ As **Open source project**, feel free to participate, contribute, fork, etc. :
 
 ### Run in dev mode
 
-    npm install
-    npm run tauri dev
+```shell
+npm install
+npm run tauri dev
+```
 
 ### Build
 
-    npm run tauri build
+```shell
+npm run tauri build
+```
+
+### Launch tests
+
+```shell
+npm run test:e2e
+# Use Playwright UI
+npm run test:e2e:ui
+```
 
 ## Technologies used
 
@@ -67,3 +78,12 @@ As **Open source project**, feel free to participate, contribute, fork, etc. :
 - [TypeScript](https://www.typescriptlang.org/)
 - [Material UI](https://material-ui.com/)
 - [Tailwind CSS](https://tailwindcss.com/)
+
+
+## License
+
+This project is under [GNU license](LICENSE)
+
+### Tier assets license
+
+"Animal Hive" icon created by "Diemen Design" is under MIT license, downloaded from [SVG Repo](https://www.svgrepo.com)

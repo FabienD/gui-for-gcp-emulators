@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+
+## [0.5.0] - 2025-04-21
+
+ - Add end-to-end tests for pubsub emulator
+ - Update CI to launch tests before create new release
+ - New App icon
+ - Update all dependancies 
+
 ## [0.4.1] - 2025-04-03
 
  - Update library / security advisory

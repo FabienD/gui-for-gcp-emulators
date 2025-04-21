@@ -8,12 +8,12 @@
   "bundle": {
     "active": true,
     "targets": "all",
-    "icon": ["icons/32x32.png", "icons/128x128.png", "icons/icon.ico"],
+    "icon": ["icons/icon_512.png", "icons/icon_256.png", "icons/icon.ico"],
     "createUpdaterArtifacts": false
   },
-  "productName": "gui-for-gcp-emulators",
-  "version": "0.4.1",
-  "identifier": "com.gui-for-gcp-emulators.dev",
+  "productName": "App for GCP emulators",
+  "version": "0.5.0",
+  "identifier": "com.app-for-gcp-emulators.dev",
   "plugins": {},
   "app": {
     "withGlobalTauri": false,
@@ -21,7 +21,7 @@
       {
         "fullscreen": false,
         "resizable": true,
-        "title": "GUI for GCP emulators",
+        "title": "App for GCP emulators",
         "width": 1024,
         "height": 768
       }

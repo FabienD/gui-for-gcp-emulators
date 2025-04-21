@@ -1,7 +1,7 @@
 services:
   pubsub:
     container_name: emu-pubsub
-    image: 'google/cloud-sdk:513.0.0-emulators'
+    image: 'google/cloud-sdk:518.0.0-emulators'
     command: 'gcloud --user-output-enabled --log-http beta emulators pubsub start --project=${GCP_PROJECT_ID:-fake} --host-port=0.0.0.0:8085'
     ports:
       - '8085:8085'

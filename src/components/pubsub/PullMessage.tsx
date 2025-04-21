@@ -70,6 +70,7 @@ function PullMessage({
   }, [open]);
 
   const resetAlerts = () => {
+    setHoveredMessage(null);
     setMessages(undefined);
     setError(undefined);
   };
