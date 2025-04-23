@@ -132,7 +132,7 @@ function TopicDefinition({
 
   return (
     <Dialog fullScreen open={open} onClose={handleClose}>
-      <DialogTitle color="primary">Topic Definition</DialogTitle>
+      <DialogTitle color="primary">PubSub / Topic Definition</DialogTitle>
       <DialogContent>{renderContent()}</DialogContent>
       <DialogActions>
         <Box className="absolute right-5 top-3">
