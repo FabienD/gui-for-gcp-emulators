@@ -6,6 +6,7 @@ interface NavItemProps {
   href: string;
   icon: string;
   name: string;
+  disabled?: boolean;
 }
 
 function NavItem({ href, icon, name }: NavItemProps): React.ReactElement {

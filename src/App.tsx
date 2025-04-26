@@ -9,6 +9,8 @@ import Datastore from './pages/Datastore';
 import Firestore from './pages/Firestore';
 import Pubsub from './pages/Pubsub';
 import Spanner from './pages/Spanner';
+import Settings from './pages/Settings';
+import BigQuery from './pages/BigQuery';
 
 function App(): React.ReactElement {
   return (
@@ -16,10 +18,12 @@ function App(): React.ReactElement {
       <Route path="/" element={<PageLayout />}>
         <Route index element={<Home />} />
         <Route path="bigtable" element={<Bigtable />} />
+        <Route path="bigquery" element={<BigQuery />} />
         <Route path="datastore" element={<Datastore />} />
         <Route path="firestore" element={<Firestore />} />
         <Route path="pubsub" element={<Pubsub />} />
         <Route path="spanner" element={<Spanner />} />
+        <Route path="settings" element={<Settings />} />
         <Route path="*" element={<NoMatch />} />
       </Route>
     </Routes>

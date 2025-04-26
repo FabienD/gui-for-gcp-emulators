@@ -3,6 +3,7 @@ import { MenuList, Typography } from '@mui/material';
 import NavItem, { NavItemProps } from './NavItem';
 
 import bigtable from '../../assets/icons/bigtable.svg';
+import bigquery from '../../assets/icons/bigquery.svg';
 import firestore from '../../assets/icons/firestore.svg';
 import pubsub from '../../assets/icons/pubsub.svg';
 import spanner from '../../assets/icons/cloud_spanner.svg';
@@ -13,15 +14,17 @@ interface NavProps {
 }
 
 const items: Array<NavItemProps> = [
-  { href: '/bigtable', icon: bigtable, name: 'Bigtable' },
-  { href: '/datastore', icon: datastore, name: 'Datastore' },
-  { href: '/firestore', icon: firestore, name: 'Firestore' },
-  { href: '/pubsub', icon: pubsub, name: 'PubSub' },
-  { href: '/spanner', icon: spanner, name: 'Spanner' },
+  { href: '/bigtable', icon: bigtable, name: 'Bigtable', disabled: true },
+  { href: '/bigquery', icon: bigquery, name: 'BigQuery', disabled: false},
+  { href: '/datastore', icon: datastore, name: 'Datastore', disabled: true },
+  { href: '/firestore', icon: firestore, name: 'Firestore',  disabled: false},
+  { href: '/pubsub', icon: pubsub, name: 'PubSub', disabled: false},
+  { href: '/spanner', icon: spanner, name: 'Spanner', disabled: true },
 ];
 
 function Nav({ title }: NavProps): React.ReactElement {
-  const navItems = items.map((item, index) => (
+  const activeItems = items.filter((item) => !item.disabled);
+  const navItems = activeItems.map((item, index) => (
     <NavItem key={index} {...item} />
   ));
 
