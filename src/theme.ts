@@ -16,7 +16,7 @@ const theme = createTheme({
   },
   typography: {
     fontSize: 12,
-    fontFamily: 'Roboto, Arial',
+    fontFamily: '"Roboto Variable", sans-serif',
 
     h1: {
       fontSize: '2em',
