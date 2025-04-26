@@ -1,5 +1,5 @@
-name: 'publish'
-run-name: ${{ github.actor }} Release Gui for Google Emulators.
+name: 'tests_and_release'
+run-name: ${{ github.actor }} Test & release Application for Google Emulators.
 
 on:
   [push]
