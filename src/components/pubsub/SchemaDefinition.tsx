@@ -121,7 +121,7 @@ function SchemaDefinition({
 
   return (
     <Dialog fullScreen open={open} onClose={handleClose}>
-      <DialogTitle color="primary">Schema Definition</DialogTitle>
+      <DialogTitle color="primary">PubSub / Schema Definition</DialogTitle>
       <DialogContent>{renderContent()}</DialogContent>
       <DialogActions>
         <Box className="absolute right-5 top-3">
