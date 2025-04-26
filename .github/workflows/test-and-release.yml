@@ -1,5 +1,5 @@
 name: 'tests_and_release'
-run-name: ${{ github.actor }} Test & release Application for Google Emulators.
+run-name: ${{ github.actor }} Test & release Application for GCP Emulators.
 
 on:
   [push]
@@ -61,12 +61,12 @@ jobs:
         uses: actions/github-script@v7
         env:
           BODY_CONTENT: |
-            Take a look at the assets to download and install this app for Google emulators v`${process.env.PACKAGE_VERSION}`
+            Take a look at the assets to download and install this app for GCP emulators v`${process.env.PACKAGE_VERSION}`
 
             Under Mac OS X, if you have the following message "<application> is damaged and can't be opened. You should move it to the Bin.", just type the following command in your terminal: 
 
             ```Shell 
-            xattr -cr /Applications/gui-for-gcp-emulators.app
+            xattr -cr /Applications/App\ for\ GCP\ emulators.app
             ```
         with:
           script: |
@@ -74,7 +74,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               tag_name: `app-v${process.env.PACKAGE_VERSION}`,
-              name: `App for Google emulators v${process.env.PACKAGE_VERSION}`,
+              name: `App for GCP emulators v${process.env.PACKAGE_VERSION}`,
               body: process.env.BODY_CONTENT,
               draft: true,
               prerelease: false

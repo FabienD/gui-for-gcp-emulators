@@ -1,12 +1,12 @@
-# GUI for Google Cloud Plateform Emulators
+# App for Google Cloud Plateform Emulators
 
 ## Description
 
-This application provides a basic UI for interacting with [Google Cloud Platform™ Emulators](https://cloud.google.com/sdk/gcloud/reference/beta/emulators).
+This application provides an UI for interacting with [Google Cloud Platform™ Emulators](https://cloud.google.com/sdk/gcloud/reference/beta/emulators).
 
 This application is **not an official** Google application.
 
-The application is under development and doesn't cover all emulator product APIs. I started this project to test Tauri App V2, then thought it would be intersting to provide something more functional.
+The application is under development and doesn't cover all emulators product APIs. I started this project to test Tauri App V2, then thought it would be intersting to provide something more functional.
 
 As **Open source project**, feel free to participate, contribute, fork, etc. :
 
