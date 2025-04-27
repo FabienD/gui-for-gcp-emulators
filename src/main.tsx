@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import { StyledEngineProvider, ThemeProvider } from '@mui/material';
-import { EmulatorProvider } from './contexts/emulators';
+import { EmulatorsProvider } from './contexts/emulators';
 
 import App from './App';
 
@@ -17,9 +17,9 @@ root.render(
     <BrowserRouter>
       <StyledEngineProvider injectFirst>
         <ThemeProvider theme={theme}>
-          <EmulatorProvider>
+          <EmulatorsProvider>
             <App />
-          </EmulatorProvider>
+          </EmulatorsProvider>
         </ThemeProvider>
       </StyledEngineProvider>
     </BrowserRouter>

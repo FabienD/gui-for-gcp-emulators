@@ -1,42 +1,26 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 
-import { Alert, Box, InputAdornment, TextField } from '@mui/material';
+import { Alert, Box, InputAdornment, TextField, Typography } from '@mui/material';
 import Button from '@mui/material/Button';
 import BoltIcon from '@mui/icons-material/Bolt';
 
-import EmulatorContext, { EmulatorContextType } from '../../contexts/emulators';
+import EmulatorsContext, { checkEmulatorConnection, EmulatorsContextType, EmulatorType } from '../../contexts/emulators';
 
 type SettingsType = {
+  type: EmulatorType;
   host: string;
   port: number;
   project_id: string;
 };
 
-async function checkEmulatorConnection(
-  host: string,
-  port: number,
-): Promise<boolean> {
-  try {
-    const response = await fetch(`http://${host}:${port}/`, {
-      method: 'GET',
-      signal: AbortSignal.timeout(2000),
-    });
-
-    // Check if the response status is OK (200-299)
-    return response.ok;
-  } catch (error) {
-    console.error('Error connecting to the emulator:', error);
-    return false;
-  }
-}
-
 function EmulatorSettings({
+  type,
   host,
   port,
   project_id,
 }: SettingsType): React.ReactElement {
-  const { saveEmulator } = useContext(EmulatorContext) as EmulatorContextType;
+  const { upsertEmulator } = useContext(EmulatorsContext) as EmulatorsContextType;
   const [settings, setSettings] = useState<SettingsType>();
   const [checkConnection, setIsCheckConnection] = useState<boolean | undefined>(
     undefined,
@@ -44,6 +28,7 @@ function EmulatorSettings({
 
   const { control, handleSubmit } = useForm({
     defaultValues: {
+      type,
       host,
       port,
       project_id,
@@ -51,6 +36,7 @@ function EmulatorSettings({
   });
   const onSubmit: SubmitHandler<SettingsType> = (data): void => {
     setSettings({
+      type: data.type,
       host: data.host,
       port: parseInt(data.port.toString()),
       project_id: data.project_id,
@@ -60,10 +46,16 @@ function EmulatorSettings({
   useEffect(() => {
     resetAlerts();
     if (settings != undefined) {
-      checkEmulatorConnection(settings.host, settings.port).then(
+      checkEmulatorConnection(settings.type, settings.host, settings.port).then(
         (res): void => {
           if (res) {
-            saveEmulator({ ...settings, is_connected: true });
+            upsertEmulator({
+              type: settings.type,
+              host: settings.host,
+              port: settings.port,
+              project_id: settings.project_id,
+              is_connected: true,
+            });
             setIsCheckConnection(true);
           } else {
             setIsCheckConnection(false);
@@ -79,14 +71,34 @@ function EmulatorSettings({
 
   return (
     <>
+      <Typography variant="h6" component="h2" color='primary' fontWeight={600} className="p-2">
+          {type.charAt(0).toUpperCase() + type.slice(1)}
+      </Typography>
       <Box
         component="form"
-        name="settings"
+        name="settings-{type}"
         noValidate
         autoComplete="off"
-        className="flex gap-2"
+        className="flex gap-2 p-5"
         onSubmit={handleSubmit(onSubmit)}
       >
+        
+         <Controller
+          name="type"
+          control={control}
+          render={({ field }) => (
+            <TextField
+              {...field}
+              required
+              id="type"
+              label="Type"
+              size="small"
+              variant="filled"
+              hidden={true}
+            />
+          )}
+        />
+
         <Controller
           name="host"
           control={control}
@@ -146,7 +158,7 @@ function EmulatorSettings({
           type="submit"
           startIcon={<BoltIcon />}
         >
-          Connect
+          Set
         </Button>
 
         {checkConnection === false && (

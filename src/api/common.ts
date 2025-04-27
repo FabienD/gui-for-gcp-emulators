@@ -24,7 +24,10 @@ async function apiCall<T>(
   const url = `http://${settings.host}:${settings.port}/v1/projects/${settings.project_id}${endpoint}`;
   const options: RequestInit = {
     method,
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+    },
   };
 
   if (body) {
