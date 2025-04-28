@@ -11,7 +11,7 @@ services:
     image: 'google/cloud-sdk:emulators'
     command: 'gcloud --user-output-enabled --log-http beta emulators firestore start --project=fake --host-port=0.0.0.0:8086'
     ports:
-      - '8086:8086'
+      - '8087:8087'
 
   bigquery:
     container_name: emu-bigquery
@@ -19,8 +19,22 @@ services:
     image: 'ghcr.io/goccy/bigquery-emulator:latest'
     command: '/bigquery-emulator --project=fake' 
     ports:
-      - '9050:9050' // Rest API
-      #- '9060:9060' // gRPC API
+      - '9050' # Rest API
+      - '9060' # gRPC API
+
+  bigquery-proxy:
+    container_name: bigquery-proxy
+    image: caddy:2.10.0
+    ports:
+      - "9050:9050"
+    volumes:
+      - ./docker/caddy/Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+
+volumes:
+  caddy_data:
+  caddy_config:
 
 networks:
   default:
