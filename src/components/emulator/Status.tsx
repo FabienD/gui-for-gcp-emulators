@@ -5,17 +5,14 @@ import BoltIcon from '@mui/icons-material/Bolt';
 import { Tooltip } from '@mui/material';
 import { green, grey } from '@mui/material/colors';
 
-import EmulatorContext, { EmulatorContextType } from '../../contexts/emulators';
+import EmulatorsContext, { EmulatorsContextType } from '../../contexts/emulators';
 
 function Status(): React.ReactElement {
-  const { getEmulator, isConnected } = useContext(
-    EmulatorContext,
-  ) as EmulatorContextType;
+  const { getEmulator } = useContext(EmulatorsContext) as EmulatorsContextType;
+  const emulator = getEmulator('pubsub');
 
-  const emulator = getEmulator();
-
-  const color = isConnected() ? green[500] : grey[500];
-  const alt = isConnected()
+  const color = emulator?.is_connected ? green[500] : grey[500];
+  const alt = emulator?.is_connected
     ? 'connected to http://' +
       emulator?.host +
       ':' +

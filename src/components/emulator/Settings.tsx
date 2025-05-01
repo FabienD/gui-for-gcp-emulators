@@ -46,7 +46,7 @@ function EmulatorSettings({
   useEffect(() => {
     resetAlerts();
     if (settings != undefined) {
-      checkEmulatorConnection(settings.type, settings.host, settings.port).then(
+      checkEmulatorConnection(settings).then(
         (res): void => {
           if (res) {
             upsertEmulator({
@@ -76,7 +76,8 @@ function EmulatorSettings({
       </Typography>
       <Box
         component="form"
-        name="settings-{type}"
+        id={`settings-${type}`} 
+        name={`settings-${type}`}
         noValidate
         autoComplete="off"
         className="flex gap-2 p-5"

@@ -11,11 +11,10 @@ services:
     image: 'google/cloud-sdk:emulators'
     command: 'gcloud --user-output-enabled --log-http beta emulators firestore start --project=fake --host-port=0.0.0.0:8086'
     ports:
-      - '8087:8087'
+      - '8086:8086'
 
   bigquery:
     container_name: emu-bigquery
-    platform: linux/amd64
     image: 'ghcr.io/goccy/bigquery-emulator:latest'
     command: '/bigquery-emulator --project=fake' 
     ports:

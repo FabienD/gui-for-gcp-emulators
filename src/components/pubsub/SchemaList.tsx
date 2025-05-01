@@ -11,7 +11,7 @@ import {
   GridRowId,
 } from '@mui/x-data-grid';
 
-import EmulatorContext, { EmulatorContextType } from '../../contexts/emulators';
+import EmulatorsContext, { EmulatorsContextType } from '../../contexts/emulators';
 import { SettingsType } from '../emulator/Settings';
 import { SchemaNameType, SchemaType } from './Schema';
 import { shortName } from '../../utils/pubsub';
@@ -37,8 +37,8 @@ function SchemaList({
     null,
   );
   const [confirmOpen, setConfirmOpen] = useState(false);
-  const { getEmulator } = useContext(EmulatorContext) as EmulatorContextType;
-  const emulator = getEmulator();
+  const { getEmulator } = useContext(EmulatorsContext) as EmulatorsContextType;
+  const emulator = getEmulator('pubsub');
 
   const handleActionClick = (
     action: 'delete' | 'definition',
@@ -67,6 +67,7 @@ function SchemaList({
     if (emulator != undefined) {
       setLoading(true);
       getSchemasCallback({
+        type: emulator.type,
         host: emulator.host,
         port: emulator.port,
         project_id: emulator.project_id,
@@ -95,6 +96,7 @@ function SchemaList({
       if (emulator != undefined) {
         deleteSchemaCallback(
           {
+            type: emulator.type,
             host: emulator.host,
             port: emulator.port,
             project_id: emulator.project_id,

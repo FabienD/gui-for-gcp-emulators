@@ -14,7 +14,7 @@ import {
   Tooltip,
 } from '@mui/material';
 
-import EmulatorContext, { EmulatorContextType } from '../../contexts/emulators';
+import EmulatorsContext, { EmulatorsContextType } from '../../contexts/emulators';
 import { SettingsType } from '../emulator/Settings';
 import { SchemaType, SchemaTypes } from './Schema';
 import { createSchema } from '../../api/pubsub.schema';
@@ -35,11 +35,11 @@ function SchemaCreate({
   schemas,
   setSchemas,
 }: SchemaCreateProps): React.ReactElement {
-  const { getEmulator } = useContext(EmulatorContext) as EmulatorContextType;
+  const { getEmulator } = useContext(EmulatorsContext) as EmulatorsContextType;
   const [Error, setError] = useState<string | undefined>(undefined);
   const [IsCreated, setIsCreated] = useState(false);
 
-  const emulator = getEmulator();
+  const emulator = getEmulator('pubsub');
 
   const {
     control,

@@ -12,7 +12,7 @@ import {
   Box,
 } from '@mui/material';
 import { DataGrid, GridColDef, GridRowParams } from '@mui/x-data-grid';
-import EmulatorContext, { EmulatorContextType } from '../../contexts/emulators';
+import EmulatorsContext, { EmulatorsContextType } from '../../contexts/emulators';
 import {
   ReceivedMessage,
   pullAckSubscription,
@@ -32,7 +32,7 @@ function PullMessage({
   subscriptionName,
   setOpen,
 }: PullMessageProps): React.ReactElement {
-  const { getEmulator } = useContext(EmulatorContext) as EmulatorContextType;
+  const { getEmulator } = useContext(EmulatorsContext) as EmulatorsContextType;
   const [error, setError] = useState<string | undefined>(undefined);
   const [messages, setMessages] = useState<ReceivedMessage[] | undefined>(
     undefined,
@@ -40,7 +40,7 @@ function PullMessage({
   const [hoveredMessage, setHoveredMessage] = useState<ReceivedMessage | null>(
     null,
   );
-  const emulator = getEmulator();
+  const emulator = getEmulator('pubsub');
 
   const handlePullSubscription = async () => {
     resetAlerts();

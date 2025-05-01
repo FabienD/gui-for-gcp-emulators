@@ -13,7 +13,7 @@ import CloseButton from '../ui/CloseButton';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { solarizedLight } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 
-import EmulatorContext, { EmulatorContextType } from '../../contexts/emulators';
+import EmulatorsContext, { EmulatorsContextType } from '../../contexts/emulators';
 import { SettingsType } from '../emulator/Settings';
 import { getSchema } from '../../api/pubsub.schema';
 import { shortName } from '../../utils/pubsub';
@@ -30,11 +30,11 @@ function SchemaDefinition({
   setOpen,
 }: SchemaDefinitionProps): React.ReactElement {
   const handleClose = () => setOpen(false);
-  const { getEmulator } = useContext(EmulatorContext) as EmulatorContextType;
+  const { getEmulator } = useContext(EmulatorsContext) as EmulatorsContextType;
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [schema, setSchema] = React.useState<SchemaType | undefined>(undefined);
-  const emulator = getEmulator();
+  const emulator = getEmulator('pubsub');
 
   const getSchemaCallback = useCallback(
     async (settings: SettingsType, schemaName: SchemaNameType) => {
@@ -56,6 +56,7 @@ function SchemaDefinition({
   useEffect(() => {
     if (emulator && schemaName && open) {
       const settings: SettingsType = {
+        type: emulator.type,
         host: emulator.host,
         port: emulator.port,
         project_id: emulator.project_id,

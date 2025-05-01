@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 
 import Alert from '@mui/material/Alert';
 
-import EmulatorContext, { EmulatorContextType } from '../../contexts/emulators';
+import EmulatorsContext, { EmulatorsContextType } from '../../contexts/emulators';
 import { SettingsType } from '../emulator/Settings';
 import SchemaCreate from './SchemaCreate';
 import SchemaList from './SchemaList';
@@ -34,9 +34,10 @@ function Schema({
   setSchemas,
   getSchemasCallback,
 }: SchemasProps): React.ReactElement {
-  const { isConnected } = useContext(EmulatorContext) as EmulatorContextType;
-
-  return isConnected() ? (
+  const { isConnected } = useContext(EmulatorsContext) as EmulatorsContextType;
+  const isPubSubConnected = isConnected('pubsub');
+  
+  return isPubSubConnected ? (
     <>
       <SchemaCreate schemas={schemas} setSchemas={setSchemas} />
       <SchemaList
@@ -46,7 +47,7 @@ function Schema({
       />
     </>
   ) : (
-    <Alert severity={isConnected() ? 'info' : 'warning'}>
+    <Alert severity={isPubSubConnected ? 'info' : 'warning'}>
       The emulator is not configured or the connection is not validated.
     </Alert>
   );

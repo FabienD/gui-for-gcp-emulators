@@ -2,7 +2,7 @@ import React, { useCallback, useContext, useEffect, useState } from 'react';
 
 import { Alert } from '@mui/material';
 
-import EmulatorContext, { EmulatorContextType } from '../../contexts/emulators';
+import EmulatorContext, { EmulatorsContextType } from '../../contexts/emulators';
 import { SettingsType } from '../emulator/Settings';
 import { TopicType } from './Topic';
 import SubscriptionCreate from './SubscriptionCreate';
@@ -33,10 +33,10 @@ type SubscriptionProps = {
 };
 
 function Subscription({ topics }: SubscriptionProps): React.ReactElement {
-  const { getEmulator } = useContext(EmulatorContext) as EmulatorContextType;
+  const { getEmulator } = useContext(EmulatorContext) as EmulatorsContextType;
   const [subscriptions, setSubscriptions] = useState<SubscriptionType[]>([]);
 
-  const emulator = getEmulator();
+  const emulator = getEmulator('pubsub');
   const isConnected = emulator?.is_connected;
 
   const getSubscriptionsCallback = useCallback(
@@ -60,6 +60,7 @@ function Subscription({ topics }: SubscriptionProps): React.ReactElement {
   useEffect(() => {
     if (emulator != undefined) {
       getSubscriptionsCallback({
+        type: emulator.type,
         host: emulator.host,
         port: emulator.port,
         project_id: emulator.project_id,

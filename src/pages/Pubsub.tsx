@@ -4,7 +4,7 @@ import { Box, Tab } from '@mui/material';
 import { TabPanel, TabContext, TabList } from '@mui/lab';
 import Title from '../components/ui/Title';
 
-import EmulatorContext, { EmulatorContextType } from '../contexts/emulators';
+import EmulatorsContext, { EmulatorsContextType } from '../contexts/emulators';
 import { SettingsType } from '../components/emulator/Settings';
 import Topic, { TopicType } from '../components/pubsub/Topic';
 import Subscription from '../components/pubsub/Subscription';
@@ -15,8 +15,8 @@ import { ApiError } from '../api/common';
 import Schema, { SchemaType } from '../components/pubsub/Schema';
 
 function Pubsub(): React.ReactElement {
-  const { getEmulator } = useContext(EmulatorContext) as EmulatorContextType;
-  const emulator = getEmulator();
+  const { getEmulator } = useContext(EmulatorsContext) as EmulatorsContextType;
+  const emulator = getEmulator('pubsub');
 
   const [tabIndex, setTabIndex] = React.useState('1');
   const [topics, setTopics] = useState<TopicType[]>([]);
@@ -59,6 +59,7 @@ function Pubsub(): React.ReactElement {
   useEffect(() => {
     if (emulator) {
       const settings: SettingsType = {
+        type: emulator.type,
         host: emulator.host,
         port: emulator.port,
         project_id: emulator.project_id,

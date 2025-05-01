@@ -1,6 +1,5 @@
 import { test, expect } from './pubsub.fixtures';
 
-
 test.describe('PubSub Topic - homepage', () => {
 
   test('I should see the PubSub Topic page', async ({ page }) => {
@@ -25,17 +24,16 @@ test.describe('PubSub Topic - homepage', () => {
 
 test.describe('PubSub Topic - create', () => {
 
-  test.beforeEach(async ({ deletePubSubResources }) => {
+  test.beforeEach(async ({ page, deletePubSubResources, emulatorConnection }) => {
     await deletePubSubResources.delete();
+    await emulatorConnection.connect('pubsub', 'localhost', '8085', 'project_test');
+    await page.locator('#PubSub a').click();
   });
 
   test('I can\'t create a topic with an invalid name', async ({
     page,
-    pubsubConnection,
+    emulatorConnection,
   }) => {
-    await pubsubConnection.connect('/', 'localhost', '8085', 'project_test');
-    await page.locator('#PubSub a').click();
-
     const invaluidNames = [
       '',
       'topic 2',
@@ -61,11 +59,8 @@ test.describe('PubSub Topic - create', () => {
 
   test('I can see no topics message for an empty topic list', async ({
     page,
-    pubsubConnection,
+    emulatorConnection,
   }) => {
-    await pubsubConnection.connect('/', 'localhost', '8085', 'project_test');
-    await page.locator('#PubSub a').click();
-
     const alert = page.getByRole('alert');
     const alertText = alert.locator('.MuiAlert-message');
 
@@ -76,10 +71,8 @@ test.describe('PubSub Topic - create', () => {
 
   test('I can create topics, then I see them in the list', async ({
     page,
-    pubsubConnection,
+    emulatorConnection,
   }) => {
-    await pubsubConnection.connect('/', 'localhost', '8085', 'project_test');
-    await page.locator('#PubSub a').click();
     // Create a first topic
     await page.locator('form#topic_create #name').fill('topic-1');
     await page.getByRole('button', { name: 'Create', exact: true }).click();
@@ -94,11 +87,8 @@ test.describe('PubSub Topic - create', () => {
 
   test('I can create a topic with labels', async ({
     page,
-    pubsubConnection,    
+    emulatorConnection,    
   }) => {
-
-    await pubsubConnection.connect('/', 'localhost', '8085', 'project_test');
-    await page.locator('#PubSub a').click();
     // Create a topic with labels
     await page.locator('form#topic_create #name').fill('topic-1');
     await page.locator('form#topic_create #labels').fill('key1:value1, key2:value2');
@@ -111,7 +101,7 @@ test.describe('PubSub Topic - create', () => {
 
   test('I can create a topic with schema using the advanced form setting', async ({
     page,
-    pubsubConnection,
+    emulatorConnection,
     pubsubUtils
   }) => {
     await pubsubUtils.createSchema({
@@ -120,8 +110,6 @@ test.describe('PubSub Topic - create', () => {
       definition:'{"fields":[{"default":"","name":"ProductName","type":"string"},{"default":0,"name":"SKU","type":"int"},{"default":false,"name":"InStock","type":"boolean"}],"name":"Avro","type":"record"}',
     });
 
-    await pubsubConnection.connect('/', 'localhost', '8085', 'project_test');
-    await page.locator('#PubSub a').click();
     await page.locator('form#topic_create #name').fill('topic-1');
     // Open the advanced form
     expect(page.locator('form#topic_create #schema-name')).not.toBeVisible();

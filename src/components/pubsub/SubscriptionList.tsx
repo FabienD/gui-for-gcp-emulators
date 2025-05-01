@@ -10,7 +10,7 @@ import {
   GridRowId,
 } from '@mui/x-data-grid';
 
-import EmulatorContext, { EmulatorContextType } from '../../contexts/emulators';
+import EmulatorsContext, { EmulatorsContextType } from '../../contexts/emulators';
 import { SettingsType } from '../emulator/Settings';
 import { SubscriptionNameType, SubscriptionType } from './Subscription';
 import PullMessage from './PullMessage';
@@ -33,8 +33,8 @@ function SubscriptionList({
   getSubscriptionsCallback,
 }: SubscriptionsListProps): React.ReactElement {
   const [loading, setLoading] = useState(false);
-  const { getEmulator } = useContext(EmulatorContext) as EmulatorContextType;
-  const emulator = getEmulator();
+  const { getEmulator } = useContext(EmulatorsContext) as EmulatorsContextType;
+  const emulator = getEmulator('pubsub');
   const [open, setOpen] = useState(false);
   const [subscriptionName, setSubscriptionName] =
     useState<SubscriptionNameType>();
@@ -88,6 +88,7 @@ function SubscriptionList({
     if (emulator != undefined) {
       setLoading(true);
       getSubscriptionsCallback({
+        type: emulator.type,
         host: emulator.host,
         port: emulator.port,
         project_id: emulator.project_id,
@@ -116,6 +117,7 @@ function SubscriptionList({
       if (emulator != undefined) {
         deleteSubscriptionCallback(
           {
+            type: emulator.type,
             host: emulator.host,
             port: emulator.port,
             project_id: emulator.project_id,
@@ -142,6 +144,7 @@ function SubscriptionList({
       if (emulator != undefined) {
         purgeSubscriptionCallback(
           {
+            type: emulator.type,
             host: emulator.host,
             port: emulator.port,
             project_id: emulator.project_id,

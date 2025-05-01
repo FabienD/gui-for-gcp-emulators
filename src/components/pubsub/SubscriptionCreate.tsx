@@ -16,7 +16,7 @@ import {
   TextField,
 } from '@mui/material';
 
-import EmulatorContext, { EmulatorContextType } from '../../contexts/emulators';
+import EmulatorsContext, { EmulatorsContextType } from '../../contexts/emulators';
 import { SettingsType } from '../emulator/Settings';
 import { SubscriptionType } from './Subscription';
 import { TopicType } from './Topic';
@@ -41,8 +41,8 @@ function SubscriptionCreate({
   subscriptions,
   setSubscriptions,
 }: SubscriptionCreateProps): React.ReactElement {
-  const { getEmulator } = useContext(EmulatorContext) as EmulatorContextType;
-  const emulator = getEmulator();
+  const { getEmulator } = useContext(EmulatorsContext) as EmulatorsContextType;
+  const emulator = getEmulator('pubsub');
   const [SubmitError, setSubmitError] = useState<string | undefined>(undefined);
   const [IsCreated, setIsCreated] = useState(false);
   const [isAdvanced, setIsAdvanced] = useState(false);

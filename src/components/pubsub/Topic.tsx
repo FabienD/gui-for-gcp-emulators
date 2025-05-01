@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import Alert from '@mui/material/Alert';
-import EmulatorContext, { EmulatorContextType } from '../../contexts/emulators';
+import EmulatorsContext, { EmulatorsContextType } from '../../contexts/emulators';
 import TopicCreate from './TopicCreate';
 import TopicList from './TopicList';
 import { SchemaType } from './Schema';
@@ -44,9 +44,10 @@ function Topic({
   getTopicsCallback,
   schemas,
 }: TopicProps): React.ReactElement {
-  const { isConnected } = useContext(EmulatorContext) as EmulatorContextType;
+  const { isConnected } = useContext(EmulatorsContext) as EmulatorsContextType;
+  const isPubSubConnected = isConnected('pubsub');
 
-  return isConnected() ? (
+  return isPubSubConnected ? (
     <>
       <TopicCreate topics={topics} setTopics={setTopics} schemas={schemas} />
       <TopicList
@@ -56,7 +57,7 @@ function Topic({
       />
     </>
   ) : (
-    <Alert severity={isConnected() ? 'info' : 'warning'}>
+    <Alert severity={isPubSubConnected ? 'info' : 'warning'}>
       The emulator is not configured or the connection is not validated.
     </Alert>
   );

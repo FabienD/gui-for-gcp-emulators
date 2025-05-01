@@ -1,9 +1,10 @@
 import { createContext, useState } from 'react';
+import { SettingsType } from '../components/emulator/Settings';
 
 export type EmulatorType = 'bigquery' | 'bigtable' | 'datastore' | 'firestore' | 'pubsub' | 'spanner';
 
-const EmulatorConnectionCheckPath = {
-  bigquery: '/bigquery/v2/projects',
+const EmulatorsConnectionCheckPath = {
+  bigquery: '/bigquery/v2/projects/${project_id}/datasets', // Use the project_id used in the emulator start command. -> see it by calling this path /bigquery/v2/projects
   bigtable: '',
   datastore: '',
   firestore: '',
@@ -11,14 +12,14 @@ const EmulatorConnectionCheckPath = {
   spanner: '',
 };
 
-export async function checkEmulatorConnection(
-  type: EmulatorType,
-  host: string,
-  port: number,
-): Promise<boolean> {
+export async function checkEmulatorConnection(settings: SettingsType): Promise<boolean> {
+  const { type, host, port, project_id } = settings;
   try {
-    const path: string = EmulatorConnectionCheckPath[type];
-    const url: string = path ? `http://${host}:${port}${path}` : `http://${host}:${port}/`;
+    const path: string = EmulatorsConnectionCheckPath[type];
+    // Path can content the project_id, replace it with the project_id
+    const finalPath = path.replace('${project_id}', project_id);
+
+    const url: string = path ? `http://${host}:${port}${finalPath}` : `http://${host}:${port}/`;
     
     const response = await fetch(url, {
       method: 'GET',
@@ -71,7 +72,7 @@ function EmulatorsProvider({
       item => item.type === emulator.type,
     );
     // Update the emulator if it already exists
-    if (existingEmulatorIndex !== undefined && existingEmulatorIndex >= 0) {    
+    if (existingEmulatorIndex !== undefined && existingEmulatorIndex >= 0 && emulators) {    
       const updatedEmulator = {
         ...emulators[existingEmulatorIndex],
         host: emulator.host,
@@ -96,14 +97,10 @@ function EmulatorsProvider({
   };
 
   const isConnected = (type: EmulatorType): boolean => {
-    emulators?.forEach(emulator => {
-      if (emulator.type === type) {
-        if (emulator.is_connected) {
-          return true;
-        }
-      }
-    });
-
+    const emulator = emulators?.find(emulator => emulator.type === type);
+    if (emulator) {
+      return emulator.is_connected
+    }
     return false;
   };
 
