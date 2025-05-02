@@ -5,6 +5,7 @@ import {
 } from '../components/pubsub/Subscription';
 import { SubscriptionFormType } from '../components/pubsub/SubscriptionCreate';
 import { TopicNameType } from '../components/pubsub/Topic';
+import { buildEndpoint } from './pubsub';
 import apiCall from './common';
 
 export async function getTopicSubscriptions(
@@ -12,8 +13,7 @@ export async function getTopicSubscriptions(
   topicName: TopicNameType,
 ): Promise<SubscriptionType[]> {
   const content = await apiCall<{ subscriptions: SubscriptionType[] }>(
-    settings,
-    `${topicName.name}/subscriptions/subscriptions`,
+    buildEndpoint(settings, `${topicName.name}/subscriptions/subscriptions`),
   );
   return content?.subscriptions || [];
 }
@@ -22,8 +22,7 @@ export async function getSubscriptions(
   settings: SettingsType,
 ): Promise<SubscriptionType[]> {
   const content = await apiCall<{ subscriptions: SubscriptionType[] }>(
-    settings,
-    '/subscriptions',
+    buildEndpoint(settings, '/subscriptions'),
   );
   return content?.subscriptions || [];
 }
@@ -49,8 +48,7 @@ export async function createSubscription(
   }
 
   return await apiCall<SubscriptionType>(
-    settings,
-    `/subscriptions/${subscription.name}`,
+    buildEndpoint(settings, `/subscriptions/${subscription.name}`),
     'PUT',
     body,
   );
@@ -61,8 +59,7 @@ export async function deleteSubscription(
   subscriptionName: SubscriptionNameType,
 ): Promise<boolean> {
   await apiCall<void>(
-    settings,
-    `/subscriptions/${subscriptionName.short_name}`,
+    buildEndpoint(settings, `/subscriptions/${subscriptionName.short_name}`),
     'DELETE',
   );
   return true;
@@ -84,8 +81,7 @@ export async function pullSubscription(
   maxMessages: number = 1,
 ): Promise<{ receivedMessages: ReceivedMessage[] }> {
   return await apiCall<{ receivedMessages: ReceivedMessage[] }>(
-    settings,
-    `/subscriptions/${subscriptionName.short_name}:pull`,
+    buildEndpoint(settings, `/subscriptions/${subscriptionName.short_name}:pull`),
     'POST',
     {
       returnImmediately: true,
@@ -100,8 +96,7 @@ export async function ackSubscription(
   ackIds: string[],
 ): Promise<boolean> {
   const content = await apiCall<string>(
-    settings,
-    `/subscriptions/${subscriptionName.short_name}:acknowledge`,
+    buildEndpoint(settings,`/subscriptions/${subscriptionName.short_name}:acknowledge`),
     'POST',
     {
       ackIds: ackIds,
