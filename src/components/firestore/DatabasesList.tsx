@@ -9,9 +9,9 @@ type DatabasesListProps = {
   };
 
 function DatabasesList({
-    databases,
-    setDatabases,
-    getDatabasesCallback,
+    //databases,
+    //setDatabases,
+    //getDatabasesCallback,
 }: DatabasesListProps): React.ReactElement {
     
     return (

@@ -6,7 +6,7 @@ import EmulatorContext, { EmulatorsContextType } from '../../contexts/emulators'
 import { SettingsType } from '../emulator/Settings';
 import { TopicType } from './Topic';
 import SubscriptionCreate from './SubscriptionCreate';
-import SubscriptionList from './SubscriptionList';
+import SubscriptionsList from './SubscriptionsList';
 import { getSubscriptions } from '../../api/pubsub.subscription';
 import { ApiError } from '../../api/common';
 
@@ -75,7 +75,7 @@ function Subscription({ topics }: SubscriptionProps): React.ReactElement {
         subscriptions={subscriptions}
         setSubscriptions={setSubscriptions}
       />
-      <SubscriptionList
+      <SubscriptionsList
         subscriptions={subscriptions}
         setSubscriptions={setSubscriptions}
         getSubscriptionsCallback={getSubscriptionsCallback}

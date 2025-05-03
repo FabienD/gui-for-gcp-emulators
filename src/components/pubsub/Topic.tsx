@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import Alert from '@mui/material/Alert';
 import EmulatorsContext, { EmulatorsContextType } from '../../contexts/emulators';
 import TopicCreate from './TopicCreate';
-import TopicList from './TopicList';
+import TopicsList from './TopicsList';
 import { SchemaType } from './Schema';
 import { SettingsType } from '../emulator/Settings';
 
@@ -50,7 +50,7 @@ function Topic({
   return isPubSubConnected ? (
     <>
       <TopicCreate topics={topics} setTopics={setTopics} schemas={schemas} />
-      <TopicList
+      <TopicsList
         topics={topics}
         setTopics={setTopics}
         getTopicsCallback={getTopicsCallback}

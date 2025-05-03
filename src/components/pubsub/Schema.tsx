@@ -5,7 +5,7 @@ import Alert from '@mui/material/Alert';
 import EmulatorsContext, { EmulatorsContextType } from '../../contexts/emulators';
 import { SettingsType } from '../emulator/Settings';
 import SchemaCreate from './SchemaCreate';
-import SchemaList from './SchemaList';
+import SchemasList from './SchemasList';
 
 enum SchemaTypes {
   PROTOCOL_BUFFER = 'Protocol Buffer',
@@ -40,7 +40,7 @@ function Schema({
   return isPubSubConnected ? (
     <>
       <SchemaCreate schemas={schemas} setSchemas={setSchemas} />
-      <SchemaList
+      <SchemasList
         schemas={schemas}
         setSchemas={setSchemas}
         getSchemasCallback={getSchemasCallback}

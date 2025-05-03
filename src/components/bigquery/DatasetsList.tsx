@@ -8,10 +8,11 @@ type DatasetsListProps = {
     getDatasetsCallback: (settings: SettingsType) => Promise<void>;
   };
 
+  
 function DatasetsList({
-    datasets,
-    setDatasets,
-    getDatasetsCallback,
+    // datasets,
+    // setDatasets,
+    // getDatasetsCallback,
 }: DatasetsListProps): React.ReactElement {
 
     return (
@@ -20,4 +21,5 @@ function DatasetsList({
        </div>
     );
 }
+/* tslint:enable */
 export default DatasetsList;

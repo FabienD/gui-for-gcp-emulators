@@ -7,8 +7,8 @@ type DatabaseCreateProps = {
 };
 
 function DatabaseCreate({
-    databases,
-    setDatabases,
+    //databases,
+    //setDatabases,
 }: DatabaseCreateProps): React.ReactElement {
 
     return (
