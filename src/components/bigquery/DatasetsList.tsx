@@ -2,17 +2,17 @@ import React from 'react';
 import { DatasetType } from './Dataset';
 import { SettingsType } from '../emulator/Settings';
 
-type DatasetListProps = {
+type DatasetsListProps = {
     datasets: DatasetType[];
     setDatasets: React.Dispatch<React.SetStateAction<DatasetType[]>>;
-    getDatasetCallback: (settings: SettingsType) => Promise<void>;
+    getDatasetsCallback: (settings: SettingsType) => Promise<void>;
   };
 
-function DatasetList({
+function DatasetsList({
     datasets,
     setDatasets,
-    getDatasetCallback,
-}: DatasetListProps): React.ReactElement {
+    getDatasetsCallback,
+}: DatasetsListProps): React.ReactElement {
 
     return (
         <div>
@@ -20,4 +20,4 @@ function DatasetList({
        </div>
     );
 }
-export default DatasetList;
+export default DatasetsList;

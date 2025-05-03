@@ -159,7 +159,7 @@ function EmulatorSettings({
           type="submit"
           startIcon={<BoltIcon />}
         >
-          Set
+          Connect
         </Button>
 
         {checkConnection === false && (

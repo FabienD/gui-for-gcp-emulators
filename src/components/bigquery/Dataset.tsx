@@ -5,7 +5,7 @@ import EmulatorsContext, { EmulatorsContextType } from '../../contexts/emulators
 
 import { SettingsType } from '../emulator/Settings';
 import DatasetCreate from './DatasetCreate';
-import DatasetList from './DatasetList';
+import DatasetsList from './DatasetsList';
 
 type DatasetType = {
     readonly name: string;
@@ -28,10 +28,10 @@ function Dataset({
     return isBigqueryConnected ? (
       <>
         <DatasetCreate datasets={datasets} setDatasets={setDatasets} />
-        <DatasetList
+        <DatasetsList
           datasets={datasets}
           setDatasets={setDatasets}
-          getDatasetCallback={getDatasetsCallback}
+          getDatasetsCallback={getDatasetsCallback}
         />
       </>
     ) : (

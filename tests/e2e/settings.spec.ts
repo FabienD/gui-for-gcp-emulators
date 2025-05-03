@@ -11,7 +11,7 @@ test('I should be able to connect to the Pub/Sub emulator', async ({
     await page.fill('form#settings-pubsub #project_id', 'project_test');
   
     // Click the "Connect" button
-    await page.click('form#settings-pubsub button:has-text("Set")');
+    await page.click('form#settings-pubsub button:has-text("Connect")');
   
     // Verify the success alert is displayed
     const alert = await page.getByRole('alert');
@@ -30,7 +30,7 @@ test('I should be able to connect to the Pub/Sub emulator', async ({
     await page.fill('form#settings-pubsub #project_id', 'project_test');
   
     // Click the "Connect" button
-    await page.click('form#settings-pubsub button:has-text("Set")');
+    await page.click('form#settings-pubsub button:has-text("Connect")');
   
     // Verify the success alert is displayed
     const alert = await page.getByRole('alert');
