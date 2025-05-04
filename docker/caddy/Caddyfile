@@ -1,9 +1,9 @@
 (cors) {
         header {
-                Access-Control-Allow-Origin "{http.request.header.Origin}"
+                Access-Control-Allow-Origin *
                 Access-Control-Allow-Credentials true
                 Access-Control-Allow-Methods *
-                Access-Control-Allow-Headers DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization
+                Access-Control-Allow-Headers *
         }
         @options {
                 method OPTIONS
@@ -13,13 +13,13 @@
         }
 }
 
-http://localhost:9050 {
+http://localhost:8087 {
         log {
                 output file ./caddy-access.log
                 level ERROR
         }
         respond @options 204
-        reverse_proxy @not-options http://emu-bigquery:9050 http://localhost:9050 {
+        reverse_proxy @not-options http://emu-bigquery:9050 http://localhost:8087 {
                 header_up Host {upstream_hostport}
                 header_up -X-Forwarded-Host
                 header_up -X-forwarded-For

@@ -16,7 +16,7 @@ services:
   bigquery:
     container_name: emu-bigquery
     image: 'ghcr.io/goccy/bigquery-emulator:latest'
-    command: '/bigquery-emulator --project=fake' 
+    command: '/bigquery-emulator --project=fake'
     ports:
       - '9050' # Rest API
       - '9060' # gRPC API
@@ -25,7 +25,7 @@ services:
     container_name: bigquery-proxy
     image: caddy:2.10.0
     ports:
-      - "9050:9050"
+      - '8087:8087'
     volumes:
       - ./docker/caddy/Caddyfile:/etc/caddy/Caddyfile
       - caddy_data:/data
