@@ -16,7 +16,7 @@ test.describe('Bigquery - homepage', () => {
     const alertText = alert.locator('.MuiAlert-message');
 
     await expect(alertText).toHaveText(
-      'Not implemented.'
+      'The emulator is not configured or the connection is not validated.'
     );
   });
 });

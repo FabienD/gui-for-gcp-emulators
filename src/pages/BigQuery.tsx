@@ -52,7 +52,7 @@ function BigQuery(): React.ReactElement {
 
   return (
     <>
-      <Title title="Bigquery" icon={icon} />
+      <Title title="BigQuery" icon={icon} />
 
       <TabContext value={tabIndex}>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
