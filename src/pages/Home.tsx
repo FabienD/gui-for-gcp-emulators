@@ -1,13 +1,12 @@
 import React from 'react';
+import { NavLink } from 'react-router-dom';
+
+import CloseIcon from '@mui/icons-material/Close';
 import DeveloperBoardIcon from '@mui/icons-material/DeveloperBoard';
 import RocketLaunchIcon from '@mui/icons-material/RocketLaunch';
-import CloseIcon from '@mui/icons-material/Close';
-import { NavLink } from 'react-router-dom';
 import { Box, CardContent, Typography } from '@mui/material';
 
-
 function Home(): React.ReactElement {
-
   return (
     <>
       <Typography variant="h1" color="primary">
@@ -33,10 +32,13 @@ function Home(): React.ReactElement {
         Google™ application.
       </Typography>
       <Typography variant="body1" className="pt-2">
-          When I began the project, it was just a simple test to experiment with Tauri V2, React.js, and TypeScript. Now, I have implemented the PubSub API and am using the application at work. 
-          Because of this, I have decided to continue developing the application, but it requires time and effort.
+        When I began the project, it was just a simple test to experiment with
+        Tauri V2, React.js, and TypeScript. Now, I have implemented the PubSub
+        API and am using the application at work. Because of this, I have
+        decided to continue developing the application, but it requires time and
+        effort.
       </Typography>
-     
+
       <Typography variant="h2" color="primary">
         The state of the project
       </Typography>
@@ -73,7 +75,6 @@ function Home(): React.ReactElement {
               <NavLink to="/firestore">Firestore </NavLink>
               <DeveloperBoardIcon className="text-purple-800" />
             </li>
-            
           </ul>
         </CardContent>
 

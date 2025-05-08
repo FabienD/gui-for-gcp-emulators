@@ -2,10 +2,13 @@ import React, { useContext } from 'react';
 
 import Alert from '@mui/material/Alert';
 
-import EmulatorsContext, { EmulatorsContextType } from '../../contexts/emulators';
-import { SettingsType } from '../emulator/Settings';
+
 import SchemaCreate from './SchemaCreate';
 import SchemasList from './SchemasList';
+import EmulatorsContext, {
+  EmulatorsContextType,
+} from '../../contexts/emulators';
+import { SettingsType } from '../emulator/Settings';
 
 enum SchemaTypes {
   PROTOCOL_BUFFER = 'Protocol Buffer',
@@ -36,7 +39,7 @@ function Schema({
 }: SchemasProps): React.ReactElement {
   const { isConnected } = useContext(EmulatorsContext) as EmulatorsContextType;
   const isPubSubConnected = isConnected('pubsub');
-  
+
   return isPubSubConnected ? (
     <>
       <SchemaCreate schemas={schemas} setSchemas={setSchemas} />

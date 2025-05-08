@@ -1,18 +1,19 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 
-import { Box, Tab } from '@mui/material';
 import { TabPanel, TabContext, TabList } from '@mui/lab';
-import Title from '../components/ui/Title';
+import { Box, Tab } from '@mui/material';
 
-import EmulatorsContext, { EmulatorsContextType } from '../contexts/emulators';
-import { SettingsType } from '../components/emulator/Settings';
-import Topic, { TopicType } from '../components/pubsub/Topic';
-import Subscription from '../components/pubsub/Subscription';
-import icon from '../assets/icons/pubsub.svg';
-import { getTopics } from '../api/pubsub.topic';
-import { getSchemas } from '../api/pubsub.schema';
+
 import { ApiError } from '../api/common';
+import { getSchemas } from '../api/pubsub.schema';
+import { getTopics } from '../api/pubsub.topic';
+import icon from '../assets/icons/pubsub.svg';
+import { SettingsType } from '../components/emulator/Settings';
 import Schema, { SchemaType } from '../components/pubsub/Schema';
+import Subscription from '../components/pubsub/Subscription';
+import Topic, { TopicType } from '../components/pubsub/Topic';
+import Title from '../components/ui/Title';
+import EmulatorsContext, { EmulatorsContextType } from '../contexts/emulators';
 
 function Pubsub(): React.ReactElement {
   const { getEmulator } = useContext(EmulatorsContext) as EmulatorsContextType;

@@ -1,16 +1,14 @@
 import React, { useContext } from 'react';
+
 import Alert from '@mui/material/Alert';
+
+import DatasetCreate from './DatasetCreate';
+import DatasetsList from './DatasetsList';
+import { DatasetType } from './Models';
 import EmulatorsContext, {
   EmulatorsContextType,
 } from '../../contexts/emulators';
-
 import { SettingsType } from '../emulator/Settings';
-import DatasetCreate from './DatasetCreate';
-import DatasetsList from './DatasetsList';
-
-type DatasetType = {
-  readonly id: string;
-};
 
 type DatasetsProps = {
   datasets: DatasetType[];
@@ -43,4 +41,3 @@ function Dataset({
 }
 
 export default Dataset;
-export type { DatasetType };

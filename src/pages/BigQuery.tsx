@@ -1,16 +1,18 @@
+
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 
-import { Box, Tab } from '@mui/material';
 import { TabPanel, TabContext, TabList } from '@mui/lab';
-import Title from '../components/ui/Title';
+import { Box, Tab } from '@mui/material';
 
-import EmulatorsContext, { EmulatorsContextType } from '../contexts/emulators';
-import { SettingsType } from '../components/emulator/Settings';
 
-import icon from '../assets/icons/bigquery.svg';
-import Dataset, { DatasetType } from '../components/bigquery/Dataset';
 import { getDatasets } from '../api/bigquery.dataset';
 import { ApiError } from '../api/common';
+import icon from '../assets/icons/bigquery.svg';
+import Dataset from '../components/bigquery/Dataset';
+import { DatasetType } from '../components/bigquery/Models';
+import { SettingsType } from '../components/emulator/Settings';
+import Title from '../components/ui/Title';
+import EmulatorsContext, { EmulatorsContextType } from '../contexts/emulators';
 
 function BigQuery(): React.ReactElement {
   const { getEmulator } = useContext(EmulatorsContext) as EmulatorsContextType;
@@ -18,7 +20,7 @@ function BigQuery(): React.ReactElement {
 
   const [tabIndex, setTabIndex] = React.useState('1');
   const [datasets, setDatasets] = useState<DatasetType[]>([]);
-  
+
   const getDatasetsCallback = useCallback(async (settings: SettingsType) => {
     try {
       const fetchedDatasets = await getDatasets(settings);
@@ -37,7 +39,7 @@ function BigQuery(): React.ReactElement {
   const handleTabChange = (_event: React.SyntheticEvent, newValue: string) => {
     setTabIndex(newValue);
   };
-  
+
   useEffect(() => {
     if (emulator) {
       const settings: SettingsType = {

@@ -1,8 +1,8 @@
+import apiCall from './common';
+import { buildEndpoint } from './pubsub';
 import { SettingsType } from '../components/emulator/Settings';
 import { SchemaNameType, SchemaType } from '../components/pubsub/Schema';
 import { SchemaFormType } from '../components/pubsub/SchemaCreate';
-import { buildEndpoint } from './pubsub';
-import apiCall from './common';
 
 export async function getSchemas(
   settings: SettingsType,
@@ -18,7 +18,7 @@ export async function getSchema(
   schema: SchemaNameType,
 ): Promise<SchemaType> {
   return await apiCall<SchemaType>(
-    buildEndpoint(settings, `/schemas/${schema.name}`)
+    buildEndpoint(settings, `/schemas/${schema.name}`),
   );
 }
 
@@ -43,8 +43,8 @@ export async function deleteSchema(
   schemaName: SchemaNameType,
 ): Promise<boolean> {
   await apiCall<void>(
-    buildEndpoint(settings, `/schemas/${schemaName.name}`), 
-    'DELETE'
+    buildEndpoint(settings, `/schemas/${schemaName.name}`),
+    'DELETE',
   );
   return true;
 }

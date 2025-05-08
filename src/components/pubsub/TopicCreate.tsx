@@ -1,5 +1,6 @@
 import React, { useCallback, useContext, useState } from 'react';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
+
 import {
   Alert,
   Box,
@@ -15,12 +16,14 @@ import {
   Typography,
 } from '@mui/material';
 
-import EmulatorsContext, { EmulatorsContextType } from '../../contexts/emulators';
-import { SettingsType } from '../emulator/Settings';
+import { SchemaType } from './Schema';
 import { TopicType } from './Topic';
 import { createTopic } from '../../api/pubsub.topic';
-import { SchemaType } from './Schema';
+import EmulatorsContext, {
+  EmulatorsContextType,
+} from '../../contexts/emulators';
 import { shortName } from '../../utils/pubsub';
+import { SettingsType } from '../emulator/Settings';
 import HelpLink from '../ui/HelpLink';
 
 type TopicCreateProps = {
@@ -120,21 +123,21 @@ function TopicCreate({
           <Controller
             name="name"
             control={control}
-            rules={{ 
+            rules={{
               validate: {
                 checkFormat: (name: string) => {
-                    const regex = /^[a-zA-Z]{1}[a-zA-Z0-9\-_%+~]{2,254}$/i;
-                    if (!regex.test(name)) {
-                      return 'Topic name format is not correct';
-                    }
-                },          
+                  const regex = /^[a-zA-Z]{1}[a-zA-Z0-9\-_%+~]{2,254}$/i;
+                  if (!regex.test(name)) {
+                    return 'Topic name format is not correct';
+                  }
+                },
                 checkName: (name: string) => {
-                    if (name.toLowerCase().includes('goog')) {
-                      return 'Topic name cannot contain "goog"';
-                    }
-                }
+                  if (name.toLowerCase().includes('goog')) {
+                    return 'Topic name cannot contain "goog"';
+                  }
+                },
               },
-              required: true
+              required: true,
             }}
             render={({ field }) => (
               <Tooltip title="Topic name" placement="top-start">

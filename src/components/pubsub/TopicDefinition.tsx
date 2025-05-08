@@ -10,11 +10,14 @@ import {
   Typography,
 } from '@mui/material';
 
+
 import { TopicNameType, TopicType } from './Topic';
-import EmulatorsContext, { EmulatorsContextType } from '../../contexts/emulators';
-import { SettingsType } from '../emulator/Settings';
-import { labelsToString, shortName } from '../../utils/pubsub';
 import { getTopic } from '../../api/pubsub.topic';
+import EmulatorsContext, {
+  EmulatorsContextType,
+} from '../../contexts/emulators';
+import { labelsToString, shortName } from '../../utils/pubsub';
+import { SettingsType } from '../emulator/Settings';
 import CloseButton from '../ui/CloseButton';
 
 type TopicDefinitionProps = {

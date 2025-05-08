@@ -20,7 +20,7 @@ async function apiCall<T>(
 ): Promise<T> {
   const options: RequestInit = {
     method,
-    headers: { 
+    headers: {
       'Content-Type': 'application/json',
       'Access-Control-Allow-Origin': '*',
     },

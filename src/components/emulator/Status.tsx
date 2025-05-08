@@ -1,3 +1,4 @@
+
 import React, { useContext } from 'react';
 import { NavLink } from 'react-router-dom';
 
@@ -5,7 +6,9 @@ import BoltIcon from '@mui/icons-material/Bolt';
 import { Tooltip } from '@mui/material';
 import { green, grey } from '@mui/material/colors';
 
-import EmulatorsContext, { EmulatorsContextType } from '../../contexts/emulators';
+import EmulatorsContext, {
+  EmulatorsContextType,
+} from '../../contexts/emulators';
 
 function Status(): React.ReactElement {
   const { getEmulator } = useContext(EmulatorsContext) as EmulatorsContextType;

@@ -1,16 +1,16 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 
-import PageLayout from './pages/PageLayout';
-import Home from './pages/Home';
-import NoMatch from './pages/NoMatch';
+import BigQuery from './pages/BigQuery';
 import Bigtable from './pages/Bigtable';
 import Datastore from './pages/Datastore';
 import Firestore from './pages/Firestore';
+import Home from './pages/Home';
+import NoMatch from './pages/NoMatch';
+import PageLayout from './pages/PageLayout';
 import Pubsub from './pages/Pubsub';
-import Spanner from './pages/Spanner';
 import Settings from './pages/Settings';
-import BigQuery from './pages/BigQuery';
+import Spanner from './pages/Spanner';
 
 function App(): React.ReactElement {
   return (

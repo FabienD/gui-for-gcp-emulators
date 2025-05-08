@@ -1,5 +1,6 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
-import { SchemaNameType, SchemaType } from './Schema';
+import SyntaxHighlighter from 'react-syntax-highlighter';
+
 import {
   Box,
   CircularProgress,
@@ -9,14 +10,16 @@ import {
   DialogTitle,
   Typography,
 } from '@mui/material';
-import CloseButton from '../ui/CloseButton';
-import SyntaxHighlighter from 'react-syntax-highlighter';
 import { solarizedLight } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 
-import EmulatorsContext, { EmulatorsContextType } from '../../contexts/emulators';
-import { SettingsType } from '../emulator/Settings';
+import { SchemaNameType, SchemaType } from './Schema';
 import { getSchema } from '../../api/pubsub.schema';
+import EmulatorsContext, {
+  EmulatorsContextType,
+} from '../../contexts/emulators';
 import { shortName } from '../../utils/pubsub';
+import { SettingsType } from '../emulator/Settings';
+import CloseButton from '../ui/CloseButton';
 
 type SchemaDefinitionProps = {
   open: boolean;

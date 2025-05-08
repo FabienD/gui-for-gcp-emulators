@@ -15,9 +15,12 @@ import {
   Typography,
 } from '@mui/material';
 
-import EmulatorsContext, { EmulatorsContextType } from '../../contexts/emulators';
-import { publishMessage, getTopic } from '../../api/pubsub.topic';
+
 import { TopicNameType, TopicType } from './Topic';
+import { publishMessage, getTopic } from '../../api/pubsub.topic';
+import EmulatorsContext, {
+  EmulatorsContextType,
+} from '../../contexts/emulators';
 import CloseButton from '../ui/CloseButton';
 
 type PublishMessageProps = {

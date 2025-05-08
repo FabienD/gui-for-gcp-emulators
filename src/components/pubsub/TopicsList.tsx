@@ -1,4 +1,5 @@
 import React, { useCallback, useContext, useMemo, useState } from 'react';
+
 import { Refresh } from '@mui/icons-material';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import InfoIcon from '@mui/icons-material/Info';
@@ -11,13 +12,15 @@ import {
   GridRowId,
 } from '@mui/x-data-grid';
 
-import { deleteTopic } from '../../api/pubsub.topic';
-import EmulatorsContext, { EmulatorsContextType } from '../../contexts/emulators';
-import { labelsToString, shortName } from '../../utils/pubsub';
-import { SettingsType } from '../emulator/Settings';
 import PublishMessage from './PublishMessage';
 import { TopicNameType, TopicType } from './Topic';
 import TopicDefinition from './TopicDefinition';
+import { deleteTopic } from '../../api/pubsub.topic';
+import EmulatorsContext, {
+  EmulatorsContextType,
+} from '../../contexts/emulators';
+import { labelsToString, shortName } from '../../utils/pubsub';
+import { SettingsType } from '../emulator/Settings';
 import ConfirmationDialog from '../ui/ConfirmationDialog';
 
 type TopicsListProps = {

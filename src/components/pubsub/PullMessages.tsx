@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
+
 import {
   Alert,
   Button,
@@ -12,12 +13,15 @@ import {
   Box,
 } from '@mui/material';
 import { DataGrid, GridColDef, GridRowParams } from '@mui/x-data-grid';
-import EmulatorsContext, { EmulatorsContextType } from '../../contexts/emulators';
+
+import { SubscriptionNameType } from './Subscription';
 import {
   ReceivedMessage,
   pullAckSubscription,
 } from '../../api/pubsub.subscription';
-import { SubscriptionNameType } from './Subscription';
+import EmulatorsContext, {
+  EmulatorsContextType,
+} from '../../contexts/emulators';
 import CloseButton from '../ui/CloseButton';
 import CopyableSyntaxHighlighter from '../ui/CopyableSyntaxHighlighter';
 
@@ -91,7 +95,7 @@ function PullMessages({
     } catch {
       return atob(message);
     }
-  }
+  };
 
   const columns: GridColDef[] = [
     { field: 'messageId', headerName: 'Message ID', width: 100 },

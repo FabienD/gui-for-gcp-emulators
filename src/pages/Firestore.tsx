@@ -1,16 +1,16 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 
-import { Box, Tab } from '@mui/material';
 import { TabPanel, TabContext, TabList } from '@mui/lab';
-import Title from '../components/ui/Title';
+import { Box, Tab } from '@mui/material';
 
-import EmulatorsContext, { EmulatorsContextType } from '../contexts/emulators';
-import { SettingsType } from '../components/emulator/Settings';
 
-import icon from '../assets/icons/firestore.svg';
-import Database, { DatabaseType } from '../components/firestore/Database';
-import { getDatabases } from '../api/firestore.database';
 import { ApiError } from '../api/common';
+import { getDatabases } from '../api/firestore.database';
+import icon from '../assets/icons/firestore.svg';
+import { SettingsType } from '../components/emulator/Settings';
+import Database, { DatabaseType } from '../components/firestore/Database';
+import Title from '../components/ui/Title';
+import EmulatorsContext, { EmulatorsContextType } from '../contexts/emulators';
 
 
 function Firestore(): React.ReactElement {
@@ -19,7 +19,7 @@ function Firestore(): React.ReactElement {
 
   const [tabIndex, setTabIndex] = React.useState('1');
   const [databases, setDatabases] = useState<DatabaseType[]>([]);
-  
+
   const getDatabasesCallback = useCallback(async (settings: SettingsType) => {
     try {
       const fetchedDatabases = await getDatabases(settings);
@@ -38,7 +38,7 @@ function Firestore(): React.ReactElement {
   const handleTabChange = (_event: React.SyntheticEvent, newValue: string) => {
     setTabIndex(newValue);
   };
-  
+
   useEffect(() => {
     if (emulator) {
       const settings: SettingsType = {

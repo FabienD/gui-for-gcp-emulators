@@ -1,3 +1,5 @@
+import apiCall from './common';
+import { buildEndpoint } from './pubsub';
 import { SettingsType } from '../components/emulator/Settings';
 import {
   SubscriptionNameType,
@@ -5,8 +7,6 @@ import {
 } from '../components/pubsub/Subscription';
 import { SubscriptionFormType } from '../components/pubsub/SubscriptionCreate';
 import { TopicNameType } from '../components/pubsub/Topic';
-import { buildEndpoint } from './pubsub';
-import apiCall from './common';
 
 export async function getTopicSubscriptions(
   settings: SettingsType,
@@ -81,7 +81,10 @@ export async function pullSubscription(
   maxMessages: number = 1,
 ): Promise<{ receivedMessages: ReceivedMessage[] }> {
   return await apiCall<{ receivedMessages: ReceivedMessage[] }>(
-    buildEndpoint(settings, `/subscriptions/${subscriptionName.short_name}:pull`),
+    buildEndpoint(
+      settings,
+      `/subscriptions/${subscriptionName.short_name}:pull`,
+    ),
     'POST',
     {
       returnImmediately: true,
@@ -96,7 +99,10 @@ export async function ackSubscription(
   ackIds: string[],
 ): Promise<boolean> {
   const content = await apiCall<string>(
-    buildEndpoint(settings,`/subscriptions/${subscriptionName.short_name}:acknowledge`),
+    buildEndpoint(
+      settings,
+      `/subscriptions/${subscriptionName.short_name}:acknowledge`,
+    ),
     'POST',
     {
       ackIds: ackIds,

@@ -1,11 +1,22 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 
-import { Alert, Box, InputAdornment, TextField, Typography } from '@mui/material';
-import Button from '@mui/material/Button';
 import BoltIcon from '@mui/icons-material/Bolt';
+import {
+  Alert,
+  Box,
+  InputAdornment,
+  TextField,
+  Typography,
+} from '@mui/material';
+import Button from '@mui/material/Button';
 
-import EmulatorsContext, { checkEmulatorConnection, EmulatorsContextType, EmulatorType } from '../../contexts/emulators';
+
+import EmulatorsContext, {
+  checkEmulatorConnection,
+  EmulatorsContextType,
+  EmulatorType,
+} from '../../contexts/emulators';
 
 type SettingsType = {
   type: EmulatorType;
@@ -20,7 +31,9 @@ function EmulatorSettings({
   port,
   project_id,
 }: SettingsType): React.ReactElement {
-  const { upsertEmulator } = useContext(EmulatorsContext) as EmulatorsContextType;
+  const { upsertEmulator } = useContext(
+    EmulatorsContext,
+  ) as EmulatorsContextType;
   const [settings, setSettings] = useState<SettingsType>();
   const [checkConnection, setIsCheckConnection] = useState<boolean | undefined>(
     undefined,
@@ -46,22 +59,20 @@ function EmulatorSettings({
   useEffect(() => {
     resetAlerts();
     if (settings != undefined) {
-      checkEmulatorConnection(settings).then(
-        (res): void => {
-          if (res) {
-            upsertEmulator({
-              type: settings.type,
-              host: settings.host,
-              port: settings.port,
-              project_id: settings.project_id,
-              is_connected: true,
-            });
-            setIsCheckConnection(true);
-          } else {
-            setIsCheckConnection(false);
-          }
-        },
-      );
+      checkEmulatorConnection(settings).then((res): void => {
+        if (res) {
+          upsertEmulator({
+            type: settings.type,
+            host: settings.host,
+            port: settings.port,
+            project_id: settings.project_id,
+            is_connected: true,
+          });
+          setIsCheckConnection(true);
+        } else {
+          setIsCheckConnection(false);
+        }
+      });
     }
   }, [settings]);
 
@@ -71,20 +82,25 @@ function EmulatorSettings({
 
   return (
     <>
-      <Typography variant="h6" component="h2" color='primary' fontWeight={600} className="p-2">
-          {type.charAt(0).toUpperCase() + type.slice(1)}
+      <Typography
+        variant="h6"
+        component="h2"
+        color="primary"
+        fontWeight={600}
+        className="p-2"
+      >
+        {type.charAt(0).toUpperCase() + type.slice(1)}
       </Typography>
       <Box
         component="form"
-        id={`settings-${type}`} 
+        id={`settings-${type}`}
         name={`settings-${type}`}
         noValidate
         autoComplete="off"
         className="flex gap-2 p-5"
         onSubmit={handleSubmit(onSubmit)}
       >
-        
-         <Controller
+        <Controller
           name="type"
           control={control}
           render={({ field }) => (

@@ -1,7 +1,9 @@
 import React, { useContext, useMemo, useState } from 'react';
-import { Alert, Button, CircularProgress, Tooltip } from '@mui/material';
+
+import { Refresh } from '@mui/icons-material';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import InfoIcon from '@mui/icons-material/Info';
+import { Alert, Button, CircularProgress, Tooltip } from '@mui/material';
 import {
   GridColDef,
   GridActionsCellItem,
@@ -9,12 +11,11 @@ import {
   DataGrid,
 } from '@mui/x-data-grid';
 
-import { DatasetType } from './Dataset';
-import { SettingsType } from '../emulator/Settings';
+import { DatasetType } from './Models';
 import EmulatorsContext, {
   EmulatorsContextType,
 } from '../../contexts/emulators';
-import { Refresh } from '@mui/icons-material';
+import { SettingsType } from '../emulator/Settings';
 
 type DatasetsListProps = {
   datasets: DatasetType[];

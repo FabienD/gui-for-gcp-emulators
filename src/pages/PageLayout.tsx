@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
-import { getVersion } from '@tauri-apps/api/app';
+
 import TuneIcon from '@mui/icons-material/Tune';
 import { Tooltip } from '@mui/material';
+import { getVersion } from '@tauri-apps/api/app';
 
-import Nav from '../components/navigation/Nav';
 import PageLogo from './PageLogo';
+import Nav from '../components/navigation/Nav';
 
 function PageLayout(): React.ReactElement {
   const [version, setVersion] = useState('');

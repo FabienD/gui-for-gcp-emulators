@@ -1,9 +1,10 @@
+
 import React, { useCallback, useContext, useMemo, useState } from 'react';
 
-import { Alert, Button, CircularProgress, Tooltip } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import InfoIcon from '@mui/icons-material/Info';
 import Refresh from '@mui/icons-material/Refresh';
+import { Alert, Button, CircularProgress, Tooltip } from '@mui/material';
 import {
   DataGrid,
   GridActionsCellItem,
@@ -11,13 +12,15 @@ import {
   GridRowId,
 } from '@mui/x-data-grid';
 
-import EmulatorsContext, { EmulatorsContextType } from '../../contexts/emulators';
-import { SettingsType } from '../emulator/Settings';
 import { SchemaNameType, SchemaType } from './Schema';
-import { shortName } from '../../utils/pubsub';
-import { deleteSchema } from '../../api/pubsub.schema';
-import ConfirmationDialog from '../ui/ConfirmationDialog';
 import SchemaDefinition from './SchemaDefinition';
+import { deleteSchema } from '../../api/pubsub.schema';
+import EmulatorsContext, {
+  EmulatorsContextType,
+} from '../../contexts/emulators';
+import { shortName } from '../../utils/pubsub';
+import { SettingsType } from '../emulator/Settings';
+import ConfirmationDialog from '../ui/ConfirmationDialog';
 
 type SchemasListProps = {
   schemas: SchemaType[];

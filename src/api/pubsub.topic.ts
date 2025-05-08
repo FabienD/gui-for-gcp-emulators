@@ -1,14 +1,15 @@
+import apiCall from './common';
+import { buildEndpoint } from './pubsub';
 import { SettingsType } from '../components/emulator/Settings';
 import { PubSubMessageType } from '../components/pubsub/PublishMessage';
 import { TopicType, TopicNameType } from '../components/pubsub/Topic';
 import { TopicFormType } from '../components/pubsub/TopicCreate';
 import { stringToLabels } from '../utils/pubsub';
-import { buildEndpoint } from './pubsub';
-import apiCall from './common';
-
 
 export async function getTopics(settings: SettingsType): Promise<TopicType[]> {
-  const content = await apiCall<{ topics: TopicType[] }>(buildEndpoint(settings, '/topics'));
+  const content = await apiCall<{ topics: TopicType[] }>(
+    buildEndpoint(settings, '/topics'),
+  );
   return content?.topics || [];
 }
 
@@ -16,7 +17,9 @@ export async function getTopic(
   settings: SettingsType,
   topicName: TopicNameType,
 ): Promise<TopicType> {
-  return await apiCall<TopicType>(buildEndpoint(settings, `/topics/${topicName.name}`));
+  return await apiCall<TopicType>(
+    buildEndpoint(settings, `/topics/${topicName.name}`),
+  );
 }
 
 export async function createTopic(
@@ -52,7 +55,10 @@ export async function deleteTopic(
   settings: SettingsType,
   topicName: TopicNameType,
 ): Promise<boolean> {
-  await apiCall<void>(buildEndpoint(settings, `/topics/${topicName.name}`), 'DELETE');
+  await apiCall<void>(
+    buildEndpoint(settings, `/topics/${topicName.name}`),
+    'DELETE',
+  );
   return true;
 }
 
@@ -71,7 +77,7 @@ export async function publishMessage(
   };
 
   return await apiCall<{ messageIds: string[] }>(
-    buildEndpoint(settings,`/topics/${topicName.name}:publish`),
+    buildEndpoint(settings, `/topics/${topicName.name}:publish`),
     'POST',
     body,
   );

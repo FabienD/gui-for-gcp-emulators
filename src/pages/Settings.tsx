@@ -1,9 +1,8 @@
 import React, { useContext } from 'react';
 
-import Title from '../components/ui/Title';
 import icon from '../assets/icons/settings.svg';
-
 import EmulatorSettings from '../components/emulator/Settings';
+import Title from '../components/ui/Title';
 import EmulatorsContext, { EmulatorsContextType } from '../contexts/emulators';
 
 function Settings(): React.ReactElement {

@@ -1,8 +1,8 @@
-import { SettingsType } from '../components/emulator/Settings';
-import { DatasetType } from '../components/bigquery/Dataset';
-import { DatasetFormType } from '../components/bigquery/DatasetCreate';
 import { buildEndpoint } from './bigquery';
 import apiCall from './common';
+import { DatasetFormType } from '../components/bigquery/DatasetCreate';
+import { DatasetType } from '../components/bigquery/Models';
+import { SettingsType } from '../components/emulator/Settings';
 
 export async function getDatasets(
   settings: SettingsType,

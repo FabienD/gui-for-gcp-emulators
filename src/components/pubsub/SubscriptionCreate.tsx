@@ -16,11 +16,14 @@ import {
   TextField,
 } from '@mui/material';
 
-import EmulatorsContext, { EmulatorsContextType } from '../../contexts/emulators';
-import { SettingsType } from '../emulator/Settings';
+
 import { SubscriptionType } from './Subscription';
 import { TopicType } from './Topic';
 import { createSubscription } from '../../api/pubsub.subscription';
+import EmulatorsContext, {
+  EmulatorsContextType,
+} from '../../contexts/emulators';
+import { SettingsType } from '../emulator/Settings';
 import HelpLink from '../ui/HelpLink';
 
 type SubscriptionCreateProps = {
@@ -114,21 +117,21 @@ function SubscriptionCreate({
           <Controller
             name="name"
             control={control}
-            rules={{ 
+            rules={{
               validate: {
                 checkFormat: (name: string) => {
-                    const regex = /^[a-zA-Z]{1}[a-zA-Z0-9\-_%+~]{2,254}$/i;
-                    if (!regex.test(name)) {
-                      return 'Subscription name format is not correct';
-                    }
-                },          
+                  const regex = /^[a-zA-Z]{1}[a-zA-Z0-9\-_%+~]{2,254}$/i;
+                  if (!regex.test(name)) {
+                    return 'Subscription name format is not correct';
+                  }
+                },
                 checkName: (name: string) => {
-                    if (name.toLowerCase().includes('goog')) {
-                      return 'Subscription name cannot contain "goog"';
-                    }
-                }
+                  if (name.toLowerCase().includes('goog')) {
+                    return 'Subscription name cannot contain "goog"';
+                  }
+                },
               },
-              required: true
+              required: true,
             }}
             render={({ field }) => (
               <TextField
@@ -192,9 +195,7 @@ function SubscriptionCreate({
           {SubmitError != undefined && (
             <Alert severity="error">{SubmitError}</Alert>
           )}
-          {IsCreated && (
-            <Alert severity="success">Subscription created</Alert>
-          )}
+          {IsCreated && <Alert severity="success">Subscription created</Alert>}
         </Stack>
 
         <Collapse in={isAdvanced}>
