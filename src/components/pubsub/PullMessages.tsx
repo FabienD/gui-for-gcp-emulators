@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
+
 import {
   Alert,
   Button,
@@ -12,27 +13,30 @@ import {
   Box,
 } from '@mui/material';
 import { DataGrid, GridColDef, GridRowParams } from '@mui/x-data-grid';
-import EmulatorContext, { EmulatorContextType } from '../../contexts/emulators';
+
+import { SubscriptionNameType } from './Subscription';
 import {
   ReceivedMessage,
   pullAckSubscription,
 } from '../../api/pubsub.subscription';
-import { SubscriptionNameType } from './Subscription';
+import EmulatorsContext, {
+  EmulatorsContextType,
+} from '../../contexts/emulators';
 import CloseButton from '../ui/CloseButton';
 import CopyableSyntaxHighlighter from '../ui/CopyableSyntaxHighlighter';
 
-type PullMessageProps = {
+type PullMessagesProps = {
   open: boolean;
   subscriptionName: SubscriptionNameType | undefined;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-function PullMessage({
+function PullMessages({
   open,
   subscriptionName,
   setOpen,
-}: PullMessageProps): React.ReactElement {
-  const { getEmulator } = useContext(EmulatorContext) as EmulatorContextType;
+}: PullMessagesProps): React.ReactElement {
+  const { getEmulator } = useContext(EmulatorsContext) as EmulatorsContextType;
   const [error, setError] = useState<string | undefined>(undefined);
   const [messages, setMessages] = useState<ReceivedMessage[] | undefined>(
     undefined,
@@ -40,7 +44,7 @@ function PullMessage({
   const [hoveredMessage, setHoveredMessage] = useState<ReceivedMessage | null>(
     null,
   );
-  const emulator = getEmulator();
+  const emulator = getEmulator('pubsub');
 
   const handlePullSubscription = async () => {
     resetAlerts();
@@ -91,7 +95,7 @@ function PullMessage({
     } catch {
       return atob(message);
     }
-  }
+  };
 
   const columns: GridColDef[] = [
     { field: 'messageId', headerName: 'Message ID', width: 100 },
@@ -198,4 +202,4 @@ function PullMessage({
   );
 }
 
-export default PullMessage;
+export default PullMessages;
