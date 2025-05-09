@@ -9,8 +9,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
  - new setup page for all emulators type
  - new home page 
- -
- -
+ - add BigQuery emulator (not from Google) and Firestore from Docker compose
+ - start implementatation for BigQuery & Firestore
+ - new rules for eslint to sort import
  - Update all dependancies
 
 ## [0.5.1] - 2025-04-26

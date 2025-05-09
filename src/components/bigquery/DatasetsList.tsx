@@ -1,15 +1,10 @@
 import React, { useContext, useMemo, useState } from 'react';
 
-import { Refresh } from '@mui/icons-material';
-import DeleteIcon from '@mui/icons-material/DeleteOutlined';
-import InfoIcon from '@mui/icons-material/Info';
-import { Alert, Button, CircularProgress, Tooltip } from '@mui/material';
-import {
-  GridColDef,
-  GridActionsCellItem,
-  GridRowId,
-  DataGrid,
-} from '@mui/x-data-grid';
+import { AddCircleRounded, ExpandCircleDownRounded, Refresh } from '@mui/icons-material';
+import { Alert, Box, Button, CircularProgress } from '@mui/material';
+import { SimpleTreeView } from '@mui/x-tree-view/SimpleTreeView';
+import { TreeItem, treeItemClasses } from '@mui/x-tree-view/TreeItem';
+import { styled, alpha } from '@mui/material/styles';
 
 import { DatasetType } from './Models';
 import EmulatorsContext, {
@@ -52,65 +47,6 @@ function DatasetsList({
     }
   };
 
-  const handleActionClick = (
-    action: 'delete' | 'definition',
-    id: GridRowId,
-  ) => {
-    setDatasetId({
-      datasetId: id.toString(),
-    });
-
-    console.debug(datasetId);
-
-    if (action === 'delete') {
-      //setDatasetToDelete({ datasetId });
-      //setConfirmOpen(true);
-    } else if (action === 'definition') {
-      //setOpenTopicDefinition(true);
-    }
-  };
-
-  const columns: GridColDef[] = useMemo(
-    () => [
-      {
-        headerName: 'ID',
-        field: 'id',
-        minWidth: 50,
-      },
-      {
-        headerName: 'Name',
-        field: 'name',
-        flex: 1,
-      },
-      {
-        field: 'actions',
-        type: 'actions',
-        headerName: 'Actions',
-        minWidth: 150,
-        cellClassName: 'actions',
-        getActions: ({ id }) => [
-          <Tooltip title="Information" key={`information-${id}`}>
-            <GridActionsCellItem
-              icon={<InfoIcon />}
-              label="Information"
-              onClick={() => handleActionClick('definition', id)}
-              color="inherit"
-            />
-          </Tooltip>,
-          <Tooltip title="Delete" key={`delete-${id}`}>
-            <GridActionsCellItem
-              icon={<DeleteIcon />}
-              label="Delete"
-              onClick={() => handleActionClick('delete', id)}
-              color="inherit"
-            />
-          </Tooltip>,
-        ],
-      },
-    ],
-    [handleActionClick],
-  );
-
   const rows = useMemo(
     () =>
       datasets.map((dataset: DatasetType) => ({
@@ -119,6 +55,15 @@ function DatasetsList({
       })),
     [datasets],
   );
+
+  function ExpandIcon(props: React.PropsWithoutRef<typeof ExpandCircleDownRounded>) {
+    return <ExpandCircleDownRounded {...props} sx={{ opacity: 0.8 }} color='primary'/>;
+  }
+  
+  function CollapseIcon(props: React.PropsWithoutRef<typeof AddCircleRounded>,
+  ) {
+    return <AddCircleRounded {...props} sx={{ opacity: 0.8 }} color='primary' />;
+  }
 
   return (
     <>
@@ -132,20 +77,40 @@ function DatasetsList({
         </Alert>
       ) : (
         <>
-          <div className="mt-10 w-full">
-            <DataGrid
-              rows={rows}
-              columns={columns}
-              initialState={{
-                pagination: {
-                  paginationModel: { page: 0, pageSize: 10 },
-                },
-              }}
-              pageSizeOptions={[10]}
-            />
-            <Button onClick={handleDatasetsRefresh} startIcon={<Refresh />}>
-              Datasets list
-            </Button>
+          <div className="mt-10 w-full flex" >
+            <Box sx={{ maxWidth: 250 }} className="flex-1">
+              <SimpleTreeView 
+                defaultExpandedItems={['root']}
+                slots={{
+                  expandIcon: ExpandIcon,
+                  collapseIcon: CollapseIcon,
+                  endIcon: CollapseIcon,
+                }}
+              >
+                {rows.map((row) => { 
+                  return (
+                    <TreeItem
+                      key={row.id}
+                      label={row.name} 
+                      itemId={row.id} 
+                      onClick={() => {
+                        console.log('Selected dataset:', row.id);
+                        setDatasetId({ datasetId: row.id });
+                      }}
+                    />
+                  );
+                }
+                )}
+              </SimpleTreeView>
+              <Box className="mt-5">
+                <Button onClick={handleDatasetsRefresh} startIcon={<Refresh />}>
+                  Datasets list
+                </Button>
+              </Box>
+            </Box>
+            <Box className="flex-1 ml-10">
+              // On Dataset selection, list tables 
+            </Box>
           </div>
         </>
       )}
@@ -154,3 +119,4 @@ function DatasetsList({
 }
 /* tslint:enable */
 export default DatasetsList;
+

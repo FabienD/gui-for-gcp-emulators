@@ -12,3 +12,4 @@ export async function getTables(
   );
   return content?.tables || [];
 }
+
