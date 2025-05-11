@@ -11,7 +11,6 @@ import {
 } from '@mui/material';
 import Button from '@mui/material/Button';
 
-
 import EmulatorsContext, {
   checkEmulatorConnection,
   EmulatorsContextType,
@@ -87,7 +86,7 @@ function EmulatorSettings({
         component="h2"
         color="primary"
         fontWeight={600}
-        className="p-2"
+        className="pl-2 pt-10"
       >
         {type.charAt(0).toUpperCase() + type.slice(1)}
       </Typography>
@@ -175,7 +174,7 @@ function EmulatorSettings({
           type="submit"
           startIcon={<BoltIcon />}
         >
-          Connect
+          Check & Save
         </Button>
 
         {checkConnection === false && (

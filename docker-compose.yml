@@ -17,6 +17,8 @@ services:
     container_name: emu-bigquery
     image: 'ghcr.io/goccy/bigquery-emulator:latest'
     command: '/bigquery-emulator --project=fake'
+    depends_on:
+      - bigquery-proxy
     ports:
       - '9050' # Rest API
       - '9060' # gRPC API
