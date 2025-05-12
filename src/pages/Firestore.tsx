@@ -15,7 +15,7 @@ import EmulatorsContext, { EmulatorsContextType } from '../contexts/emulators';
 
 function Firestore(): React.ReactElement {
   const { getEmulator } = useContext(EmulatorsContext) as EmulatorsContextType;
-  const emulator = getEmulator('bigquery');
+  const emulator = getEmulator('firestore');
 
   const [tabIndex, setTabIndex] = React.useState('1');
   const [databases, setDatabases] = useState<DatabaseType[]>([]);

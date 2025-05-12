@@ -1,14 +1,18 @@
 export type DatasetType = {
-  readonly id: string;
-  readonly friendlyName: string;
-  readonly labels: string[];
-  readonly description: string;
+  id: string;
+  friendlyName: string;
+  labels: string[];
+  description: string;
+  tables?: TableType[];
+};
+
+export type TableReferenceType = {
+  projectId: string;
+  datasetId: string;
+  tableId: string;
 };
 
 export type TableType = {
-  readonly id: string;
-  readonly friendlyName: string;
-  readonly labels: string[];
-  readonly description: string;
-  readonly schema: string;
+  id: string;
+  tableReference: TableReferenceType;
 };

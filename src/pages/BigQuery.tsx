@@ -5,7 +5,7 @@ import { TabPanel, TabContext, TabList } from '@mui/lab';
 import { Box, Tab } from '@mui/material';
 
 
-import { getDatasets } from '../api/bigquery.dataset';
+import { getDatasetsWithTables } from '../api/bigquery.dataset';
 import { ApiError } from '../api/common';
 import icon from '../assets/icons/bigquery.svg';
 import Dataset from '../components/bigquery/Dataset';
@@ -23,7 +23,7 @@ function BigQuery(): React.ReactElement {
 
   const getDatasetsCallback = useCallback(async (settings: SettingsType) => {
     try {
-      const fetchedDatasets = await getDatasets(settings);
+      const fetchedDatasets = await getDatasetsWithTables(settings);
       setDatasets(fetchedDatasets);
     } catch (error) {
       if (error instanceof ApiError) {

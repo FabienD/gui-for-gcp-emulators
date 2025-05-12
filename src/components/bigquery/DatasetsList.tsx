@@ -1,10 +1,9 @@
 import React, { useContext, useMemo, useState } from 'react';
 
-import { AddCircleRounded, ExpandCircleDownRounded, Refresh } from '@mui/icons-material';
+import { AddCircleRounded, ChevronRight, ExpandCircleDownRounded, Refresh } from '@mui/icons-material';
 import { Alert, Box, Button, CircularProgress } from '@mui/material';
 import { SimpleTreeView } from '@mui/x-tree-view/SimpleTreeView';
-import { TreeItem, treeItemClasses } from '@mui/x-tree-view/TreeItem';
-import { styled, alpha } from '@mui/material/styles';
+import { TreeItem } from '@mui/x-tree-view/TreeItem';
 
 import { DatasetType } from './Models';
 import EmulatorsContext, {
@@ -33,6 +32,8 @@ function DatasetsList({
   const { getEmulator } = useContext(EmulatorsContext) as EmulatorsContextType;
   const emulator = getEmulator('bigquery');
 
+  console.debug('DatasetId:', datasetId); // To remove
+
   const handleDatasetsRefresh = () => {
     if (emulator != undefined) {
       setLoading(true);
@@ -52,17 +53,26 @@ function DatasetsList({
       datasets.map((dataset: DatasetType) => ({
         id: dataset.id,
         name: dataset.id,
+        tables: dataset.tables?.map((table) => ({
+          id: table.id,
+          name: table.tableReference.tableId,
+        })),   
       })),
     [datasets],
   );
 
   function ExpandIcon(props: React.PropsWithoutRef<typeof ExpandCircleDownRounded>) {
-    return <ExpandCircleDownRounded {...props} sx={{ opacity: 0.8 }} color='primary'/>;
+    return <AddCircleRounded {...props} sx={{ opacity: 0.8 }} color='primary' />;
   }
   
   function CollapseIcon(props: React.PropsWithoutRef<typeof AddCircleRounded>,
   ) {
-    return <AddCircleRounded {...props} sx={{ opacity: 0.8 }} color='primary' />;
+    return <ExpandCircleDownRounded {...props} sx={{ opacity: 0.8 }} color='primary'/>;
+  }
+
+function EndIcon(props: React.PropsWithoutRef<typeof AddCircleRounded>,
+  ) {
+    return <ChevronRight {...props} sx={{ opacity: 0.8 }} color='primary'/>;
   }
 
   return (
@@ -84,11 +94,12 @@ function DatasetsList({
                 slots={{
                   expandIcon: ExpandIcon,
                   collapseIcon: CollapseIcon,
-                  endIcon: CollapseIcon,
+                  endIcon: EndIcon,
                 }}
               >
                 {rows.map((row) => { 
                   return (
+                    // List datasets, for each dataset, list tables
                     <TreeItem
                       key={row.id}
                       label={row.name} 
@@ -97,7 +108,18 @@ function DatasetsList({
                         console.log('Selected dataset:', row.id);
                         setDatasetId({ datasetId: row.id });
                       }}
-                    />
+                    >
+                      {row.tables?.map((table) => (
+                        <TreeItem
+                          key={table.id}
+                          label={table.name} 
+                          itemId={table.id} 
+                          onClick={() => {
+                            console.log('Selected table:', table.id);
+                          }}
+                        />
+                      ))}
+                    </TreeItem>
                   );
                 }
                 )}
