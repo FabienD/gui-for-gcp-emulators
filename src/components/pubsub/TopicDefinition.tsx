@@ -10,11 +10,14 @@ import {
   Typography,
 } from '@mui/material';
 
+
 import { TopicNameType, TopicType } from './Topic';
-import EmulatorContext, { EmulatorContextType } from '../../contexts/emulators';
-import { SettingsType } from '../emulator/Settings';
-import { labelsToString, shortName } from '../../utils/pubsub';
 import { getTopic } from '../../api/pubsub.topic';
+import EmulatorsContext, {
+  EmulatorsContextType,
+} from '../../contexts/emulators';
+import { labelsToString, shortName } from '../../utils/pubsub';
+import { SettingsType } from '../emulator/Settings';
 import CloseButton from '../ui/CloseButton';
 
 type TopicDefinitionProps = {
@@ -29,11 +32,11 @@ function TopicDefinition({
   setOpen,
 }: TopicDefinitionProps): React.ReactElement {
   const handleClose = () => setOpen(false);
-  const { getEmulator } = useContext(EmulatorContext) as EmulatorContextType;
+  const { getEmulator } = useContext(EmulatorsContext) as EmulatorsContextType;
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [topic, setTopic] = React.useState<TopicType | undefined>(undefined);
-  const emulator = getEmulator();
+  const emulator = getEmulator('pubsub');
 
   const getTopicCallback = useCallback(
     async (settings: SettingsType, topicName: TopicNameType) => {
@@ -55,6 +58,7 @@ function TopicDefinition({
   useEffect(() => {
     if (emulator && topicName && open) {
       const settings: SettingsType = {
+        type: emulator.type,
         host: emulator.host,
         port: emulator.port,
         project_id: emulator.project_id,

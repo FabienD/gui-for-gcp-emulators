@@ -1,10 +1,41 @@
 services:
   pubsub:
     container_name: emu-pubsub
-    image: 'google/cloud-sdk:518.0.0-emulators'
-    command: 'gcloud --user-output-enabled --log-http beta emulators pubsub start --project=${GCP_PROJECT_ID:-fake} --host-port=0.0.0.0:8085'
+    image: 'google/cloud-sdk:emulators'
+    command: 'gcloud --user-output-enabled --log-http beta emulators pubsub start --project=fake --host-port=0.0.0.0:8085'
     ports:
       - '8085:8085'
+
+  firestore:
+    container_name: emu-firestore
+    image: 'google/cloud-sdk:emulators'
+    command: 'gcloud --user-output-enabled --log-http beta emulators firestore start --project=fake --host-port=0.0.0.0:8086'
+    ports:
+      - '8086:8086'
+
+  bigquery:
+    container_name: emu-bigquery
+    image: 'ghcr.io/goccy/bigquery-emulator:latest'
+    command: '/bigquery-emulator --project=fake'
+    depends_on:
+      - bigquery-proxy
+    ports:
+      - '9050' # Rest API
+      - '9060' # gRPC API
+
+  bigquery-proxy:
+    container_name: bigquery-proxy
+    image: caddy:2.10.0
+    ports:
+      - '8087:8087'
+    volumes:
+      - ./docker/caddy/Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+
+volumes:
+  caddy_data:
+  caddy_config:
 
 networks:
   default:

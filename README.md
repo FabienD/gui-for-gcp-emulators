@@ -4,7 +4,7 @@
 
 This application provides an UI for interacting with [Google Cloud Platform™ Emulators](https://cloud.google.com/sdk/gcloud/reference/beta/emulators).
 
-This application is **not an official** Google application.
+This application is **not an official** Google™ application.
 
 The application is under development and doesn't cover all emulators product APIs. I started this project to test Tauri App V2, then thought it would be intersting to provide something more functional.
 
@@ -64,6 +64,20 @@ npm run tauri build
 
 ### Launch tests
 
+Install Playwright
+
+```shell
+ npx playwright install --with-deps chromium
+```
+
+Then build the application:
+
+```shell
+npm run build
+```
+
+Then run tests:
+
 ```shell
 npm run test:e2e
 # Use Playwright UI
@@ -79,7 +93,6 @@ npm run test:e2e:ui
 - [Material UI](https://material-ui.com/)
 - [Tailwind CSS](https://tailwindcss.com/)
 
-
 ## License
 
 This project is under [GNU license](LICENSE)
@@ -87,3 +100,4 @@ This project is under [GNU license](LICENSE)
 ### Tier assets license
 
 "Animal Hive" icon created by "Diemen Design" is under MIT license, downloaded from [SVG Repo](https://www.svgrepo.com)
+"BigQuery Emulator" by Masaaki Goshima under [MIT license](https://github.com/goccy/bigquery-emulator/)~~~~

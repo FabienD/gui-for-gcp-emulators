@@ -2,6 +2,7 @@ import React from 'react';
 
 import { Typography } from '@mui/material';
 
+
 type TitleProps = {
   readonly title: string;
   readonly icon: string;

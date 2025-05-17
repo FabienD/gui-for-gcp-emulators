@@ -1,11 +1,13 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
+
 import { MenuItem } from '@mui/material';
 
 interface NavItemProps {
   href: string;
   icon: string;
   name: string;
+  disabled?: boolean;
 }
 
 function NavItem({ href, icon, name }: NavItemProps): React.ReactElement {

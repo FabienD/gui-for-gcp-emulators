@@ -1,7 +1,9 @@
 import React from 'react';
 
-import { Box, IconButton } from '@mui/material';
 import HelpIcon from '@mui/icons-material/Help';
+import { Box, IconButton } from '@mui/material';
+
+
 import { openDocumentation } from '../../utils/openlink';
 
 type HelpProps = {
