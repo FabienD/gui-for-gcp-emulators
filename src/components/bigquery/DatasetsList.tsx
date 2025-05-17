@@ -1,6 +1,11 @@
 import React, { useContext, useMemo, useState } from 'react';
 
-import { AddCircleRounded, ChevronRight, ExpandCircleDownRounded, Refresh } from '@mui/icons-material';
+import {
+  AddCircleRounded,
+  ChevronRight,
+  ExpandCircleDownRounded,
+  Refresh,
+} from '@mui/icons-material';
 import { Alert, Box, Button, CircularProgress } from '@mui/material';
 import { SimpleTreeView } from '@mui/x-tree-view/SimpleTreeView';
 import { TreeItem } from '@mui/x-tree-view/TreeItem';
@@ -21,6 +26,10 @@ type DatasetIdType = {
   datasetId: string;
 };
 
+type TableIdType = {
+  tableId: string;
+};
+
 function DatasetsList({
   datasets,
   //setDatasets,
@@ -28,11 +37,13 @@ function DatasetsList({
 }: DatasetsListProps): React.ReactElement {
   const [loading, setLoading] = useState(false);
   const [datasetId, setDatasetId] = useState<DatasetIdType | null>(null);
+  const [tableId, setTableId] = useState<TableIdType | null>(null);
 
   const { getEmulator } = useContext(EmulatorsContext) as EmulatorsContextType;
   const emulator = getEmulator('bigquery');
 
   console.debug('DatasetId:', datasetId); // To remove
+  console.debug('tableId:', tableId); // To remove
 
   const handleDatasetsRefresh = () => {
     if (emulator != undefined) {
@@ -48,31 +59,47 @@ function DatasetsList({
     }
   };
 
+  // On table click, set the selected table id, dataset id
+  // and get the table schema
+  const handleTableClick = (tableId: string, datasetId: string) => {
+    setTableId({ tableId });
+    setDatasetId({ datasetId });
+    console.log('Selected table:', tableId);
+  };
+
   const rows = useMemo(
     () =>
       datasets.map((dataset: DatasetType) => ({
         id: dataset.id,
         name: dataset.id,
-        tables: dataset.tables?.map((table) => ({
+        tables: dataset.tables?.map(table => ({
           id: table.id,
           name: table.tableReference.tableId,
-        })),   
+        })),
       })),
     [datasets],
   );
 
-  function ExpandIcon(props: React.PropsWithoutRef<typeof ExpandCircleDownRounded>) {
-    return <AddCircleRounded {...props} sx={{ opacity: 0.8 }} color='primary' />;
-  }
-  
-  function CollapseIcon(props: React.PropsWithoutRef<typeof AddCircleRounded>,
+  function ExpandIcon(
+    props: React.PropsWithoutRef<typeof ExpandCircleDownRounded>,
   ) {
-    return <ExpandCircleDownRounded {...props} sx={{ opacity: 0.8 }} color='primary'/>;
+    return (
+      <AddCircleRounded {...props} sx={{ opacity: 0.8 }} color="primary" />
+    );
   }
 
-function EndIcon(props: React.PropsWithoutRef<typeof AddCircleRounded>,
-  ) {
-    return <ChevronRight {...props} sx={{ opacity: 0.8 }} color='primary'/>;
+  function CollapseIcon(props: React.PropsWithoutRef<typeof AddCircleRounded>) {
+    return (
+      <ExpandCircleDownRounded
+        {...props}
+        sx={{ opacity: 0.8 }}
+        color="primary"
+      />
+    );
+  }
+
+  function EndIcon(props: React.PropsWithoutRef<typeof AddCircleRounded>) {
+    return <ChevronRight {...props} sx={{ opacity: 0.8 }} color="primary" />;
   }
 
   return (
@@ -87,9 +114,9 @@ function EndIcon(props: React.PropsWithoutRef<typeof AddCircleRounded>,
         </Alert>
       ) : (
         <>
-          <div className="mt-10 w-full flex" >
+          <div className="mt-10 w-full flex">
             <Box sx={{ maxWidth: 250 }} className="flex-1">
-              <SimpleTreeView 
+              <SimpleTreeView
                 defaultExpandedItems={['root']}
                 slots={{
                   expandIcon: ExpandIcon,
@@ -97,32 +124,23 @@ function EndIcon(props: React.PropsWithoutRef<typeof AddCircleRounded>,
                   endIcon: EndIcon,
                 }}
               >
-                {rows.map((row) => { 
+                {rows.map(row => {
                   return (
                     // List datasets, for each dataset, list tables
-                    <TreeItem
-                      key={row.id}
-                      label={row.name} 
-                      itemId={row.id} 
-                      onClick={() => {
-                        console.log('Selected dataset:', row.id);
-                        setDatasetId({ datasetId: row.id });
-                      }}
-                    >
-                      {row.tables?.map((table) => (
+                    <TreeItem key={row.id} label={row.name} itemId={row.id}>
+                      {row.tables?.map(table => (
                         <TreeItem
                           key={table.id}
-                          label={table.name} 
-                          itemId={table.id} 
+                          label={table.name}
+                          itemId={table.id}
                           onClick={() => {
-                            console.log('Selected table:', table.id);
+                            handleTableClick(table.id, row.id);
                           }}
                         />
                       ))}
                     </TreeItem>
                   );
-                }
-                )}
+                })}
               </SimpleTreeView>
               <Box className="mt-5">
                 <Button onClick={handleDatasetsRefresh} startIcon={<Refresh />}>
@@ -130,9 +148,7 @@ function EndIcon(props: React.PropsWithoutRef<typeof AddCircleRounded>,
                 </Button>
               </Box>
             </Box>
-            <Box className="flex-1 ml-10">
-              // On Dataset selection, list tables 
-            </Box>
+            <Box className="flex-1 ml-10"></Box>
           </div>
         </>
       )}
@@ -141,4 +157,3 @@ function EndIcon(props: React.PropsWithoutRef<typeof AddCircleRounded>,
 }
 /* tslint:enable */
 export default DatasetsList;
-
