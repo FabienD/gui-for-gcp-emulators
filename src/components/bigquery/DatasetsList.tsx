@@ -1,4 +1,4 @@
-import React, { useContext, useMemo, useState } from 'react';
+import React, { useCallback, useContext, useMemo, useState } from 'react';
 
 import {
   AddCircleRounded,
@@ -10,24 +10,17 @@ import { Alert, Box, Button, CircularProgress } from '@mui/material';
 import { SimpleTreeView } from '@mui/x-tree-view/SimpleTreeView';
 import { TreeItem } from '@mui/x-tree-view/TreeItem';
 
-import { DatasetType } from './Models';
+import { DatasetType, TableType } from './Models';
 import EmulatorsContext, {
   EmulatorsContextType,
 } from '../../contexts/emulators';
 import { SettingsType } from '../emulator/Settings';
+import { getTable } from '../../api/bigquery.table';
 
 type DatasetsListProps = {
   datasets: DatasetType[];
   setDatasets: React.Dispatch<React.SetStateAction<DatasetType[]>>;
   getDatasetsCallback: (settings: SettingsType) => Promise<void>;
-};
-
-type DatasetIdType = {
-  datasetId: string;
-};
-
-type TableIdType = {
-  tableId: string;
 };
 
 function DatasetsList({
@@ -36,15 +29,10 @@ function DatasetsList({
   getDatasetsCallback,
 }: DatasetsListProps): React.ReactElement {
   const [loading, setLoading] = useState(false);
-  const [datasetId, setDatasetId] = useState<DatasetIdType | null>(null);
-  const [tableId, setTableId] = useState<TableIdType | null>(null);
-
+  const [selectedTable, setSelectedTable] = useState<TableType | null>(null);
   const { getEmulator } = useContext(EmulatorsContext) as EmulatorsContextType;
   const emulator = getEmulator('bigquery');
-
-  console.debug('DatasetId:', datasetId); // To remove
-  console.debug('tableId:', tableId); // To remove
-
+  
   const handleDatasetsRefresh = () => {
     if (emulator != undefined) {
       setLoading(true);
@@ -62,10 +50,35 @@ function DatasetsList({
   // On table click, set the selected table id, dataset id
   // and get the table schema
   const handleTableClick = (tableId: string, datasetId: string) => {
-    setTableId({ tableId });
-    setDatasetId({ datasetId });
-    console.log('Selected table:', tableId);
+    // Call API to get table information
+    // Display table information in the right panel
+    const table = getTableAction(datasetId, tableId);
+    console.log('Table clicked:', table);
   };
+
+  const getTableAction = useCallback(
+    async (datasetId: string, tableId: string) => {
+      if (emulator != undefined) {
+        getTable(
+          {
+            type: emulator.type,
+            host: emulator.host,
+            port: emulator.port,
+            project_id: emulator.project_id,
+          }, 
+          {
+            id: datasetId
+          }, 
+          {
+            id: tableId
+          } 
+        ).then(table => {         
+          setSelectedTable(table);
+        }).catch(console.error);
+      }
+    },
+    [emulator],
+  );
 
   const rows = useMemo(
     () =>
@@ -134,7 +147,7 @@ function DatasetsList({
                           label={table.name}
                           itemId={table.id}
                           onClick={() => {
-                            handleTableClick(table.id, row.id);
+                            handleTableClick(table.name, row.id);
                           }}
                         />
                       ))}
@@ -148,7 +161,18 @@ function DatasetsList({
                 </Button>
               </Box>
             </Box>
-            <Box className="flex-1 ml-10"></Box>
+            <Box className="flex-1 ml-10">
+              <div className="flex flex-col gap-2">
+                {selectedTable ? (
+                  <div>
+                    <p>Table ID: {selectedTable.id}</p>
+                    <p>Schema: {JSON.stringify(selectedTable.schema)}</p>
+                  </div>
+                ) : (
+                  <Alert severity="info">Select a table to view details</Alert>
+                )}
+              </div>
+            </Box>
           </div>
         </>
       )}
