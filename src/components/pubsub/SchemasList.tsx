@@ -1,9 +1,10 @@
+
 import React, { useCallback, useContext, useMemo, useState } from 'react';
 
-import { Alert, Button, CircularProgress, Tooltip } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import InfoIcon from '@mui/icons-material/Info';
 import Refresh from '@mui/icons-material/Refresh';
+import { Alert, Button, CircularProgress, Tooltip } from '@mui/material';
 import {
   DataGrid,
   GridActionsCellItem,
@@ -11,25 +12,27 @@ import {
   GridRowId,
 } from '@mui/x-data-grid';
 
-import EmulatorContext, { EmulatorContextType } from '../../contexts/emulators';
-import { SettingsType } from '../emulator/Settings';
 import { SchemaNameType, SchemaType } from './Schema';
-import { shortName } from '../../utils/pubsub';
-import { deleteSchema } from '../../api/pubsub.schema';
-import ConfirmationDialog from '../ui/ConfirmationDialog';
 import SchemaDefinition from './SchemaDefinition';
+import { deleteSchema } from '../../api/pubsub.schema';
+import EmulatorsContext, {
+  EmulatorsContextType,
+} from '../../contexts/emulators';
+import { shortName } from '../../utils/pubsub';
+import { SettingsType } from '../emulator/Settings';
+import ConfirmationDialog from '../ui/ConfirmationDialog';
 
-type SchemaListProps = {
+type SchemasListProps = {
   schemas: SchemaType[];
   setSchemas: React.Dispatch<React.SetStateAction<SchemaType[]>>;
   getSchemasCallback: (settings: SettingsType) => Promise<void>;
 };
 
-function SchemaList({
+function SchemasList({
   schemas,
   setSchemas,
   getSchemasCallback,
-}: SchemaListProps): React.ReactElement {
+}: SchemasListProps): React.ReactElement {
   const [loading, setLoading] = useState(false);
   const [openSchemaDefinition, setOpenSchemaDefinition] = useState(false);
   const [schemaName, setSchemaName] = useState<SchemaNameType>();
@@ -37,8 +40,8 @@ function SchemaList({
     null,
   );
   const [confirmOpen, setConfirmOpen] = useState(false);
-  const { getEmulator } = useContext(EmulatorContext) as EmulatorContextType;
-  const emulator = getEmulator();
+  const { getEmulator } = useContext(EmulatorsContext) as EmulatorsContextType;
+  const emulator = getEmulator('pubsub');
 
   const handleActionClick = (
     action: 'delete' | 'definition',
@@ -67,6 +70,7 @@ function SchemaList({
     if (emulator != undefined) {
       setLoading(true);
       getSchemasCallback({
+        type: emulator.type,
         host: emulator.host,
         port: emulator.port,
         project_id: emulator.project_id,
@@ -95,6 +99,7 @@ function SchemaList({
       if (emulator != undefined) {
         deleteSchemaCallback(
           {
+            type: emulator.type,
             host: emulator.host,
             port: emulator.port,
             project_id: emulator.project_id,
@@ -212,4 +217,4 @@ function SchemaList({
   );
 }
 
-export default SchemaList;
+export default SchemasList;

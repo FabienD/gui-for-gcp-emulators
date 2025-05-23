@@ -1,4 +1,4 @@
-import { test as base, Page } from '@playwright/test';
+import { test as base, Page } from './common.fixtures';
 import { getSubscriptions, deleteSubscription } from '../../src/api/pubsub.subscription';
 import { SettingsType } from '../../src/components/emulator/Settings';
 import { shortName } from '../../src/utils/pubsub';
@@ -7,29 +7,16 @@ import { createSchema, deleteSchema, getSchemas } from '../../src/api/pubsub.sch
 import { SchemaFormType } from '../../src/components/pubsub/SchemaCreate';
 
 const settings: SettingsType = {
+  type: 'pubsub',
   host: 'localhost',
   port: 8085,
   project_id: 'project_test',
-}  
-
-class PubSubConnectionPage {
-  constructor(private page: Page) {}
-  async connect(connectionUrl: string, host: string, port: string, projectId: string) {
-    await this.page.goto(connectionUrl);
-    await this.page.getByRole('link', { name: 'Emulators', exact: true }).click();
-
-    await this.page.fill('#host', host);
-    await this.page.fill('#port', port);
-    await this.page.fill('#project_id', projectId);
-
-    await this.page.click('button:has-text("Connect")');
-  }
 }
 
 class DeletePubSubResources {
   constructor(private page: Page) {}
   async delete() {
-    
+
     const subscriptions = await getSubscriptions(settings);
     if (subscriptions.length !== 0) {
       for (const subscription of subscriptions) {
@@ -66,13 +53,9 @@ class PubSubUtils {
 }
 
 export const test = base.extend<{
-  pubsubConnection: PubSubConnectionPage;
   deletePubSubResources: DeletePubSubResources;
   pubsubUtils: PubSubUtils;
 }>({
-  pubsubConnection: async ({ page }, use) => {
-    await use(new PubSubConnectionPage(page));
-  },
   deletePubSubResources: async ({ page }, use) => {
     await use(new DeletePubSubResources(page));
   },

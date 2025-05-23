@@ -1,0 +1,8 @@
+[package]
+name = "pubsub2bq"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+tokio = { version = "^1", features = ["full"] }
+axum = { version = "^0.8" }

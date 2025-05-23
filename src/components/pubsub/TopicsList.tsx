@@ -1,4 +1,5 @@
 import React, { useCallback, useContext, useMemo, useState } from 'react';
+
 import { Refresh } from '@mui/icons-material';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import InfoIcon from '@mui/icons-material/Info';
@@ -11,26 +12,28 @@ import {
   GridRowId,
 } from '@mui/x-data-grid';
 
-import { deleteTopic } from '../../api/pubsub.topic';
-import EmulatorContext, { EmulatorContextType } from '../../contexts/emulators';
-import { labelsToString, shortName } from '../../utils/pubsub';
-import { SettingsType } from '../emulator/Settings';
 import PublishMessage from './PublishMessage';
 import { TopicNameType, TopicType } from './Topic';
 import TopicDefinition from './TopicDefinition';
+import { deleteTopic } from '../../api/pubsub.topic';
+import EmulatorsContext, {
+  EmulatorsContextType,
+} from '../../contexts/emulators';
+import { labelsToString, shortName } from '../../utils/pubsub';
+import { SettingsType } from '../emulator/Settings';
 import ConfirmationDialog from '../ui/ConfirmationDialog';
 
-type TopicListProps = {
+type TopicsListProps = {
   topics: TopicType[];
   setTopics: React.Dispatch<React.SetStateAction<TopicType[]>>;
   getTopicsCallback: (settings: SettingsType) => Promise<void>;
 };
 
-function TopicList({
+function TopicsList({
   topics,
   setTopics,
   getTopicsCallback,
-}: TopicListProps): React.ReactElement {
+}: TopicsListProps): React.ReactElement {
   const [loading, setLoading] = useState(false);
   const [openPublishMessage, setOpenPublishMessage] = useState(false);
   const [openTopicDefinition, setOpenTopicDefinition] = useState(false);
@@ -39,8 +42,8 @@ function TopicList({
   const [topicToDelete, setTopicToDelete] = useState<TopicNameType | null>(
     null,
   );
-  const { getEmulator } = useContext(EmulatorContext) as EmulatorContextType;
-  const emulator = getEmulator();
+  const { getEmulator } = useContext(EmulatorsContext) as EmulatorsContextType;
+  const emulator = getEmulator('pubsub');
 
   const handleActionClick = (
     action: 'delete' | 'message' | 'definition',
@@ -71,6 +74,7 @@ function TopicList({
     if (emulator != undefined) {
       setLoading(true);
       getTopicsCallback({
+        type: emulator.type,
         host: emulator.host,
         port: emulator.port,
         project_id: emulator.project_id,
@@ -99,6 +103,7 @@ function TopicList({
       if (emulator != undefined) {
         deleteTopicCallback(
           {
+            type: emulator.type,
             host: emulator.host,
             port: emulator.port,
             project_id: emulator.project_id,
@@ -227,4 +232,4 @@ function TopicList({
   );
 }
 
-export default TopicList;
+export default TopicsList;

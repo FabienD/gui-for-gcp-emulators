@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Outlet } from 'react-router-dom';
-import Nav from '../components/navigation/Nav';
-import PageLogo from './PageLogo';
+import { NavLink, Outlet } from 'react-router-dom';
+
+import TuneIcon from '@mui/icons-material/Tune';
+import { Tooltip } from '@mui/material';
 import { getVersion } from '@tauri-apps/api/app';
-import Status from '../components/emulator/Status';
+
+import PageLogo from './PageLogo';
+import Nav from '../components/navigation/Nav';
 
 function PageLayout(): React.ReactElement {
   const [version, setVersion] = useState('');
@@ -22,18 +25,22 @@ function PageLayout(): React.ReactElement {
   return (
     <>
       <div className="fixed inset-y-0 z-50 flex w-48 flex-col">
-        <nav className="h-full bg-gradient-to-b from-blue-950 to-blue-800">
+        <nav className="h-full bg-gradient-to-b from-blue-950 to-blue-900">
           <PageLogo />
           <Nav title="Products" />
         </nav>
-        <footer className="absolute bottom-2 left-2 text-xs	text-blue-300">
+        <footer className="absolute bottom-3 left-3 text-xs	text-blue-300">
           version {version}
         </footer>
       </div>
       <main className="pl-48 py-5">
         <div className="mx-auto px-4">
           <Outlet />
-          <Status />
+          <NavLink to="/settings" className="absolute top-5 right-5">
+            <Tooltip title="Settings" placement="left">
+              <TuneIcon />
+            </Tooltip>
+          </NavLink>
         </div>
       </main>
     </>

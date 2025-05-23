@@ -16,11 +16,14 @@ import {
   TextField,
 } from '@mui/material';
 
-import EmulatorContext, { EmulatorContextType } from '../../contexts/emulators';
-import { SettingsType } from '../emulator/Settings';
+
 import { SubscriptionType } from './Subscription';
 import { TopicType } from './Topic';
 import { createSubscription } from '../../api/pubsub.subscription';
+import EmulatorsContext, {
+  EmulatorsContextType,
+} from '../../contexts/emulators';
+import { SettingsType } from '../emulator/Settings';
 import HelpLink from '../ui/HelpLink';
 
 type SubscriptionCreateProps = {
@@ -41,8 +44,8 @@ function SubscriptionCreate({
   subscriptions,
   setSubscriptions,
 }: SubscriptionCreateProps): React.ReactElement {
-  const { getEmulator } = useContext(EmulatorContext) as EmulatorContextType;
-  const emulator = getEmulator();
+  const { getEmulator } = useContext(EmulatorsContext) as EmulatorsContextType;
+  const emulator = getEmulator('pubsub');
   const [SubmitError, setSubmitError] = useState<string | undefined>(undefined);
   const [IsCreated, setIsCreated] = useState(false);
   const [isAdvanced, setIsAdvanced] = useState(false);
@@ -114,21 +117,21 @@ function SubscriptionCreate({
           <Controller
             name="name"
             control={control}
-            rules={{ 
+            rules={{
               validate: {
                 checkFormat: (name: string) => {
-                    const regex = /^[a-zA-Z]{1}[a-zA-Z0-9\-_%+~]{2,254}$/i;
-                    if (!regex.test(name)) {
-                      return 'Subscription name format is not correct';
-                    }
-                },          
+                  const regex = /^[a-zA-Z]{1}[a-zA-Z0-9\-_%+~]{2,254}$/i;
+                  if (!regex.test(name)) {
+                    return 'Subscription name format is not correct';
+                  }
+                },
                 checkName: (name: string) => {
-                    if (name.toLowerCase().includes('goog')) {
-                      return 'Subscription name cannot contain "goog"';
-                    }
-                }
+                  if (name.toLowerCase().includes('goog')) {
+                    return 'Subscription name cannot contain "goog"';
+                  }
+                },
               },
-              required: true
+              required: true,
             }}
             render={({ field }) => (
               <TextField
@@ -192,9 +195,7 @@ function SubscriptionCreate({
           {SubmitError != undefined && (
             <Alert severity="error">{SubmitError}</Alert>
           )}
-          {IsCreated && (
-            <Alert severity="success">Subscription created</Alert>
-          )}
+          {IsCreated && <Alert severity="success">Subscription created</Alert>}
         </Stack>
 
         <Collapse in={isAdvanced}>

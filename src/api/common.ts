@@ -1,5 +1,3 @@
-import { SettingsType } from '../components/emulator/Settings';
-
 class ApiError extends Error {
   public statusCode: number;
   public endpoint: string;
@@ -13,7 +11,6 @@ class ApiError extends Error {
 }
 
 async function apiCall<T>(
-  settings: SettingsType,
   endpoint: string,
   method: string = 'GET',
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -21,10 +18,12 @@ async function apiCall<T>(
   retries: number = 0,
   delay: number = 1000,
 ): Promise<T> {
-  const url = `http://${settings.host}:${settings.port}/v1/projects/${settings.project_id}${endpoint}`;
   const options: RequestInit = {
     method,
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+    },
   };
 
   if (body) {
@@ -33,7 +32,7 @@ async function apiCall<T>(
 
   for (let attempt = 0; attempt <= retries; attempt++) {
     try {
-      const response = await fetch(url, options);
+      const response = await fetch(endpoint, options);
 
       if (!response.ok) {
         throw new ApiError(
