@@ -12,6 +12,7 @@ dist
 dist-ssr
 *.local
 docker-compose.override.yml
+target
 
 # Editor directories and files
 .vscode/*
