@@ -3,9 +3,9 @@ import { test, expect } from './pubsub.fixtures';
 
 test.describe('PubSub Schema', () => {
     // Connect and navigate before each test
-    test.beforeEach(async ({ page, pubsubConnection, deletePubSubResources }) => {
+    test.beforeEach(async ({ page, emulatorConnection, deletePubSubResources }) => {
       await deletePubSubResources.delete();
-      await pubsubConnection.connect('/', 'localhost', '8085', 'project_test');
+      await emulatorConnection.connect('pubsub', 'localhost', '8085', 'project_test');
       await page.locator('#PubSub a').click();
       // Go to the Schema page
       await page.locator('button[role="tab"]:has-text("Schema")').click();

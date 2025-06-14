@@ -1,14 +1,17 @@
+
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 
 import { Alert } from '@mui/material';
 
-import EmulatorContext, { EmulatorContextType } from '../../contexts/emulators';
-import { SettingsType } from '../emulator/Settings';
-import { TopicType } from './Topic';
 import SubscriptionCreate from './SubscriptionCreate';
-import SubscriptionList from './SubscriptionList';
-import { getSubscriptions } from '../../api/pubsub.subscription';
+import SubscriptionsList from './SubscriptionsList';
+import { TopicType } from './Topic';
 import { ApiError } from '../../api/common';
+import { getSubscriptions } from '../../api/pubsub.subscription';
+import EmulatorContext, {
+  EmulatorsContextType,
+} from '../../contexts/emulators';
+import { SettingsType } from '../emulator/Settings';
 
 type SubscriptionNameType = {
   readonly name: string;
@@ -33,10 +36,10 @@ type SubscriptionProps = {
 };
 
 function Subscription({ topics }: SubscriptionProps): React.ReactElement {
-  const { getEmulator } = useContext(EmulatorContext) as EmulatorContextType;
+  const { getEmulator } = useContext(EmulatorContext) as EmulatorsContextType;
   const [subscriptions, setSubscriptions] = useState<SubscriptionType[]>([]);
 
-  const emulator = getEmulator();
+  const emulator = getEmulator('pubsub');
   const isConnected = emulator?.is_connected;
 
   const getSubscriptionsCallback = useCallback(
@@ -60,6 +63,7 @@ function Subscription({ topics }: SubscriptionProps): React.ReactElement {
   useEffect(() => {
     if (emulator != undefined) {
       getSubscriptionsCallback({
+        type: emulator.type,
         host: emulator.host,
         port: emulator.port,
         project_id: emulator.project_id,
@@ -74,7 +78,7 @@ function Subscription({ topics }: SubscriptionProps): React.ReactElement {
         subscriptions={subscriptions}
         setSubscriptions={setSubscriptions}
       />
-      <SubscriptionList
+      <SubscriptionsList
         subscriptions={subscriptions}
         setSubscriptions={setSubscriptions}
         getSubscriptionsCallback={getSubscriptionsCallback}

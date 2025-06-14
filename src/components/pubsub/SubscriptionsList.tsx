@@ -1,8 +1,9 @@
+
 import React, { useCallback, useContext, useState } from 'react';
 
-import { Alert, Button, CircularProgress, Tooltip } from '@mui/material';
 import { Email, MailLockOutlined, Refresh } from '@mui/icons-material';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
+import { Alert, Button, CircularProgress, Tooltip } from '@mui/material';
 import {
   DataGrid,
   GridActionsCellItem,
@@ -10,15 +11,17 @@ import {
   GridRowId,
 } from '@mui/x-data-grid';
 
-import EmulatorContext, { EmulatorContextType } from '../../contexts/emulators';
-import { SettingsType } from '../emulator/Settings';
+import PullMessages from './PullMessages';
 import { SubscriptionNameType, SubscriptionType } from './Subscription';
-import PullMessage from './PullMessage';
 import {
   deleteSubscription,
   purgeSubscription,
 } from '../../api/pubsub.subscription';
+import EmulatorsContext, {
+  EmulatorsContextType,
+} from '../../contexts/emulators';
 import { shortName } from '../../utils/pubsub';
+import { SettingsType } from '../emulator/Settings';
 import ConfirmationDialog from '../ui/ConfirmationDialog';
 
 type SubscriptionsListProps = {
@@ -27,14 +30,14 @@ type SubscriptionsListProps = {
   getSubscriptionsCallback: (settings: SettingsType) => Promise<void>;
 };
 
-function SubscriptionList({
+function SubscriptionsList({
   subscriptions,
   setSubscriptions,
   getSubscriptionsCallback,
 }: SubscriptionsListProps): React.ReactElement {
   const [loading, setLoading] = useState(false);
-  const { getEmulator } = useContext(EmulatorContext) as EmulatorContextType;
-  const emulator = getEmulator();
+  const { getEmulator } = useContext(EmulatorsContext) as EmulatorsContextType;
+  const emulator = getEmulator('pubsub');
   const [open, setOpen] = useState(false);
   const [subscriptionName, setSubscriptionName] =
     useState<SubscriptionNameType>();
@@ -88,6 +91,7 @@ function SubscriptionList({
     if (emulator != undefined) {
       setLoading(true);
       getSubscriptionsCallback({
+        type: emulator.type,
         host: emulator.host,
         port: emulator.port,
         project_id: emulator.project_id,
@@ -116,6 +120,7 @@ function SubscriptionList({
       if (emulator != undefined) {
         deleteSubscriptionCallback(
           {
+            type: emulator.type,
             host: emulator.host,
             port: emulator.port,
             project_id: emulator.project_id,
@@ -142,6 +147,7 @@ function SubscriptionList({
       if (emulator != undefined) {
         purgeSubscriptionCallback(
           {
+            type: emulator.type,
             host: emulator.host,
             port: emulator.port,
             project_id: emulator.project_id,
@@ -246,7 +252,7 @@ function SubscriptionList({
             }}
             pageSizeOptions={[10]}
           />
-          <PullMessage
+          <PullMessages
             open={open}
             setOpen={setOpen}
             subscriptionName={subscriptionName}
@@ -274,4 +280,4 @@ function SubscriptionList({
   );
 }
 
-export default SubscriptionList;
+export default SubscriptionsList;

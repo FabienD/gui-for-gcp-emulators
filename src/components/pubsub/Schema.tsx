@@ -2,10 +2,13 @@ import React, { useContext } from 'react';
 
 import Alert from '@mui/material/Alert';
 
-import EmulatorContext, { EmulatorContextType } from '../../contexts/emulators';
-import { SettingsType } from '../emulator/Settings';
+
 import SchemaCreate from './SchemaCreate';
-import SchemaList from './SchemaList';
+import SchemasList from './SchemasList';
+import EmulatorsContext, {
+  EmulatorsContextType,
+} from '../../contexts/emulators';
+import { SettingsType } from '../emulator/Settings';
 
 enum SchemaTypes {
   PROTOCOL_BUFFER = 'Protocol Buffer',
@@ -34,19 +37,20 @@ function Schema({
   setSchemas,
   getSchemasCallback,
 }: SchemasProps): React.ReactElement {
-  const { isConnected } = useContext(EmulatorContext) as EmulatorContextType;
+  const { isConnected } = useContext(EmulatorsContext) as EmulatorsContextType;
+  const isPubSubConnected = isConnected('pubsub');
 
-  return isConnected() ? (
+  return isPubSubConnected ? (
     <>
       <SchemaCreate schemas={schemas} setSchemas={setSchemas} />
-      <SchemaList
+      <SchemasList
         schemas={schemas}
         setSchemas={setSchemas}
         getSchemasCallback={getSchemasCallback}
       />
     </>
   ) : (
-    <Alert severity={isConnected() ? 'info' : 'warning'}>
+    <Alert severity={isPubSubConnected ? 'info' : 'warning'}>
       The emulator is not configured or the connection is not validated.
     </Alert>
   );

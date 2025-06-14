@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import SyntaxHighlighter from 'react-syntax-highlighter';
-import { solarizedLight } from 'react-syntax-highlighter/dist/esm/styles/hljs';
-import { IconButton, Tooltip, Box } from '@mui/material';
+
 import FileCopyIcon from '@mui/icons-material/FileCopy';
+import { IconButton, Tooltip, Box } from '@mui/material';
+import { solarizedLight } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 
 type CopyableSyntaxHighlighterProps = {
   language: string;

@@ -15,9 +15,12 @@ import {
   Typography,
 } from '@mui/material';
 
-import EmulatorContext, { EmulatorContextType } from '../../contexts/emulators';
-import { publishMessage, getTopic } from '../../api/pubsub.topic';
+
 import { TopicNameType, TopicType } from './Topic';
+import { publishMessage, getTopic } from '../../api/pubsub.topic';
+import EmulatorsContext, {
+  EmulatorsContextType,
+} from '../../contexts/emulators';
 import CloseButton from '../ui/CloseButton';
 
 type PublishMessageProps = {
@@ -44,12 +47,12 @@ function PublishMessage({
   topicName,
   setOpen,
 }: PublishMessageProps): React.ReactElement {
-  const { getEmulator } = useContext(EmulatorContext) as EmulatorContextType;
+  const { getEmulator } = useContext(EmulatorsContext) as EmulatorsContextType;
   const [Error, setError] = useState<string | undefined>(undefined);
   const [IsPublished, setIsPublished] = useState(false);
   const [loading, setLoading] = useState(true);
   const [topic, setTopic] = useState<TopicType | undefined>(undefined);
-  const emulator = getEmulator();
+  const emulator = getEmulator('pubsub');
 
   const { handleSubmit, control, reset } = useForm<PubSubMessageForm>({
     defaultValues: {
