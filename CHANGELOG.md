@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.5.2] - 2025-12-22
+
+ - Update all dependencies
+
 ## [0.5.1] - 2025-04-26
 
  - Improve app icon
