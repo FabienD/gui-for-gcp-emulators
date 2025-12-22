@@ -12,7 +12,7 @@
     "createUpdaterArtifacts": false
   },
   "productName": "App for GCP emulators",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "identifier": "com.app-for-gcp-emulators.dev",
   "plugins": {},
   "app": {

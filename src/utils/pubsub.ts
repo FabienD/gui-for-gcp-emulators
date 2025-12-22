@@ -1,7 +1,7 @@
 import { TopicType } from '../components/pubsub/Topic';
 
 function shortName(item: string): string {
-  return item.replace(/projects\/[^\/]+\/(topics|subscriptions|schemas)\//i, '');
+  return item.replace(/projects\/[^/]+\/(topics|subscriptions|schemas)\//i, '');
 }
 
 function labelsToString(topic: TopicType): string {
