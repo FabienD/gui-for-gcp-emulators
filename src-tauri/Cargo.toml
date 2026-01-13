@@ -1,6 +1,6 @@
 [package]
 name = "App_for_GCP_emulators"
-version = "0.5.2"
+version = "0.5.3"
 description = "App for GCP emulators"
 authors = ["Fabien Dosse"]
 license = "GPL-3.0-or-later"
