@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useState } from 'react';
 
 import { Alert, Button, CircularProgress, Tooltip } from '@mui/material';
 import { Email, MailLockOutlined, Refresh } from '@mui/icons-material';
@@ -10,31 +10,21 @@ import {
   GridRowId,
 } from '@mui/x-data-grid';
 
-import EmulatorContext, { EmulatorContextType } from '../../contexts/emulators';
-import { SettingsType } from '../emulator/Settings';
 import { SubscriptionNameType, SubscriptionType } from './Subscription';
 import PullMessage from './PullMessage';
-import {
-  deleteSubscription,
-  purgeSubscription,
-} from '../../api/pubsub.subscription';
 import { shortName } from '../../utils/pubsub';
 import ConfirmationDialog from '../ui/ConfirmationDialog';
+import {
+  useSubscriptions,
+  useDeleteSubscription,
+  usePurgeSubscription,
+} from '../../hooks/usePubsub';
 
-type SubscriptionsListProps = {
-  subscriptions: SubscriptionType[];
-  setSubscriptions: React.Dispatch<React.SetStateAction<SubscriptionType[]>>;
-  getSubscriptionsCallback: (settings: SettingsType) => Promise<void>;
-};
+function SubscriptionList(): React.ReactElement {
+  const { data: subscriptions = [], isLoading, refetch } = useSubscriptions();
+  const deleteSubscriptionMutation = useDeleteSubscription();
+  const purgeSubscriptionMutation = usePurgeSubscription();
 
-function SubscriptionList({
-  subscriptions,
-  setSubscriptions,
-  getSubscriptionsCallback,
-}: SubscriptionsListProps): React.ReactElement {
-  const [loading, setLoading] = useState(false);
-  const { getEmulator } = useContext(EmulatorContext) as EmulatorContextType;
-  const emulator = getEmulator();
   const [open, setOpen] = useState(false);
   const [subscriptionName, setSubscriptionName] =
     useState<SubscriptionNameType>();
@@ -70,7 +60,10 @@ function SubscriptionList({
 
   const handleDeleteConfirm = () => {
     if (subscriptionToDelete) {
-      deleteSubscriptionAction(subscriptionToDelete);
+      deleteSubscriptionMutation.mutate({
+        name: subscriptionToDelete,
+        short_name: shortName(subscriptionToDelete),
+      });
       setSubscriptionToDelete(null);
       setConfirmOpen(false);
     }
@@ -78,83 +71,14 @@ function SubscriptionList({
 
   const handlePurgeConfirm = () => {
     if (subscriptionToPurge) {
-      purgeSubscriptionAction(subscriptionToPurge);
+      purgeSubscriptionMutation.mutate({
+        name: subscriptionToPurge,
+        short_name: shortName(subscriptionToPurge),
+      });
       setSubscriptionToPurge(null);
       setConfirmPurgeOpen(false);
     }
   };
-
-  const handleSubscriptionsRefresh = () => {
-    if (emulator != undefined) {
-      setLoading(true);
-      getSubscriptionsCallback({
-        host: emulator.host,
-        port: emulator.port,
-        project_id: emulator.project_id,
-      }).finally(() => {
-        setLoading(false);
-      });
-    }
-  };
-
-  const deleteSubscriptionCallback = useCallback(
-    async (settings: SettingsType, subscriptionName: SubscriptionNameType) => {
-      const isDeleted = await deleteSubscription(settings, subscriptionName);
-
-      if (isDeleted) {
-        const filteredSubscriptions = subscriptions.filter(
-          (t: SubscriptionType) => t.name !== subscriptionName.name,
-        );
-        setSubscriptions(filteredSubscriptions);
-      }
-    },
-    [subscriptions],
-  );
-
-  const deleteSubscriptionAction = useCallback(
-    async (id: string) => {
-      if (emulator != undefined) {
-        deleteSubscriptionCallback(
-          {
-            host: emulator.host,
-            port: emulator.port,
-            project_id: emulator.project_id,
-          },
-          {
-            name: id,
-            short_name: shortName(id),
-          },
-        ).catch(console.error);
-      }
-    },
-    [emulator, deleteSubscriptionCallback],
-  );
-
-  const purgeSubscriptionCallback = useCallback(
-    async (settings: SettingsType, subscriptionName: SubscriptionNameType) => {
-      await purgeSubscription(settings, subscriptionName);
-    },
-    [],
-  );
-
-  const purgeSubscriptionAction = useCallback(
-    async (id: string) => {
-      if (emulator != undefined) {
-        purgeSubscriptionCallback(
-          {
-            host: emulator.host,
-            port: emulator.port,
-            project_id: emulator.project_id,
-          },
-          {
-            name: id,
-            short_name: shortName(id),
-          },
-        ).catch(console.error);
-      }
-    },
-    [emulator, purgeSubscriptionCallback],
-  );
 
   const columns: GridColDef[] = [
     {
@@ -226,7 +150,7 @@ function SubscriptionList({
 
   return (
     <>
-      {loading ? (
+      {isLoading ? (
         <div className="flex justify-center mt-10">
           <CircularProgress />
         </div>
@@ -251,7 +175,7 @@ function SubscriptionList({
             setOpen={setOpen}
             subscriptionName={subscriptionName}
           />
-          <Button onClick={handleSubscriptionsRefresh} startIcon={<Refresh />}>
+          <Button onClick={() => refetch()} startIcon={<Refresh />}>
             Subscriptions list
           </Button>
         </div>

@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 
 import {
@@ -14,16 +14,9 @@ import {
   Tooltip,
 } from '@mui/material';
 
-import EmulatorContext, { EmulatorContextType } from '../../contexts/emulators';
-import { SettingsType } from '../emulator/Settings';
-import { SchemaType, SchemaTypes } from './Schema';
-import { createSchema } from '../../api/pubsub.schema';
+import { SchemaTypes } from './Schema';
 import HelpLink from '../ui/HelpLink';
-
-type SchemaCreateProps = {
-  schemas: SchemaType[];
-  setSchemas: React.Dispatch<React.SetStateAction<SchemaType[]>>;
-};
+import { useCreateSchema } from '../../hooks/usePubsub';
 
 type SchemaFormType = {
   name: string;
@@ -31,15 +24,11 @@ type SchemaFormType = {
   definition: string;
 };
 
-function SchemaCreate({
-  schemas,
-  setSchemas,
-}: SchemaCreateProps): React.ReactElement {
-  const { getEmulator } = useContext(EmulatorContext) as EmulatorContextType;
+function SchemaCreate(): React.ReactElement {
+  const createSchemaMutation = useCreateSchema();
+
   const [Error, setError] = useState<string | undefined>(undefined);
   const [IsCreated, setIsCreated] = useState(false);
-
-  const emulator = getEmulator();
 
   const {
     control,
@@ -54,36 +43,26 @@ function SchemaCreate({
     },
   });
 
-  const createSChemaCallback = useCallback(
-    async (settings: SettingsType, schema: SchemaFormType) => {
-      try {
-        const createdSchema = await createSchema(settings, schema);
-        if (createdSchema) {
-          setIsCreated(true);
-          setSchemas([...schemas, createdSchema]);
-          reset();
-        }
-      } catch (error) {
-        setError('Error creating schema');
-        console.error(error);
-      }
-
-      setTimeout(resetAlerts, 3000);
-    },
-    [schemas],
-  );
-
-  const onSubmit: SubmitHandler<SchemaFormType> = (Formdata): void => {
-    resetAlerts();
-
-    if (emulator != undefined) {
-      createSChemaCallback(emulator, Formdata).catch(console.error);
-    }
-  };
-
   const resetAlerts = () => {
     setIsCreated(false);
     setError(undefined);
+  };
+
+  const onSubmit: SubmitHandler<SchemaFormType> = (formData): void => {
+    resetAlerts();
+
+    createSchemaMutation.mutate(formData, {
+      onSuccess: () => {
+        setIsCreated(true);
+        reset();
+        setTimeout(resetAlerts, 3000);
+      },
+      onError: error => {
+        setError('Error creating schema');
+        console.error(error);
+        setTimeout(resetAlerts, 3000);
+      },
+    });
   };
 
   return (
@@ -102,21 +81,21 @@ function SchemaCreate({
           <Controller
             name="name"
             control={control}
-            rules={{ 
+            rules={{
               validate: {
                 checkFormat: (name: string) => {
-                    const regex = /^[a-zA-Z]{1}[a-zA-Z0-9\-_%+~]{2,254}$/i;
-                    if (!regex.test(name)) {
-                      return 'Subscription name format is not correct';
-                    }
-                },          
+                  const regex = /^[a-zA-Z]{1}[a-zA-Z0-9\-_%+~]{2,254}$/i;
+                  if (!regex.test(name)) {
+                    return 'Subscription name format is not correct';
+                  }
+                },
                 checkName: (name: string) => {
-                    if (name.toLowerCase().includes('goog')) {
-                      return 'Subscription name cannot contain "goog"';
-                    }
-                }
+                  if (name.toLowerCase().includes('goog')) {
+                    return 'Subscription name cannot contain "goog"';
+                  }
+                },
               },
-              required: true
+              required: true,
             }}
             render={({ field }) => (
               <Tooltip title="Schema name" placement="top-start">

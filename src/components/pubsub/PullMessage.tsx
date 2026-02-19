@@ -91,7 +91,7 @@ function PullMessage({
     } catch {
       return atob(message);
     }
-  }
+  };
 
   const columns: GridColDef[] = [
     { field: 'messageId', headerName: 'Message ID', width: 100 },

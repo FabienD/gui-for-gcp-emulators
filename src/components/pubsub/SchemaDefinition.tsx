@@ -1,5 +1,5 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react';
-import { SchemaNameType, SchemaType } from './Schema';
+import React from 'react';
+import { SchemaNameType } from './Schema';
 import {
   Box,
   CircularProgress,
@@ -13,10 +13,8 @@ import CloseButton from '../ui/CloseButton';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { solarizedLight } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 
-import EmulatorContext, { EmulatorContextType } from '../../contexts/emulators';
-import { SettingsType } from '../emulator/Settings';
-import { getSchema } from '../../api/pubsub.schema';
 import { shortName } from '../../utils/pubsub';
+import { useSchema } from '../../hooks/usePubsub';
 
 type SchemaDefinitionProps = {
   open: boolean;
@@ -30,42 +28,10 @@ function SchemaDefinition({
   setOpen,
 }: SchemaDefinitionProps): React.ReactElement {
   const handleClose = () => setOpen(false);
-  const { getEmulator } = useContext(EmulatorContext) as EmulatorContextType;
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
-  const [schema, setSchema] = React.useState<SchemaType | undefined>(undefined);
-  const emulator = getEmulator();
-
-  const getSchemaCallback = useCallback(
-    async (settings: SettingsType, schemaName: SchemaNameType) => {
-      setLoading(true);
-      setError(null);
-      try {
-        const fetchedSchema = await getSchema(settings, schemaName);
-        setSchema(fetchedSchema);
-      } catch (err) {
-        setError('Error fetching schema details.');
-        console.error('Error fetching schema details:', err);
-      } finally {
-        setLoading(false);
-      }
-    },
-    [],
-  );
-
-  useEffect(() => {
-    if (emulator && schemaName && open) {
-      const settings: SettingsType = {
-        host: emulator.host,
-        port: emulator.port,
-        project_id: emulator.project_id,
-      };
-      getSchemaCallback(settings, schemaName);
-    }
-  }, [open, schemaName, emulator, getSchemaCallback]);
+  const { data: schema, isLoading, error } = useSchema(schemaName, open);
 
   const renderContent = () => {
-    if (loading) {
+    if (isLoading) {
       return (
         <div
           style={{
@@ -82,7 +48,7 @@ function SchemaDefinition({
     if (error) {
       return (
         <Typography color="error" align="center" variant="body1">
-          {error}
+          Error fetching schema details.
         </Typography>
       );
     }

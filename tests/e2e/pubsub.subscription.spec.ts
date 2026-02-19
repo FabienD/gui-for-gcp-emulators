@@ -1,11 +1,14 @@
+import { Page } from '@playwright/test';
 import { test, expect } from './pubsub.fixtures';
 
+test.use({ projectId: 'project_sub' });
+
 // Helper function to create a topic via UI
-async function createTopic(page: any, topicName: string) {
+async function createTopic(page: Page, topicName: string) {
   await page.locator('button[role="tab"]:has-text("Topic")').click();
   await page.locator('form #name').fill(topicName);
   await page.getByRole('button', { name: 'Create', exact: true }).click();
-  await expect(page.getByRole('row', { name: `${topicName} projects/project_test` })).toHaveCount(1);
+  await expect(page.getByRole('row', { name: `${topicName} projects/project_sub` })).toHaveCount(1);
   await page.locator('button[role="tab"]:has-text("Subscription")').click(); // Go back to subscription tab
 }
 
@@ -13,7 +16,7 @@ test.describe('PubSub Subscription', () => {
   // Connect and navigate before each test
   test.beforeEach(async ({ page, pubsubConnection, deletePubSubResources }) => {
     await deletePubSubResources.delete();
-    await pubsubConnection.connect('/', 'localhost', '8085', 'project_test');
+    await pubsubConnection.connect('/');
     await page.locator('#PubSub a').click();
     // Go to the Subscription page
     await page.locator('button[role="tab"]:has-text("Subscription")').click();
@@ -48,7 +51,7 @@ test.describe('PubSub Subscription', () => {
 
     // Select a topic from the dropdown
     await page.locator('#topic').click();
-    await page.getByRole('option', { name: 'projects/project_test/topics/topic-for-sub-test' }).click();
+    await page.getByRole('option', { name: 'projects/project_sub/topics/topic-for-sub-test' }).click();
 
     // Define invalid subscription names
     const invalidNames = [
@@ -76,7 +79,7 @@ test.describe('PubSub Subscription', () => {
     // Fill the subscription form
     await page.locator('form#subscription_create input#name').fill(subName);
     await page.locator('#topic').click(); // Click to open the dropdown
-    await page.getByRole('option', { name: `projects/project_test/topics/${topicName}` }).click();
+    await page.getByRole('option', { name: `projects/project_sub/topics/${topicName}` }).click();
     await page.locator('form#subscription_create button:has-text("Create")').click();
 
     // Verify the subscription appears in the list
@@ -87,7 +90,7 @@ test.describe('PubSub Subscription', () => {
     subName = 'my-subscription-2';
     await page.locator('form#subscription_create input#name').fill(subName);
     await page.locator('#topic').click(); // Click to open the dropdown
-    await page.getByRole('option', { name: `projects/project_test/topics/${topicName}` }).click();
+    await page.getByRole('option', { name: `projects/project_sub/topics/${topicName}` }).click();
     await page.locator('form#subscription_create button:has-text("Create")').click();
 
     await expect(page.getByRole('row', { name: subName })).toBeVisible();
@@ -103,17 +106,17 @@ test.describe('PubSub Subscription', () => {
     // Create a subscription
     await page.locator('form#subscription_create input#name').fill(subName);
     await page.locator('#topic').click();
-    await page.getByRole('option', { name: `projects/project_test/topics/${topicName}` }).click();
+    await page.getByRole('option', { name: `projects/project_sub/topics/${topicName}` }).click();
     await page.locator('form#subscription_create button:has-text("Create")').click();
     await expect(page.getByRole('row', { name: subName })).toBeVisible();
 
     // Delete the subscription
-    const subRow = page.locator('[data-id="projects/project_test/subscriptions/' + subName + '"]');
+    const subRow = page.locator('[data-id="projects/project_sub/subscriptions/' + subName + '"]');
     await subRow.getByRole('menuitem', { name: 'Delete' }).click();
-    await page.getByRole('button', { name: 'Confirm' }).click(); // Adjust button text if needed
+    await page.getByRole('button', { name: 'Confirm' }).click();
 
     // Verify the subscription is removed from the list
-    await expect(page.getByRole('row', { name: `projects/project_test/subscriptions/${subName}` })).not.toBeVisible();
+    await expect(page.getByRole('row', { name: `projects/project_sub/subscriptions/${subName}` })).not.toBeVisible();
     await expect(page.locator('.MuiAlert-standardInfo')).toHaveText('No subscriptions');
   });
 
@@ -126,7 +129,7 @@ test.describe('PubSub Subscription', () => {
     // Fill the subscription form
     await page.locator('form#subscription_create input#name').fill(subName);
     await page.locator('#topic').click(); // Click to open the dropdown
-    await page.getByRole('option', { name: `projects/project_test/topics/${topicName}` }).click();
+    await page.getByRole('option', { name: `projects/project_sub/topics/${topicName}` }).click();
     // Show advanced options
     await page.locator('button:has-text("Show Advanced")').click();
     // Endpoint option should be be visible now
@@ -140,5 +143,72 @@ test.describe('PubSub Subscription', () => {
     await expect(page.getByRole('row', { name: subName })).toContainText(endpoint);
   });
 
-});
+  test('I can pull messages from a subscription', async ({ page, pubsubUtils }) => {
+    const topicName = 'topic-for-pull';
+    const subName = 'sub-for-pull';
 
+    // Create topic and subscription via API, then publish a message
+    await pubsubUtils.createTopic(topicName);
+    await pubsubUtils.createSubscription(subName, `projects/project_sub/topics/${topicName}`);
+    await pubsubUtils.publishMessage(topicName, '{"event": "test-pull"}');
+
+    // Navigate away and back to trigger React Query refetch
+    await page.locator('button[role="tab"]:has-text("Topic")').click();
+    await page.locator('button[role="tab"]:has-text("Subscription")').click();
+
+    // Wait for the subscription to appear
+    await expect(page.getByRole('row', { name: subName })).toBeVisible();
+
+    // Click the pull message action
+    const subRow = page.locator('[data-id="projects/project_sub/subscriptions/' + subName + '"]');
+    await subRow.getByRole('menuitem', { name: 'Pull Message' }).click();
+
+    // Verify the pull dialog opens with messages
+    const dialog = page.getByRole('dialog');
+    await expect(dialog).toBeVisible();
+    await expect(dialog.getByText('Pull & Ack messages')).toBeVisible();
+    await expect(dialog.locator('strong')).toContainText(subName);
+
+    // Verify that a message row is displayed in the DataGrid
+    await expect(dialog.locator('.MuiDataGrid-row')).toHaveCount(1);
+
+    // Close the dialog
+    await page.getByRole('button', { name: 'close' }).click();
+    await expect(page.getByRole('dialog')).not.toBeVisible();
+  });
+
+  test('I can purge a subscription', async ({ page, pubsubUtils }) => {
+    const topicName = 'topic-for-purge';
+    const subName = 'sub-for-purge';
+
+    // Create topic and subscription via API, then publish messages
+    await pubsubUtils.createTopic(topicName);
+    await pubsubUtils.createSubscription(subName, `projects/project_sub/topics/${topicName}`);
+    await pubsubUtils.publishMessage(topicName, '{"event": "msg-1"}');
+    await pubsubUtils.publishMessage(topicName, '{"event": "msg-2"}');
+
+    // Navigate away and back to trigger React Query refetch
+    await page.locator('button[role="tab"]:has-text("Topic")').click();
+    await page.locator('button[role="tab"]:has-text("Subscription")').click();
+
+    // Wait for the subscription to appear
+    await expect(page.getByRole('row', { name: subName })).toBeVisible();
+
+    // Click the purge action
+    const subRow = page.locator('[data-id="projects/project_sub/subscriptions/' + subName + '"]');
+    await subRow.getByRole('menuitem', { name: 'Purge Message' }).click();
+
+    // Confirm purge
+    await page.getByRole('button', { name: 'Confirm' }).click();
+
+    // Now try to pull — should show no messages
+    await subRow.getByRole('menuitem', { name: 'Pull Message' }).click();
+    await expect(page.getByRole('dialog')).toBeVisible();
+    await expect(page.getByText('No messages in the subscription')).toBeVisible();
+
+    // Close the dialog
+    await page.getByRole('button', { name: 'close' }).click();
+    await expect(page.getByRole('dialog')).not.toBeVisible();
+  });
+
+});

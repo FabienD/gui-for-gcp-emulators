@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React from 'react';
 
 import {
   Box,
@@ -10,12 +10,10 @@ import {
   Typography,
 } from '@mui/material';
 
-import { TopicNameType, TopicType } from './Topic';
-import EmulatorContext, { EmulatorContextType } from '../../contexts/emulators';
-import { SettingsType } from '../emulator/Settings';
+import { TopicNameType } from './Topic';
 import { labelsToString, shortName } from '../../utils/pubsub';
-import { getTopic } from '../../api/pubsub.topic';
 import CloseButton from '../ui/CloseButton';
+import { useTopic } from '../../hooks/usePubsub';
 
 type TopicDefinitionProps = {
   open: boolean;
@@ -29,42 +27,10 @@ function TopicDefinition({
   setOpen,
 }: TopicDefinitionProps): React.ReactElement {
   const handleClose = () => setOpen(false);
-  const { getEmulator } = useContext(EmulatorContext) as EmulatorContextType;
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
-  const [topic, setTopic] = React.useState<TopicType | undefined>(undefined);
-  const emulator = getEmulator();
-
-  const getTopicCallback = useCallback(
-    async (settings: SettingsType, topicName: TopicNameType) => {
-      setLoading(true);
-      setError(null);
-      try {
-        const fetchedTopic = await getTopic(settings, topicName);
-        setTopic(fetchedTopic);
-      } catch (err) {
-        setError('Error fetching topic details.');
-        console.error('Error fetching topic details:', err);
-      } finally {
-        setLoading(false);
-      }
-    },
-    [],
-  );
-
-  useEffect(() => {
-    if (emulator && topicName && open) {
-      const settings: SettingsType = {
-        host: emulator.host,
-        port: emulator.port,
-        project_id: emulator.project_id,
-      };
-      getTopicCallback(settings, topicName);
-    }
-  }, [open, topicName, emulator, getTopicCallback]);
+  const { data: topic, isLoading, error } = useTopic(topicName, open);
 
   const renderContent = () => {
-    if (loading) {
+    if (isLoading) {
       return (
         <div
           style={{
@@ -81,7 +47,7 @@ function TopicDefinition({
     if (error) {
       return (
         <Typography color="error" align="center" variant="body1">
-          {error}
+          Error fetching topic details.
         </Typography>
       );
     }

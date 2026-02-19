@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Refresh } from '@mui/icons-material';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import InfoIcon from '@mui/icons-material/Info';
@@ -11,27 +11,17 @@ import {
   GridRowId,
 } from '@mui/x-data-grid';
 
-import { deleteTopic } from '../../api/pubsub.topic';
-import EmulatorContext, { EmulatorContextType } from '../../contexts/emulators';
 import { labelsToString, shortName } from '../../utils/pubsub';
-import { SettingsType } from '../emulator/Settings';
 import PublishMessage from './PublishMessage';
 import { TopicNameType, TopicType } from './Topic';
 import TopicDefinition from './TopicDefinition';
 import ConfirmationDialog from '../ui/ConfirmationDialog';
+import { useTopics, useDeleteTopic } from '../../hooks/usePubsub';
 
-type TopicListProps = {
-  topics: TopicType[];
-  setTopics: React.Dispatch<React.SetStateAction<TopicType[]>>;
-  getTopicsCallback: (settings: SettingsType) => Promise<void>;
-};
+function TopicList(): React.ReactElement {
+  const { data: topics = [], isLoading, refetch } = useTopics();
+  const deleteTopicMutation = useDeleteTopic();
 
-function TopicList({
-  topics,
-  setTopics,
-  getTopicsCallback,
-}: TopicListProps): React.ReactElement {
-  const [loading, setLoading] = useState(false);
   const [openPublishMessage, setOpenPublishMessage] = useState(false);
   const [openTopicDefinition, setOpenTopicDefinition] = useState(false);
   const [topicName, setTopicName] = useState<TopicNameType | undefined>();
@@ -39,8 +29,6 @@ function TopicList({
   const [topicToDelete, setTopicToDelete] = useState<TopicNameType | null>(
     null,
   );
-  const { getEmulator } = useContext(EmulatorContext) as EmulatorContextType;
-  const emulator = getEmulator();
 
   const handleActionClick = (
     action: 'delete' | 'message' | 'definition',
@@ -61,56 +49,11 @@ function TopicList({
 
   const handleDeleteConfirm = () => {
     if (topicToDelete) {
-      deleteTopicAction(topicToDelete);
+      deleteTopicMutation.mutate(topicToDelete);
       setTopicToDelete(null);
       setConfirmOpen(false);
     }
   };
-
-  const handleTopicsRefresh = () => {
-    if (emulator != undefined) {
-      setLoading(true);
-      getTopicsCallback({
-        host: emulator.host,
-        port: emulator.port,
-        project_id: emulator.project_id,
-      }).finally(() => {
-        setLoading(false);
-      });
-    }
-  };
-
-  const deleteTopicCallback = useCallback(
-    async (settings: SettingsType, topicName: TopicNameType) => {
-      const isDeleted = await deleteTopic(settings, topicName);
-
-      if (isDeleted) {
-        const filteredTopics = topics.filter(
-          (t: TopicType) => shortName(t.name) !== topicName.name,
-        );
-        setTopics(filteredTopics);
-      }
-    },
-    [topics, setTopics],
-  );
-
-  const deleteTopicAction = useCallback(
-    async (topicName: TopicNameType) => {
-      if (emulator != undefined) {
-        deleteTopicCallback(
-          {
-            host: emulator.host,
-            port: emulator.port,
-            project_id: emulator.project_id,
-          },
-          {
-            name: topicName.name,
-          },
-        ).catch(console.error);
-      }
-    },
-    [emulator, deleteTopicCallback],
-  );
 
   const columns: GridColDef[] = useMemo(
     () => [
@@ -178,7 +121,7 @@ function TopicList({
 
   return (
     <>
-      {loading ? (
+      {isLoading ? (
         <div className="flex justify-center mt-10">
           <CircularProgress />
         </div>
@@ -199,7 +142,7 @@ function TopicList({
               }}
               pageSizeOptions={[10]}
             />
-            <Button onClick={handleTopicsRefresh} startIcon={<Refresh />}>
+            <Button onClick={() => refetch()} startIcon={<Refresh />}>
               topics list
             </Button>
           </div>

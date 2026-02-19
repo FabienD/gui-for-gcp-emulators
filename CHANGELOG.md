@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.5.4] - 2026-02-19
+
+- Update all JavaScript dependencies to latest minor/patch versions
+- Update Rust dependencies (Tauri 2.10.2, tauri-build 2.5.5, tauri-plugin-shell 2.3.5)
+- Fix flaky E2E tests: isolate test files with unique project IDs and fix missing awaits in cleanup
+- Migrate from fetch/useState to React Query (TanStack Query) for data fetching and mutations
+
 ## [0.5.3] - 2026-01-13
 
 - Update all dependencies

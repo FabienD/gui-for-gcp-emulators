@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 
 import {
@@ -16,18 +16,8 @@ import {
   TextField,
 } from '@mui/material';
 
-import EmulatorContext, { EmulatorContextType } from '../../contexts/emulators';
-import { SettingsType } from '../emulator/Settings';
-import { SubscriptionType } from './Subscription';
-import { TopicType } from './Topic';
-import { createSubscription } from '../../api/pubsub.subscription';
 import HelpLink from '../ui/HelpLink';
-
-type SubscriptionCreateProps = {
-  topics: TopicType[];
-  subscriptions: SubscriptionType[];
-  setSubscriptions: React.Dispatch<React.SetStateAction<SubscriptionType[]>>;
-};
+import { useTopics, useCreateSubscription } from '../../hooks/usePubsub';
 
 type SubscriptionFormType = {
   name: string;
@@ -36,13 +26,10 @@ type SubscriptionFormType = {
   pushEndpoint?: string;
 };
 
-function SubscriptionCreate({
-  topics,
-  subscriptions,
-  setSubscriptions,
-}: SubscriptionCreateProps): React.ReactElement {
-  const { getEmulator } = useContext(EmulatorContext) as EmulatorContextType;
-  const emulator = getEmulator();
+function SubscriptionCreate(): React.ReactElement {
+  const { data: topics = [] } = useTopics();
+  const createSubscriptionMutation = useCreateSubscription();
+
   const [SubmitError, setSubmitError] = useState<string | undefined>(undefined);
   const [IsCreated, setIsCreated] = useState(false);
   const [isAdvanced, setIsAdvanced] = useState(false);
@@ -61,41 +48,26 @@ function SubscriptionCreate({
     },
   });
 
-  const createSubscriptionCallback = useCallback(
-    async (settings: SettingsType, subscription: SubscriptionFormType) => {
-      try {
-        const createdSubscription = await createSubscription(
-          settings,
-          subscription,
-        );
-
-        if (createdSubscription) {
-          setIsCreated(true);
-          setSubscriptions([...subscriptions, createdSubscription]);
-          reset();
-        }
-      } catch (error) {
-        setSubmitError('Error creating subscription');
-        console.error(error);
-      }
-
-      setTimeout(resetAlerts, 3000);
-    },
-    [subscriptions],
-  );
-
-  const onSubmit: SubmitHandler<SubscriptionFormType> = (Formdata): void => {
-    resetAlerts();
-
-    if (emulator != undefined) {
-      createSubscriptionCallback(emulator, Formdata).catch(console.error);
-      reset();
-    }
-  };
-
   const resetAlerts = () => {
     setIsCreated(false);
     setSubmitError(undefined);
+  };
+
+  const onSubmit: SubmitHandler<SubscriptionFormType> = (formData): void => {
+    resetAlerts();
+
+    createSubscriptionMutation.mutate(formData, {
+      onSuccess: () => {
+        setIsCreated(true);
+        reset();
+        setTimeout(resetAlerts, 3000);
+      },
+      onError: error => {
+        setSubmitError('Error creating subscription');
+        console.error(error);
+        setTimeout(resetAlerts, 3000);
+      },
+    });
   };
 
   return (
@@ -114,21 +86,21 @@ function SubscriptionCreate({
           <Controller
             name="name"
             control={control}
-            rules={{ 
+            rules={{
               validate: {
                 checkFormat: (name: string) => {
-                    const regex = /^[a-zA-Z]{1}[a-zA-Z0-9\-_%+~]{2,254}$/i;
-                    if (!regex.test(name)) {
-                      return 'Subscription name format is not correct';
-                    }
-                },          
+                  const regex = /^[a-zA-Z]{1}[a-zA-Z0-9\-_%+~]{2,254}$/i;
+                  if (!regex.test(name)) {
+                    return 'Subscription name format is not correct';
+                  }
+                },
                 checkName: (name: string) => {
-                    if (name.toLowerCase().includes('goog')) {
-                      return 'Subscription name cannot contain "goog"';
-                    }
-                }
+                  if (name.toLowerCase().includes('goog')) {
+                    return 'Subscription name cannot contain "goog"';
+                  }
+                },
               },
-              required: true
+              required: true,
             }}
             render={({ field }) => (
               <TextField
@@ -184,7 +156,7 @@ function SubscriptionCreate({
           <Button
             variant="outlined"
             size="small"
-            onClick={() => setIsAdvanced(prev => !prev)} // Toggle the advanced mode
+            onClick={() => setIsAdvanced(prev => !prev)}
           >
             {isAdvanced ? 'Hide Advanced' : 'Show Advanced'}
           </Button>
@@ -192,9 +164,7 @@ function SubscriptionCreate({
           {SubmitError != undefined && (
             <Alert severity="error">{SubmitError}</Alert>
           )}
-          {IsCreated && (
-            <Alert severity="success">Subscription created</Alert>
-          )}
+          {IsCreated && <Alert severity="success">Subscription created</Alert>}
         </Stack>
 
         <Collapse in={isAdvanced}>
