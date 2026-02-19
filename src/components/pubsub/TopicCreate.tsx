@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 import {
   Alert,
@@ -15,19 +15,10 @@ import {
   Typography,
 } from '@mui/material';
 
-import EmulatorContext, { EmulatorContextType } from '../../contexts/emulators';
-import { SettingsType } from '../emulator/Settings';
-import { TopicType } from './Topic';
-import { createTopic } from '../../api/pubsub.topic';
 import { SchemaType } from './Schema';
 import { shortName } from '../../utils/pubsub';
 import HelpLink from '../ui/HelpLink';
-
-type TopicCreateProps = {
-  topics: TopicType[];
-  setTopics: React.Dispatch<React.SetStateAction<TopicType[]>>;
-  schemas: SchemaType[];
-};
+import { useSchemas, useCreateTopic } from '../../hooks/usePubsub';
 
 type TopicFormType = {
   name: string;
@@ -37,17 +28,14 @@ type TopicFormType = {
   schemaEncoding?: string;
 };
 
-function TopicCreate({
-  topics,
-  setTopics,
-  schemas,
-}: TopicCreateProps): React.ReactElement {
-  const { getEmulator } = useContext(EmulatorContext) as EmulatorContextType;
+function TopicCreate(): React.ReactElement {
+  const { data: schemas = [] } = useSchemas();
+  const createTopicMutation = useCreateTopic();
+
   const [SubmitError, setSubmitError] = useState<string | undefined>(undefined);
   const [IsCreated, setIsCreated] = useState(false);
   const [isAdvanced, setIsAdvanced] = useState(false);
 
-  const emulator = getEmulator();
   const {
     control,
     reset,
@@ -63,37 +51,26 @@ function TopicCreate({
     },
   });
 
-  const createTopicCallback = useCallback(
-    async (settings: SettingsType, topic: TopicFormType) => {
-      try {
-        const createdTopic = await createTopic(settings, topic);
-
-        if (createdTopic) {
-          setIsCreated(true);
-          setTopics([...topics, createdTopic]);
-          reset();
-        }
-      } catch (error) {
-        setSubmitError('Error creating topic');
-        console.error(error);
-      }
-
-      setTimeout(resetAlerts, 3000);
-    },
-    [topics],
-  );
-
-  const onSubmit: SubmitHandler<TopicFormType> = (Formdata): void => {
-    resetAlerts();
-
-    if (emulator != undefined) {
-      createTopicCallback(emulator, Formdata).catch(console.error);
-    }
-  };
-
   const resetAlerts = () => {
     setIsCreated(false);
     setSubmitError(undefined);
+  };
+
+  const onSubmit: SubmitHandler<TopicFormType> = (formData): void => {
+    resetAlerts();
+
+    createTopicMutation.mutate(formData, {
+      onSuccess: () => {
+        setIsCreated(true);
+        reset();
+        setTimeout(resetAlerts, 3000);
+      },
+      onError: error => {
+        setSubmitError('Error creating topic');
+        console.error(error);
+        setTimeout(resetAlerts, 3000);
+      },
+    });
   };
 
   const schemaItems = schemas.map(function (schema: SchemaType) {
@@ -120,21 +97,21 @@ function TopicCreate({
           <Controller
             name="name"
             control={control}
-            rules={{ 
+            rules={{
               validate: {
                 checkFormat: (name: string) => {
-                    const regex = /^[a-zA-Z]{1}[a-zA-Z0-9\-_%+~]{2,254}$/i;
-                    if (!regex.test(name)) {
-                      return 'Topic name format is not correct';
-                    }
-                },          
+                  const regex = /^[a-zA-Z]{1}[a-zA-Z0-9\-_%+~]{2,254}$/i;
+                  if (!regex.test(name)) {
+                    return 'Topic name format is not correct';
+                  }
+                },
                 checkName: (name: string) => {
-                    if (name.toLowerCase().includes('goog')) {
-                      return 'Topic name cannot contain "goog"';
-                    }
-                }
+                  if (name.toLowerCase().includes('goog')) {
+                    return 'Topic name cannot contain "goog"';
+                  }
+                },
               },
-              required: true
+              required: true,
             }}
             render={({ field }) => (
               <Tooltip title="Topic name" placement="top-start">
@@ -179,7 +156,7 @@ function TopicCreate({
           <Button
             variant="outlined"
             size="small"
-            onClick={() => setIsAdvanced(prev => !prev)} // Toggle the advanced mode
+            onClick={() => setIsAdvanced(prev => !prev)}
           >
             {isAdvanced ? 'Hide Advanced' : 'Show Advanced'}
           </Button>

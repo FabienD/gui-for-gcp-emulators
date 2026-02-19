@@ -3,8 +3,6 @@ import Alert from '@mui/material/Alert';
 import EmulatorContext, { EmulatorContextType } from '../../contexts/emulators';
 import TopicCreate from './TopicCreate';
 import TopicList from './TopicList';
-import { SchemaType } from './Schema';
-import { SettingsType } from '../emulator/Settings';
 
 type TopicNameType = {
   readonly name: string;
@@ -31,32 +29,16 @@ type schemaSettings = {
   lastRevisionId: string;
 };
 
-type TopicProps = {
-  topics: TopicType[];
-  setTopics: React.Dispatch<React.SetStateAction<TopicType[]>>;
-  getTopicsCallback: (settings: SettingsType) => Promise<void>;
-  schemas: SchemaType[];
-};
-
-function Topic({
-  topics,
-  setTopics,
-  getTopicsCallback,
-  schemas,
-}: TopicProps): React.ReactElement {
+function Topic(): React.ReactElement {
   const { isConnected } = useContext(EmulatorContext) as EmulatorContextType;
 
   return isConnected() ? (
     <>
-      <TopicCreate topics={topics} setTopics={setTopics} schemas={schemas} />
-      <TopicList
-        topics={topics}
-        setTopics={setTopics}
-        getTopicsCallback={getTopicsCallback}
-      />
+      <TopicCreate />
+      <TopicList />
     </>
   ) : (
-    <Alert severity={isConnected() ? 'info' : 'warning'}>
+    <Alert severity="warning">
       The emulator is not configured or the connection is not validated.
     </Alert>
   );

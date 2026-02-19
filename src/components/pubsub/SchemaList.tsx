@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 
 import { Alert, Button, CircularProgress, Tooltip } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
@@ -11,34 +11,22 @@ import {
   GridRowId,
 } from '@mui/x-data-grid';
 
-import EmulatorContext, { EmulatorContextType } from '../../contexts/emulators';
-import { SettingsType } from '../emulator/Settings';
 import { SchemaNameType, SchemaType } from './Schema';
 import { shortName } from '../../utils/pubsub';
-import { deleteSchema } from '../../api/pubsub.schema';
 import ConfirmationDialog from '../ui/ConfirmationDialog';
 import SchemaDefinition from './SchemaDefinition';
+import { useSchemas, useDeleteSchema } from '../../hooks/usePubsub';
 
-type SchemaListProps = {
-  schemas: SchemaType[];
-  setSchemas: React.Dispatch<React.SetStateAction<SchemaType[]>>;
-  getSchemasCallback: (settings: SettingsType) => Promise<void>;
-};
+function SchemaList(): React.ReactElement {
+  const { data: schemas = [], isLoading, refetch } = useSchemas();
+  const deleteSchemaMutation = useDeleteSchema();
 
-function SchemaList({
-  schemas,
-  setSchemas,
-  getSchemasCallback,
-}: SchemaListProps): React.ReactElement {
-  const [loading, setLoading] = useState(false);
   const [openSchemaDefinition, setOpenSchemaDefinition] = useState(false);
   const [schemaName, setSchemaName] = useState<SchemaNameType>();
   const [schemaToDelete, setSchemaToDelete] = useState<SchemaNameType | null>(
     null,
   );
   const [confirmOpen, setConfirmOpen] = useState(false);
-  const { getEmulator } = useContext(EmulatorContext) as EmulatorContextType;
-  const emulator = getEmulator();
 
   const handleActionClick = (
     action: 'delete' | 'definition',
@@ -57,56 +45,11 @@ function SchemaList({
 
   const handleDeleteConfirm = () => {
     if (schemaToDelete) {
-      deleteSchemaAction(schemaToDelete);
+      deleteSchemaMutation.mutate(schemaToDelete);
       setSchemaToDelete(null);
       setConfirmOpen(false);
     }
   };
-
-  const handleSchemasRefresh = () => {
-    if (emulator != undefined) {
-      setLoading(true);
-      getSchemasCallback({
-        host: emulator.host,
-        port: emulator.port,
-        project_id: emulator.project_id,
-      }).finally(() => {
-        setLoading(false);
-      });
-    }
-  };
-
-  const deleteSchemaCallback = useCallback(
-    async (settings: SettingsType, schemaName: SchemaNameType) => {
-      const isDeleted = await deleteSchema(settings, schemaName);
-
-      if (isDeleted) {
-        const filteredSchemas = schemas.filter(
-          (t: SchemaType) => shortName(t.name) !== schemaName.name,
-        );
-        setSchemas(filteredSchemas);
-      }
-    },
-    [schemas],
-  );
-
-  const deleteSchemaAction = useCallback(
-    async (schemaName: SchemaNameType) => {
-      if (emulator != undefined) {
-        deleteSchemaCallback(
-          {
-            host: emulator.host,
-            port: emulator.port,
-            project_id: emulator.project_id,
-          },
-          {
-            name: schemaName.name,
-          },
-        ).catch(console.error);
-      }
-    },
-    [emulator, deleteSchemaCallback],
-  );
 
   const columns: GridColDef[] = useMemo(
     () => [
@@ -167,7 +110,7 @@ function SchemaList({
 
   return (
     <>
-      {loading ? (
+      {isLoading ? (
         <div className="flex justify-center mt-10">
           <CircularProgress />
         </div>
@@ -189,7 +132,7 @@ function SchemaList({
               pageSizeOptions={[10]}
             />
           </div>
-          <Button onClick={handleSchemasRefresh} startIcon={<Refresh />}>
+          <Button onClick={() => refetch()} startIcon={<Refresh />}>
             schema list
           </Button>
 

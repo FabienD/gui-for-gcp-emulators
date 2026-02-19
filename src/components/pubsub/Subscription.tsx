@@ -1,14 +1,11 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useContext } from 'react';
 
 import { Alert } from '@mui/material';
 
 import EmulatorContext, { EmulatorContextType } from '../../contexts/emulators';
-import { SettingsType } from '../emulator/Settings';
-import { TopicType } from './Topic';
 import SubscriptionCreate from './SubscriptionCreate';
 import SubscriptionList from './SubscriptionList';
-import { getSubscriptions } from '../../api/pubsub.subscription';
-import { ApiError } from '../../api/common';
+import { useTopics } from '../../hooks/usePubsub';
 
 type SubscriptionNameType = {
   readonly name: string;
@@ -28,57 +25,17 @@ type SubscriptionType = SubscriptionNameType & {
   };
 };
 
-type SubscriptionProps = {
-  topics: TopicType[];
-};
-
-function Subscription({ topics }: SubscriptionProps): React.ReactElement {
+function Subscription(): React.ReactElement {
   const { getEmulator } = useContext(EmulatorContext) as EmulatorContextType;
-  const [subscriptions, setSubscriptions] = useState<SubscriptionType[]>([]);
+  const { data: topics = [] } = useTopics();
 
   const emulator = getEmulator();
   const isConnected = emulator?.is_connected;
 
-  const getSubscriptionsCallback = useCallback(
-    async (settings: SettingsType) => {
-      try {
-        const fetchedSubscriptions = await getSubscriptions(settings);
-        setSubscriptions(fetchedSubscriptions);
-      } catch (error) {
-        if (error instanceof ApiError) {
-          console.error(
-            `API Error: ${error.message} (Status: ${error.statusCode})`,
-          );
-        } else {
-          console.error('Unexpected error', error);
-        }
-      }
-    },
-    [],
-  );
-
-  useEffect(() => {
-    if (emulator != undefined) {
-      getSubscriptionsCallback({
-        host: emulator.host,
-        port: emulator.port,
-        project_id: emulator.project_id,
-      }).catch(console.error);
-    }
-  }, [emulator, getSubscriptionsCallback]);
-
   return isConnected && topics.length > 0 ? (
     <>
-      <SubscriptionCreate
-        topics={topics}
-        subscriptions={subscriptions}
-        setSubscriptions={setSubscriptions}
-      />
-      <SubscriptionList
-        subscriptions={subscriptions}
-        setSubscriptions={setSubscriptions}
-        getSubscriptionsCallback={getSubscriptionsCallback}
-      />
+      <SubscriptionCreate />
+      <SubscriptionList />
     </>
   ) : (
     <Alert severity={isConnected ? 'info' : 'warning'}>

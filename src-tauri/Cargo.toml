@@ -1,6 +1,6 @@
 [package]
 name = "App_for_GCP_emulators"
-version = "0.5.3"
+version = "0.5.4"
 description = "App for GCP emulators"
 authors = ["Fabien Dosse"]
 license = "GPL-3.0-or-later"
@@ -14,13 +14,13 @@ name = "app_lib"
 crate-type = ["staticlib", "cdylib", "rlib"]
 
 [build-dependencies]
-tauri-build = { version = "2.5.3", features = [] }
+tauri-build = { version = "2.5.5", features = [] }
 
 [dependencies]
-tauri = { version = "2.9.5", features = [] }
+tauri = { version = "2.10.2", features = [] }
 serde = { version = "^1.0", features = ["derive"] }
 serde_json = "1.0"
-tauri-plugin-shell = "2.3.3"
+tauri-plugin-shell = "2.3.5"
 
 [features]
 # this feature is used for production builds or when `devPath` points to the filesystem

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 
 import {
@@ -15,10 +15,9 @@ import {
   Typography,
 } from '@mui/material';
 
-import EmulatorContext, { EmulatorContextType } from '../../contexts/emulators';
-import { publishMessage, getTopic } from '../../api/pubsub.topic';
-import { TopicNameType, TopicType } from './Topic';
+import { TopicNameType } from './Topic';
 import CloseButton from '../ui/CloseButton';
+import { useTopic, usePublishMessage } from '../../hooks/usePubsub';
 
 type PublishMessageProps = {
   open: boolean;
@@ -44,12 +43,15 @@ function PublishMessage({
   topicName,
   setOpen,
 }: PublishMessageProps): React.ReactElement {
-  const { getEmulator } = useContext(EmulatorContext) as EmulatorContextType;
+  const {
+    data: topic,
+    isLoading,
+    error: fetchError,
+  } = useTopic(topicName, open);
+  const publishMessageMutation = usePublishMessage();
+
   const [Error, setError] = useState<string | undefined>(undefined);
   const [IsPublished, setIsPublished] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [topic, setTopic] = useState<TopicType | undefined>(undefined);
-  const emulator = getEmulator();
 
   const { handleSubmit, control, reset } = useForm<PubSubMessageForm>({
     defaultValues: {
@@ -57,59 +59,36 @@ function PublishMessage({
     },
   });
 
-  useEffect(() => {
-    const fetchTopic = async () => {
-      if (topicName !== undefined && emulator !== undefined) {
-        try {
-          const fetchedTopic: TopicType = await getTopic(emulator, topicName);
-          console.log(fetchedTopic.schemaSettings);
-          setTopic(fetchedTopic);
-        } catch (error) {
-          console.error(error);
-          setError('An error occurred while fetching the topic information.');
-        } finally {
-          setLoading(false);
-        }
-      }
-    };
-
-    if (open) {
-      fetchTopic();
-    }
-  }, [open, topicName, emulator]);
-
   const onSubmit: SubmitHandler<PubSubMessageForm> = async data => {
     resetAlerts();
 
-    const message = {
-      attributes: undefined,
-      data: data.messageData,
-    };
-
-    if (topicName !== undefined && emulator !== undefined) {
-      try {
-        const { messageIds }: { messageIds: string[] } = await publishMessage(
-          emulator,
+    if (topicName !== undefined) {
+      publishMessageMutation.mutate(
+        {
           topicName,
-          message,
-        );
-
-        if (messageIds !== undefined) {
-          setIsPublished(true);
-          reset();
-        } else {
-          setError('Error, message is not published');
-        }
-      } catch (error) {
-        console.error(error);
-        setError('An error occurred, message is not published');
-      }
+          message: {
+            attributes: undefined,
+            data: data.messageData,
+          },
+        },
+        {
+          onSuccess: result => {
+            if (result.messageIds !== undefined) {
+              setIsPublished(true);
+              reset();
+            } else {
+              setError('Error, message is not published');
+            }
+            setTimeout(resetStates, 5000);
+          },
+          onError: error => {
+            console.error(error);
+            setError('An error occurred, message is not published');
+            setTimeout(resetStates, 5000);
+          },
+        },
+      );
     }
-
-    reset();
-    setTimeout(() => {
-      resetStates();
-    }, 5000);
   };
 
   const resetAlerts = () => {
@@ -128,8 +107,10 @@ function PublishMessage({
 
   return (
     <Dialog fullWidth={true} maxWidth="sm" open={open} onClose={handleClose}>
-      {loading ? (
+      {isLoading ? (
         <CircularProgress />
+      ) : fetchError ? (
+        <Alert severity="error">Failed to load topic information.</Alert>
       ) : topic ? (
         <form onSubmit={handleSubmit(onSubmit)}>
           <DialogTitle color="primary">Publish message</DialogTitle>

@@ -36,8 +36,11 @@ function Home(): React.ReactElement {
         Google™ application.
       </Typography>
       <Typography variant="body1" className="pt-2">
-          When I began the project, it was just a simple test to experiment with Tauri V2, React.js, and TypeScript. Now, I have implemented the PubSub API and am using the application at work. 
-          Because of this, I have decided to continue developing the application, but it requires time and effort.
+        When I began the project, it was just a simple test to experiment with
+        Tauri V2, React.js, and TypeScript. Now, I have implemented the PubSub
+        API and am using the application at work. Because of this, I have
+        decided to continue developing the application, but it requires time and
+        effort.
       </Typography>
 
       <Typography variant="h2" color="primary">
