@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.5.5] - 2026-03-01
+
+- Update all JavaScript dependencies to latest minor/patch versions
+- Update ESLint and @eslint/js to 9.39.3
+- Update Tailwind CSS to 4.2.1
+- Update Rust dependencies (22 crates updated)
+- Fix 3 npm security vulnerabilities (ajv, minimatch, rollup)
+- Update Docker Google Cloud SDK image from 518.0.0 to 558.0.0
+
 ## [0.5.4] - 2026-02-19
 
 - Update all JavaScript dependencies to latest minor/patch versions
