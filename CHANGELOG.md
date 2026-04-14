@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.5.6] - 2026-04-14
+
+- Update all JavaScript dependencies to latest minor/patch versions
+- Update TypeScript to 6.0.2
+- Update Vite to 8 and @vitejs/plugin-react to 6
+- Update @mui/x-data-grid to 8.28.2 and other MUI 7 packages to latest 7.x
+- Update @tanstack/react-query to 5.99.0
+- Update Playwright to 1.59.1
+- Update Rust dependencies (Tauri 2.10.3, tauri-build 2.5.6)
+
 ## [0.5.5] - 2026-03-01
 
 - Update all JavaScript dependencies to latest minor/patch versions
