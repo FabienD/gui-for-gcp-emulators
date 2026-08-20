@@ -13,6 +13,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Fix 2 Rust security vulnerabilities: quick-xml 0.38.4 to 0.41.0 (memory-exhaustion DoS and quadratic run time)
 - Update Rust dependencies (Tauri 2.11.5, tauri-build 2.6.3)
 - Update @tauri-apps/api to 2.11.1 and @tauri-apps/cli to 2.11.4 to match the Tauri Rust crate
+- Update all remaining JavaScript dependencies to latest minor/patch versions
+- Update MUI 7 packages to 7.3.11, @mui/lab to 7.0.1-beta.25 and @mui/x-data-grid to 8.29.2
+- Update React and React DOM to 19.2.8, react-hook-form to 7.85.0 and @tanstack/react-query to 5.101.4
+- Update Tailwind CSS to 4.3.3
+- Update ESLint to 9.39.5, typescript-eslint to 8.67.0, TypeScript to 6.0.3 and Prettier to 3.9.6
+- Update Playwright to 1.62.1
+- Update Docker Google Cloud SDK image from 558.0.0 to 581.0.0
 
 ## [0.5.6] - 2026-04-14
 
