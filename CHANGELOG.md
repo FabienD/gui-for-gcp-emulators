@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.5.8] - 2026-08-23
+
+- Add a security audit job to the CI, blocking the release chain (npm audit and cargo audit)
+- Add a Dependabot configuration for weekly npm, Cargo and GitHub Actions updates
+- Update @tanstack/react-query to 5.102.1 and react-hook-form to 7.86.0
+- Update Rust dependencies (cc, crc32fast, icu_provider, log, swift-rs, uuid, zerovec-derive)
+
+Maintenance release: no security advisory was open at the time of writing. npm audit,
+cargo audit and Dependabot all reported zero open vulnerabilities.
+
 ## [0.5.7] - 2026-08-20
 
 - Fix 8 npm security vulnerabilities (react-router, vite, postcss, js-yaml, nanoid, brace-expansion, @babel/core)

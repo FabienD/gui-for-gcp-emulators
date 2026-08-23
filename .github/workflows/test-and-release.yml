@@ -37,10 +37,34 @@ jobs:
           path: playwright-report/
           retention-days: 1
 
-  # Create a release when a tag is pushed, tests must succeed
+  # Audit npm and Rust dependencies against known security advisories
+  security-audit:
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+      - name: Audit npm dependencies
+        run: npm audit --audit-level=high
+      - name: Install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+      - name: Cache cargo-audit binary
+        uses: actions/cache@v4
+        with:
+          path: ~/.cargo/bin/cargo-audit
+          key: cargo-audit-${{ runner.os }}
+      - name: Install cargo-audit
+        run: cargo install cargo-audit --locked
+      - name: Audit Rust dependencies
+        working-directory: src-tauri
+        run: cargo audit
+
+  # Create a release when a tag is pushed, tests and security audit must succeed
   create-release:
     if: startsWith(github.ref, 'refs/tags/v')
-    needs: run-tests
+    needs: [run-tests, security-audit]
     permissions:
       contents: write
     runs-on: ubuntu-latest

@@ -1,0 +1,39 @@
+version: 2
+updates:
+  # JavaScript dependencies
+  - package-ecosystem: 'npm'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+    open-pull-requests-limit: 5
+    groups:
+      # Keep minor and patch bumps in a single PR, major bumps stay separate
+      # so they can be handled in a dedicated release
+      npm-minor-and-patch:
+        update-types:
+          - 'minor'
+          - 'patch'
+
+  # Rust dependencies, the Tauri backend lives in src-tauri
+  - package-ecosystem: 'cargo'
+    directory: '/src-tauri'
+    schedule:
+      interval: 'weekly'
+    open-pull-requests-limit: 5
+    groups:
+      cargo-minor-and-patch:
+        update-types:
+          - 'minor'
+          - 'patch'
+
+  # Actions used by the test and release workflow
+  - package-ecosystem: 'github-actions'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+    open-pull-requests-limit: 5
+    groups:
+      github-actions:
+        update-types:
+          - 'minor'
+          - 'patch'
