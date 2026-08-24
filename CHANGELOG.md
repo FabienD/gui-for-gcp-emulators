@@ -12,6 +12,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Update every GitHub Action to a Node.js 24 runtime, clearing the Node.js 20 deprecation
   warnings (checkout 7, setup-node 7, upload-artifact 7, github-script 9, cache 6,
   tauri-action 1.0.0)
+- Fail the CI on flaky tests, a test passing only on retry no longer reports green
+- Fix the flaky schema creation E2E test, its alert locator matched both the form success
+  alert and the empty list alert
 - Update @tanstack/react-query to 5.102.1 and react-hook-form to 7.86.0
 - Update Rust dependencies (cc, crc32fast, icu_provider, log, swift-rs, uuid, zerovec-derive)
 

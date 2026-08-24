@@ -26,10 +26,12 @@ jobs:
         run: |
           echo "Building and running the app..."
           npm run build
+      # Retries stay enabled so the report tells a flaky test apart from a hard failure,
+      # but a test that needed a retry now fails the job instead of reporting green
       - name: Run Playwright tests
         run: |
           echo "Running Playwright tests..."
-          npm run test:e2e
+          npm run test:e2e -- --fail-on-flaky-tests
       - uses: actions/upload-artifact@v7
         if: ${{ !cancelled() }}
         with:
