@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 - Add a security audit job to the CI, blocking the release chain (npm audit and cargo audit)
 - Add a Dependabot configuration for weekly npm, Cargo and GitHub Actions updates
+- Update every GitHub Action to a Node.js 24 runtime, clearing the Node.js 20 deprecation
+  warnings (checkout 7, setup-node 7, upload-artifact 7, github-script 9, cache 6,
+  tauri-action 1.0.0)
 - Update @tanstack/react-query to 5.102.1 and react-hook-form to 7.86.0
 - Update Rust dependencies (cc, crc32fast, icu_provider, log, swift-rs, uuid, zerovec-derive)
 
