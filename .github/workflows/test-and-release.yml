@@ -54,9 +54,13 @@ jobs:
         uses: actions/cache@v6
         with:
           path: ~/.cargo/bin/cargo-audit
-          key: cargo-audit-${{ runner.os }}
+          key: cargo-audit-v1-${{ runner.os }}
+      # Skip the build when the cached binary was restored: cargo install refuses to
+      # overwrite a binary it holds no install record for. The advisory database is
+      # fetched at run time, so a cached binary still audits against fresh advisories.
+      # Bump the cache key above to rebuild cargo-audit itself.
       - name: Install cargo-audit
-        run: cargo install cargo-audit --locked
+        run: command -v cargo-audit > /dev/null || cargo install cargo-audit --locked
       - name: Audit Rust dependencies
         working-directory: src-tauri
         run: cargo audit
