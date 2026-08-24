@@ -17,7 +17,7 @@
     "@emotion/react": "11.14.0",
     "@emotion/styled": "11.14.1",
     "@fontsource-variable/roboto": "5.3.0",
-    "@mui/icons-material": "7.3.11",
+    "@mui/icons-material": "9.3.1",
     "@mui/lab": "7.0.1-beta.25",
     "@mui/material": "7.3.11",
     "@mui/x-data-grid": "8.29.2",
