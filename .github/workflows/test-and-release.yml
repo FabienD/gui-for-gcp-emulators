@@ -10,8 +10,8 @@ jobs:
     timeout-minutes: 10
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: lts/*
       - name: Install dependencies
@@ -26,21 +26,51 @@ jobs:
         run: |
           echo "Building and running the app..."
           npm run build
+      # Retries stay enabled so the report tells a flaky test apart from a hard failure,
+      # but a test that needed a retry now fails the job instead of reporting green
       - name: Run Playwright tests
         run: |
           echo "Running Playwright tests..."
-          npm run test:e2e
-      - uses: actions/upload-artifact@v4
+          npm run test:e2e -- --fail-on-flaky-tests
+      - uses: actions/upload-artifact@v7
         if: ${{ !cancelled() }}
         with:
           name: playwright-report
           path: playwright-report/
           retention-days: 1
 
-  # Create a release when a tag is pushed, tests must succeed
+  # Audit npm and Rust dependencies against known security advisories
+  security-audit:
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: lts/*
+      - name: Audit npm dependencies
+        run: npm audit --audit-level=high
+      - name: Install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+      - name: Cache cargo-audit binary
+        uses: actions/cache@v6
+        with:
+          path: ~/.cargo/bin/cargo-audit
+          key: cargo-audit-v1-${{ runner.os }}
+      # Skip the build when the cached binary was restored: cargo install refuses to
+      # overwrite a binary it holds no install record for. The advisory database is
+      # fetched at run time, so a cached binary still audits against fresh advisories.
+      # Bump the cache key above to rebuild cargo-audit itself.
+      - name: Install cargo-audit
+        run: command -v cargo-audit > /dev/null || cargo install cargo-audit --locked
+      - name: Audit Rust dependencies
+        working-directory: src-tauri
+        run: cargo audit
+
+  # Create a release when a tag is pushed, tests and security audit must succeed
   create-release:
     if: startsWith(github.ref, 'refs/tags/v')
-    needs: run-tests
+    needs: [run-tests, security-audit]
     permissions:
       contents: write
     runs-on: ubuntu-latest
@@ -48,8 +78,8 @@ jobs:
       release_id: ${{ steps.create-release.outputs.result }}
 
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: lts/*
 
@@ -58,7 +88,7 @@ jobs:
 
       - name: create release
         id: create-release
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         env:
           BODY_CONTENT: |
             Take a look at the assets to download and install this app for GCP emulators v`${process.env.PACKAGE_VERSION}`
@@ -100,10 +130,10 @@ jobs:
 
     runs-on: ${{ matrix.platform }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: setup node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: lts/*
 
@@ -129,7 +159,7 @@ jobs:
       - name: install frontend dependencies
         run: npm install # change this to npm or pnpm depending on which one you use
 
-      - uses: tauri-apps/tauri-action@v0.5.20
+      - uses: tauri-apps/tauri-action@v1.0.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -145,7 +175,7 @@ jobs:
     steps:
       - name: publish release
         id: publish-release
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         env:
           release_id: ${{ needs.create-release.outputs.release_id }}
         with:
