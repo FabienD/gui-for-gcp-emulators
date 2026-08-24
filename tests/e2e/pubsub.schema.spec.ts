@@ -26,8 +26,10 @@ test.describe('PubSub Schema', () => {
     await page.locator('form #definition').fill('{"type": "record", "name": "test", "fields": [{"name": "field1", "type": "string"}]}');
     await page.getByRole('button', { name: 'Create', exact: true }).click();
 
-    // Verify the schema is created
-    const alert = page.getByRole('alert');
+    // Verify the schema is created. Scope the alert to the form: the list renders its
+    // own "No Schemas" alert, which stays on screen until the list refetch completes,
+    // so an unscoped getByRole('alert') matches two elements and fails on strict mode.
+    const alert = page.locator('form#schema_create').getByRole('alert');
     await expect(alert).toHaveText('Schema created');
     // Should see the new schema in the list
     const schemaRow = page.getByRole('row', { name: 'test-schema projects/project_schema' });
