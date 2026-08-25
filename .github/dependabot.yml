@@ -7,12 +7,18 @@ updates:
       interval: 'weekly'
     open-pull-requests-limit: 5
     groups:
-      # Keep minor and patch bumps in a single PR, major bumps stay separate
-      # so they can be handled in a dedicated release
+      # Keep minor and patch bumps in a single PR
       npm-minor-and-patch:
         update-types:
           - 'minor'
           - 'patch'
+    ignore:
+      # Major bumps belong to a dedicated release, not to a maintenance one, and each
+      # one opened its own failing PR. update-types only filters version updates, so a
+      # security fix that only ships in a major still reaches us as a security update.
+      - dependency-name: '*'
+        update-types:
+          - 'version-update:semver-major'
 
   # Rust dependencies, the Tauri backend lives in src-tauri
   - package-ecosystem: 'cargo'
@@ -25,8 +31,14 @@ updates:
         update-types:
           - 'minor'
           - 'patch'
+    ignore:
+      - dependency-name: '*'
+        update-types:
+          - 'version-update:semver-major'
 
-  # Actions used by the test and release workflow
+  # Actions used by the test and release workflow. Majors stay enabled here: they are
+  # rare, and they carry the runner deprecations that silently pile up otherwise, as
+  # the Node.js 20 to 24 migration showed.
   - package-ecosystem: 'github-actions'
     directory: '/'
     schedule:
