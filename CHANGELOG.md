@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.5.9] - 2026-09-18
+
+- Fix 2 npm security vulnerabilities, both transitive under ESLint: js-yaml 4.3.2
+  (GHSA-2883-xcg3-v3hh, unbounded CPU on empty merge keys) and @humanfs/node 0.16.8
+  (GHSA-p498-v437-472g, recursive copy following symlinks outside the source tree)
+- Update all JavaScript dependencies to latest minor/patch versions (18 packages)
+- Update React and React DOM to 19.3.0, react-hook-form to 7.88.0 and @tanstack/react-query
+  to 5.103.1
+- Update Vite to 8.3.0, @vitejs/plugin-react to 6.1.1 and typescript-eslint to 8.70.0
+- Update Playwright to 1.63.0 and react-router-dom to 7.18.4
+- Update Rust dependencies (~50 crates, including tauri-plugin-shell 2.3.6 on both the npm and
+  Rust sides, quick-xml 0.42.0, signal-hook 0.4.4, reqwest 0.13.5 and uuid 1.26.1)
+- Update Docker Google Cloud SDK image from 581.0.0 to 585.0.0
+- Clear two clippy lints in src-tauri/src/lib.rs (developer tooling, no behaviour change)
+- Add npm run lint to the run-tests CI job and cargo clippy -- -D warnings to the security-audit
+  CI job, so both linters run on every push, ahead of the release chain
+
+No major version bumps: ESLint stays on 9.x, TypeScript on 6.x, @types/node on 25.x, MUI on
+7.x and @mui/x-data-grid on 8.x.
+
 ## [0.5.8] - 2026-08-23
 
 - Add a security audit job to the CI, blocking the release chain (npm audit and cargo audit)
