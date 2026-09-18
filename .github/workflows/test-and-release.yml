@@ -16,6 +16,8 @@ jobs:
           node-version: lts/*
       - name: Install dependencies
         run: npm ci
+      - name: Lint
+        run: npm run lint
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps chromium
       - name: Start Emulator 
@@ -39,9 +41,11 @@ jobs:
           path: playwright-report/
           retention-days: 1
 
-  # Audit npm and Rust dependencies against known security advisories
+  # Audit npm and Rust dependencies against known security advisories, and lint the Rust crate.
+  # cargo clippy compiles the whole Tauri tree, hence the system libraries, the cargo cache and
+  # the longer timeout: nothing else compiles the Rust side before a tag is pushed.
   security-audit:
-    timeout-minutes: 10
+    timeout-minutes: 20
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -51,7 +55,10 @@ jobs:
       - name: Audit npm dependencies
         run: npm audit --audit-level=high
       - name: Install Rust stable
+        id: rust
         uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy
       - name: Cache cargo-audit binary
         uses: actions/cache@v6
         with:
@@ -66,6 +73,26 @@ jobs:
       - name: Audit Rust dependencies
         working-directory: src-tauri
         run: cargo audit
+      # Lint after the audit, never before: a clippy warning must not hide an open advisory. The cache
+      # key carries the rustc version (dtolnay's cachekey output), or a toolchain bump would hit a stale
+      # target dir that actions/cache never re-saves; the paths leave out registry/src, which cargo
+      # re-extracts from registry/cache anyway.
+      - name: Install Tauri system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev build-essential curl wget file libssl-dev \
+              libgtk-3-dev libayatana-appindicator3-dev librsvg2-dev
+      - name: Cache cargo registry and build
+        uses: actions/cache@v6
+        with:
+          path: |
+            ~/.cargo/registry/index
+            ~/.cargo/registry/cache
+            ~/.cargo/git/db
+            src-tauri/target
+          key: cargo-clippy-${{ runner.os }}-${{ steps.rust.outputs.cachekey }}-${{ hashFiles('src-tauri/Cargo.lock') }}
+      - name: Lint Rust
+        run: cargo clippy --manifest-path src-tauri/Cargo.toml --locked --all-targets -- -D warnings
 
   # Create a release when a tag is pushed, tests and security audit must succeed
   create-release:

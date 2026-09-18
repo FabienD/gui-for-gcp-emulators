@@ -7,11 +7,8 @@ use std::net::TcpStream;
 
 #[tauri::command]
 fn check_connection(host: String, port: usize) -> bool {
-    let addr = format!("{}:{}", host, port.to_string());
-    match TcpStream::connect(addr) {
-        Ok(_) => true,
-        Err(_) => false,
-    }
+    let addr = format!("{host}:{port}");
+    TcpStream::connect(addr).is_ok()
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
