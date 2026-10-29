@@ -53,7 +53,7 @@ jobs:
         with:
           node-version: lts/*
       - name: Audit npm dependencies
-        run: npm audit --audit-level=high
+        run: npm audit --audit-level=moderate
       - name: Install Rust stable
         id: rust
         uses: dtolnay/rust-toolchain@stable
@@ -184,7 +184,7 @@ jobs:
               librsvg2-dev
 
       - name: install frontend dependencies
-        run: npm install # change this to npm or pnpm depending on which one you use
+        run: npm ci
 
       - uses: tauri-apps/tauri-action@v1.0.0
         env:
