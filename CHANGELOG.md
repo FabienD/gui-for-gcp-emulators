@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.5.10] - 2026-10-29
+
+- Fix npm security vulnerabilities: Vite 8.3.5 (direct) and brace-expansion,
+  source-map-js and zod (transitive, lockfile refresh)
+- Remove the unused @tailwindcss/typography dependency, whose exact pin on a vulnerable
+  postcss-selector-parser had no upstream fix
+- Update all JavaScript dependencies to latest minor/patch versions (18 packages)
+- Update Tauri to 2.12 on both the npm and Rust sides, and the shell plugin
+  to 2.6
+- Update Rust dependencies (~120 crates, including wry 0.57.1 and tao 0.37.2)
+- Update Docker Google Cloud SDK image from 585.0.0 to 591.0.0
+- Remove the unused check_connection Tauri command: the UI has checked the emulator over
+  HTTP since 0.5.0
+- CI: tighten the npm audit gate from high to moderate, and build the release bundles with
+  npm ci from the audited lockfile
+
+No major version bumps: ESLint stays on 9.x, TypeScript on 6.x, @types/node on 25.x, MUI on
+7.x and @mui/x-data-grid on 8.x.
+
 ## [0.5.9] - 2026-09-18
 
 - Fix 2 npm security vulnerabilities, both transitive under ESLint: js-yaml 4.3.2

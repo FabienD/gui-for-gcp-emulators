@@ -39,7 +39,7 @@ npm run test:e2e:ui      # Playwright with interactive UI
 
 ### Backend (`src-tauri/`)
 
-- Minimal Rust backend—currently just `check_connection(host, port)` Tauri command using TCP
+- Minimal Rust backend—no custom Tauri command, only `tauri-plugin-shell` is registered (used by `open`); the emulator connection is checked over HTTP in `src/components/emulator/Settings.tsx`
 - Configuration in `src-tauri/tauri.conf.json`
 
 ### Component Organization
